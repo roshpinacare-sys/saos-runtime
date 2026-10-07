@@ -1,24 +1,30 @@
-# SAOS RUNTIME — the sovereign heartbeat that outlives any sandbox (R244).
+# SAOS RUNTIME — the sovereign heartbeat that outlives any sandbox (R244/R245).
 #
 # WHY THIS REPO IS PUBLIC: public repositories get unlimited free Actions
 # minutes; the private engine tree is cloned AT RUNTIME via the GH_PAT
 # secret and never lands in this tree. This file is the only public
-# artifact. No key material, no state, no account anything lives here.
+# artifact. No key material, no state, no account anything lives HERE
+# (the role-scoped WIFs in repo secrets are chain-judged at adoption).
 #
 # WHAT ONE HEARTBEAT DOES (every 30 min, fail-closed at every gate):
 #   1. clone the PRIVATE engine tree (branch saos-cockpit + fetch main
 #      — the git-vault credentials live on main);
-#   2. SELFTEST GATE — 489 deterministic vectors; any failure = red run
+#   2. SELFTEST GATE — 551 deterministic vectors; any failure = red run
 #      (public alarm), nothing is broadcast;
 #   3. CI HEARTBEAT — the offline intelligence pack converses on-chain
 #      with the soldier fleet (comments, replies, community, deepens,
-#      mutual votes under hard caps); the master credential NEVER exists
-#      in CI (SAOS_CI_SKIP_MASTER=1) — custody and trading stay local;
-#   4. state is committed back to the private tree (FF-only, no force).
+#      mutual votes under hard caps);
+#   4. DEX TAKEOVER (R245, operator order 2026-10-07 "no action is
+#      sovereign on the sandbox"): when the sandbox's custodian anchor
+#      goes STALE, this runner adopts the master's ACTIVE authority from
+#      the CI_ADOPT_WIF_ACTIVE secret (chain-judged) and runs ONE full
+#      engine cycle — trading, converts, the economy — until the sandbox
+#      returns. A fresh anchor = STANDBY (never races the local engine);
+#   5. state is committed back to the private tree (FF-only, no force).
 #
 # THE SANDBOX-DISTRUST LAW, HONORED: this workflow is the proof that the
 # organism lives on GitHub infrastructure — wipe the sandbox, the fleet
-# keeps talking.
+# keeps talking AND the market keeps trading.
 
 name: sovereign-runtime
 
@@ -37,7 +43,7 @@ concurrency:
 jobs:
   heartbeat:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Clone the private engine tree (vault on main, engine on saos-cockpit)
         env:
@@ -62,13 +68,15 @@ jobs:
         working-directory: engine/mini-services/saos-engine
         run: node selftest.mjs
 
-      - name: CI heartbeat (offline intelligence pack + git-vault custody)
+      - name: CI heartbeat (offline intelligence + git-vault custody + DEX takeover)
         id: beat
         working-directory: engine/mini-services/saos-engine
         run: node ci-cycle.mjs
         env:
           SAOS_OFFLINE: "1"
           SAOS_CI_SKIP_MASTER: "1"
+          CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}
+          CI_ADOPT_WIF_ACTIVE: ${{ secrets.CI_ADOPT_WIF_ACTIVE }}
 
       - name: Commit state back (FF-only, no force, ever)
         working-directory: engine
@@ -98,7 +106,7 @@ jobs:
             echo ""
             echo "- time: $(date -u +%FT%TZ)"
             if [ -f state/ci-last-heartbeat.json ]; then
-              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");'
+              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");console.log("- dex: "+d.dex+" ("+(d.dexReason ?? "n/a")+")");'
             else
               echo "- heartbeat state file missing (a step failed — see logs)"
             fi
