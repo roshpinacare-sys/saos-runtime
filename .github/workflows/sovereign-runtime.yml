@@ -1,0 +1,105 @@
+# SAOS RUNTIME — the sovereign heartbeat that outlives any sandbox (R244).
+#
+# WHY THIS REPO IS PUBLIC: public repositories get unlimited free Actions
+# minutes; the private engine tree is cloned AT RUNTIME via the GH_PAT
+# secret and never lands in this tree. This file is the only public
+# artifact. No key material, no state, no account anything lives here.
+#
+# WHAT ONE HEARTBEAT DOES (every 30 min, fail-closed at every gate):
+#   1. clone the PRIVATE engine tree (branch saos-cockpit + fetch main
+#      — the git-vault credentials live on main);
+#   2. SELFTEST GATE — 489 deterministic vectors; any failure = red run
+#      (public alarm), nothing is broadcast;
+#   3. CI HEARTBEAT — the offline intelligence pack converses on-chain
+#      with the soldier fleet (comments, replies, community, deepens,
+#      mutual votes under hard caps); the master credential NEVER exists
+#      in CI (SAOS_CI_SKIP_MASTER=1) — custody and trading stay local;
+#   4. state is committed back to the private tree (FF-only, no force).
+#
+# THE SANDBOX-DISTRUST LAW, HONORED: this workflow is the proof that the
+# organism lives on GitHub infrastructure — wipe the sandbox, the fleet
+# keeps talking.
+
+name: sovereign-runtime
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sovereign-runtime
+  cancel-in-progress: false
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Clone the private engine tree (vault on main, engine on saos-cockpit)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone --depth 1 --branch saos-cockpit "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" engine
+          cd engine
+          git config user.name "saos-runtime-ci"
+          git config user.email "saos-runtime-ci@users.noreply.github.com"
+          git fetch origin main:refs/remotes/origin/main || echo "main fetch skipped (vault revival will report honestly)"
+          echo "engine @ $(git rev-parse --short HEAD)"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install engine deps
+        working-directory: engine/mini-services/saos-engine
+        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^2.2.3 --silent
+
+      - name: Selftest gate (fail-closed — red run = public alarm)
+        working-directory: engine/mini-services/saos-engine
+        run: node selftest.mjs
+
+      - name: CI heartbeat (offline intelligence pack + git-vault custody)
+        id: beat
+        working-directory: engine/mini-services/saos-engine
+        run: node ci-cycle.mjs
+        env:
+          SAOS_OFFLINE: "1"
+          SAOS_CI_SKIP_MASTER: "1"
+
+      - name: Commit state back (FF-only, no force, ever)
+        working-directory: engine
+        run: |
+          git add -A mini-services/saos-engine/state
+          if git diff --cached --quiet; then
+            echo "no state changes this heartbeat"
+          else
+            git commit -m "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]"
+            ok=0
+            for i in 1 2 3; do
+              if git push origin saos-cockpit; then ok=1; break; fi
+              echo "push raced with the sandbox custodian — fetch + rebase, retry $i"
+              git fetch origin saos-cockpit
+              git rebase origin/saos-cockpit || git rebase --abort
+              sleep $((i * 5))
+            done
+            [ "$ok" = "1" ] || { echo "state push-back failed after 3 retries"; exit 1; }
+          fi
+
+      - name: Summary (verdicts only — this page is public)
+        if: always()
+        working-directory: engine/mini-services/saos-engine
+        run: |
+          {
+            echo "## SAOS sovereign heartbeat"
+            echo ""
+            echo "- time: $(date -u +%FT%TZ)"
+            if [ -f state/ci-last-heartbeat.json ]; then
+              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");'
+            else
+              echo "- heartbeat state file missing (a step failed — see logs)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
