@@ -92,8 +92,7 @@ jobs:
             node scripts/chain-anchor-probe.mjs
           }
 
-      - name: CI heartbeat (offline intelligence + git-vault custody + DEX takeover)
-        id: beat
+      - name: Beat env + posting arming (standing order travels as a repo secret)
         working-directory: engine/mini-services/saos-engine
         run: node ci-cycle.mjs
         env:
@@ -101,11 +100,26 @@ jobs:
           SAOS_CI_SKIP_MASTER: "1"
           CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}
           CI_ADOPT_WIF_ACTIVE: ${{ secrets.CI_ADOPT_WIF_ACTIVE }}
+          CI_SOCIAL_ARMED: ${{ secrets.CI_SOCIAL_ARMED }}
+
+      - name: Arm the posting stream (T-61 · fail-closed when secret absent)
+        working-directory: engine
+        run: |
+          mkdir -p .secrets
+          if [ -n "$CI_SOCIAL_ARMED" ]; then
+            printf '%s' "$CI_SOCIAL_ARMED" > .secrets/social-armed.json
+            chmod 600 .secrets/social-armed.json
+            echo "posting stream armed (standing order present)"
+          else
+            echo "CI_SOCIAL_ARMED secret absent — the stream stays fail-closed (LIVE-REFUSED-NOT-ARMED), by law"
+          fi
+        env:
+          CI_SOCIAL_ARMED: ${{ secrets.CI_SOCIAL_ARMED }}
 
       - name: Commit state back (FF-only, no force, ever)
         working-directory: engine
         run: |
-          git add -A mini-services/saos-engine/state
+          git add -A mini-services/saos-engine/state mini-services/saos-engine/content/sent
           if git diff --cached --quiet; then
             echo "no state changes this heartbeat"
           else
@@ -130,7 +144,7 @@ jobs:
             echo ""
             echo "- time: $(date -u +%FT%TZ)"
             if [ -f state/ci-last-heartbeat.json ]; then
-              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");console.log("- dex: "+d.dex+" ("+(d.dexReason ?? "n/a")+")");'
+              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");console.log("- post: "+d.post+" ("+(d.postAccount ?? "n/a")+")");console.log("- dex: "+d.dex+" ("+(d.dexReason ?? "n/a")+")");'
             else
               echo "- heartbeat state file missing (a step failed — see logs)"
             fi
