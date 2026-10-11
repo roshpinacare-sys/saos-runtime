@@ -1,0 +1,11 @@
+{
+  "name": "saos-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAOS sovereign runtime host — additive tools: blurt revival connector + daily evolution digest",
+  "type": "module",
+  "dependencies": {
+    "@noble/secp256k1": "^2.2.3",
+    "@noble/hashes": "^1.7.1"
+  }
+}

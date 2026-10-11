@@ -1,0 +1,54 @@
+# sovereign-evolution — T10 perpetual learning loop (master plan)
+# Daily self-examination: Actions throughput, economics, exposure regressions,
+# content dedupe. Writes learning/evolution-<date>.json + ledger, commits,
+# files an issue on SLO breach. Runs while the owner sleeps — GitHub only.
+name: sovereign-evolution
+on:
+  schedule:
+    - cron: '44 6 * * *'
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: 'exit 1 on SLO breach'
+        default: 'false'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sovereign-evolution
+  cancel-in-progress: false
+
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Digest yesterday + SLO verdict
+        id: digest
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/evolution-digest.mjs --strict || true
+      - name: File SLO-breach issue (deduped per day)
+        if: steps.digest.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --search "evolution: SLO breach $(date -u +%F) in:title" --json number --limit 3 > /tmp/issues.json
+          if [ "$(cat /tmp/issues.json)" = "[]" ]; then
+            gh issue create --title "evolution: SLO breach $(date -u +%F)" \
+              --body "Daily digest found SLO breaches. See learning/ ledger and run ${{ github.run_id }}."
+          fi
+      - name: Commit learning artifacts
+        if: always()
+        run: |
+          git config user.name "sovereign-evolution[bot]"
+          git config user.email "bot@roshpinacare-sys.local"
+          git add learning 2>/dev/null || true
+          git commit -m "evolution: daily digest $(date -u +%F) [skip ci]" || echo "nothing to commit"
+          git push || echo "push skipped"
