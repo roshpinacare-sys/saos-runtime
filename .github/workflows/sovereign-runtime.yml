@@ -59,6 +59,11 @@ jobs:
   heartbeat:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # R-VAULTPASS-1 (2026-10-11, zai-code-3): the GEN-1/ROT4 vault unlock
+      # keys left the steem repo — the sealed bundle arrives as a secret.
+      # Absent = honest UNLOCK-FAIL verdicts in state (never a crash).
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
     steps:
       - name: Clone the private engine tree (vault on main, engine on saos-cockpit)
         env:
