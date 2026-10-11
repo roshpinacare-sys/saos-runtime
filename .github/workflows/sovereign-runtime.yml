@@ -134,6 +134,21 @@ jobs:
         working-directory: engine
         run: node mini-services/saos-engine/truthrail-outcome.mjs
 
+      - name: Hyper-grid burst (T-62 · git-native tick revival — bounded, governor-capped, fail-closed arming)
+        working-directory: engine/mini-services/saos-engine
+        run: |
+          if [ -n "$CI_EXEC_ARMED" ]; then
+            mkdir -p .secrets
+            printf '%s' "$CI_EXEC_ARMED" > .secrets/exec-armed.json
+            chmod 600 .secrets/exec-armed.json
+            echo "exec standing order present — burst may execute ops (governor + opsDayCap enforce budgets)"
+          else
+            echo "CI_EXEC_ARMED absent — burst ticks honestly UNARMED (verdicts record why no ops ran), by law"
+          fi
+          HYPER_BURST_MS=90000 node hypergrid-burst.mjs
+        env:
+          CI_EXEC_ARMED: ${{ secrets.CI_EXEC_ARMED }}
+
       - name: Commit state back (FF-only, no force, ever)
         working-directory: engine
         run: |
