@@ -83,6 +83,8 @@ async function chainJudge(wifHex) {
   return { blt, live, match: blt === live };
 }
 fs.rmSync(TMP, { recursive: true, force: true }); // wipe BEFORE network judging
+const tried = [];
+let chosen = null;
 // real WIF decode: base58check strip 0x80 prefix
 function wifPriv(w) {
   const raw = (() => {
