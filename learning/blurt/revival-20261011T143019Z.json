@@ -1,0 +1,64 @@
+{
+  "mode": "dry",
+  "at": "2026-10-11T14:30:17.531Z",
+  "nodes": [
+    {
+      "url": "https://blurt-rpc.saboin.com",
+      "live": true,
+      "ms": 307,
+      "head": 64394747
+    },
+    {
+      "url": "https://rpc.blurt.world",
+      "live": false,
+      "ms": 214,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt-rpc.salvadx.net",
+      "live": false,
+      "ms": 32,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://rpc.blurt.buzz",
+      "live": false,
+      "ms": 287,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt.lexai.host",
+      "live": false,
+      "ms": 10,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt-rpc.sensei69.net",
+      "live": false,
+      "ms": 70,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://rpc.blurtbot.com",
+      "live": false,
+      "ms": 41,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://api.blurt.world",
+      "live": false,
+      "ms": 244,
+      "err": "TypeError: fetch failed"
+    }
+  ],
+  "verdict": "KEY-MISMATCH (this WIF does not open this blurt body — fail-closed)",
+  "primaryNode": "https://blurt-rpc.saboin.com",
+  "chainIdSource": "unavailable:Assert Exception:method_itr != api_itr->second.end(): Could ",
+  "keyFit": {
+    "account": "headcorner",
+    "chainId": null,
+    "derivedBody": "4uaH1LX88xUeo8dVfZjV2TajEiGWStkX4v6jS18iB394rpY1tU",
+    "expectedBody": "8m3rBLd8CA2KkY764fkFBnYGoCaK1ktDjn825HUbq25i52N9cw",
+    "match": false
+  }
+}
