@@ -110,11 +110,23 @@ catch (e) { receipt.chainIdSource = "unavailable:" + String(e?.message ?? e).sli
   const privRaw = b58checkDecode(wif).subarray(1, 33); // strip 0x80 + checksum
   const pubBytes = Buffer.from(secp.getPublicKey(privRaw, true));
   const derived = pubString(PREFIX, pubBytes);
+  // blurt authority strings can carry a broken base58 checksum (measured
+  // 2026-10-11: live chk 04e2055c vs computed d4a396b2, bodies identical) -
+  // key-fit is judged on the DECODED 33-byte key bodies, never the display.
+  const bodyBytesOf = (s) => {
+    let n2 = 0n;
+    for (const ch of s) { const i = B58.indexOf(ch); if (i < 0) throw new Error("bad base58"); n2 = n2 * 58n + BigInt(i); }
+    let hx = n2.toString(16).padStart(2, "0");
+    if (hx.length % 2) hx = "0" + hx;
+    const raw = Buffer.from(hx, "hex");
+    return raw.subarray(0, Math.max(0, raw.length - 4));
+  };
+  const dBytes = bodyBytesOf(derived), eBytes = bodyBytesOf(expectedPub);
   receipt.keyFit = {
     account, chainId: chainIdHex,
-    derivedBody: pubBody(derived),
-    expectedBody: pubBody(expectedPub),
-    match: pubBody(derived) === pubBody(expectedPub),
+    derivedBody: dBytes.toString("hex").slice(0, 16) + "...",
+    expectedBody: eBytes.toString("hex").slice(0, 16) + "...",
+    match: dBytes.equals(eBytes) && eBytes.length === 33,
   };
   if (!receipt.keyFit.match) {
     receipt.verdict = "KEY-MISMATCH (this WIF does not open this blurt body — fail-closed)";
