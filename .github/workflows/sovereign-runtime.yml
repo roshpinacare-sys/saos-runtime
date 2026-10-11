@@ -58,7 +58,7 @@ concurrency:
 jobs:
   heartbeat:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Clone the private engine tree (vault on main, engine on saos-cockpit)
         env:
