@@ -168,9 +168,19 @@ jobs:
                 sleep $((i * 5))
                 continue
               fi
-              echo "rebase CONFLICT on machine-generated state (events/exec/custody snapshots) — measured T-58 root cause: the always-on custodian engine rewrote the same state files while this heartbeat ran."
-              echo "A conflict is PROOF the custodian is alive and writing. The custodian is the branch-of-record: this runner's state commit yields honestly. No force, ever. Custodian keeps the record."
-              git rebase --abort
+              # rebase failed: a real conflict (rebase in progress) OR a
+              # refusal to start ("cannot rebase: unstaged changes" — a stash
+              # failure left residuals). Both mean the branch-of-record moved
+              # under this heartbeat: yield honestly either way. The abort is
+              # guarded — a bare `git rebase --abort` with no rebase in
+              # progress exits 128 and would kill the step (measured 15:34Z
+              # run 38151872541: exactly that, on top of the conflict itself).
+              if git rebase --abort 2>/dev/null; then
+                echo "rebase CONFLICT on machine-generated state (events/exec/custody snapshots) — measured T-58 root cause: the always-on custodian engine rewrote the same state files while this heartbeat ran."
+                echo "A conflict is PROOF the custodian is alive and writing. The custodian is the branch-of-record: this runner's state commit yields honestly. No force, ever. Custodian keeps the record."
+              else
+                echo "rebase refused to start (unstaged residuals survived the stash) — yielding honestly too: the state commit stays local, the custodian branch-of-record is untouched, no force."
+              fi
               yielded=1
               break
             done
