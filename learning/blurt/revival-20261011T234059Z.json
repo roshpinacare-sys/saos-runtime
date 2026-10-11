@@ -1,0 +1,57 @@
+{
+  "mode": "health",
+  "at": "2026-10-11T23:40:47.325Z",
+  "nodes": [
+    {
+      "url": "https://blurt-rpc.saboin.com",
+      "live": false,
+      "ms": 237,
+      "err": "SyntaxError: Unexpected token 'S', \"Server is \"... is not va"
+    },
+    {
+      "url": "https://rpc.blurt.world",
+      "live": false,
+      "ms": 3912,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt-rpc.salvadx.net",
+      "live": false,
+      "ms": 36,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://rpc.blurt.buzz",
+      "live": false,
+      "ms": 19,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt.lexai.host",
+      "live": false,
+      "ms": 29,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt-rpc.sensei69.net",
+      "live": false,
+      "ms": 45,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://rpc.blurtbot.com",
+      "live": false,
+      "ms": 60,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://api.blurt.world",
+      "live": false,
+      "ms": 4044,
+      "err": "TypeError: fetch failed"
+    }
+  ],
+  "verdict": "NO-LIVE-NODE — כנה: כל-הצמתים-מתים; מצבה-כנה במקום אדום (רכבת fail-closed, owner מסובב צמתים)",
+  "nodesDown": true,
+  "marker": "BLURT-NODES-DOWN=true"
+}
