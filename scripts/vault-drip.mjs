@@ -101,7 +101,7 @@ async function chainJudge(priv) { // noble takes the decoded key bytes directly
     const raw = Buffer.from(hx, "hex");
     return raw.subarray(0, Math.max(0, raw.length - 4)); // strip checksum tail
   };
-  const liveBody = live ? bodyOf(live) : Buffer.alloc(0);
+  const liveBody = live ? bodyOf(live.replace(/^[A-Z]{3}/, "")) : Buffer.alloc(0);
   const myBody = pub;
   return { blt, live, match: myBody.equals(liveBody) && liveBody.length === 33 };
 }
