@@ -100,7 +100,9 @@ async function main() {
   const wif = (process.env.CI_BLURT_POSTING_WIF || process.env.CI_ADOPT_WIF_POSTING || "").trim();
   if (!wif) { receipt.verdict = "DRY-REFUSED-NO-WIF (fail-closed by law)"; console.log(JSON.stringify(receipt, null, 2)); process.exit(1); }
   const account = (process.env.BLURT_ACCOUNT || "headcorner").trim();
-  const chainIdHex = await rpc(node, "condenser_api.get_chain_id", []);
+  let chainIdHex = null;
+try { chainIdHex = await rpc(node, "condenser_api.get_chain_id", []); receipt.chainIdSource = "rpc:get_chain_id"; }
+catch (e) { receipt.chainIdSource = "unavailable:" + String(e?.message ?? e).slice(0, 60); } // saboin has no get_chain_id (measured 2026-10-11); DRY needs none
   const [acct] = await rpc(node, "condenser_api.get_accounts", [[account]]);
   if (!acct) { receipt.verdict = "ACCOUNT-ABSENT-ON-BLURT"; console.log(JSON.stringify(receipt, null, 2)); process.exit(1); }
   const expectedPub = acct.posting.key_auths[0][0];
@@ -146,7 +148,8 @@ async function main() {
     receipt.verdict = "POST-REFUSED-NOT-ENABLED (CI_BLUT_ENABLED gate; owner DecisionQueue law)";
     console.log(JSON.stringify(receipt, null, 2)); process.exit(1);
   }
-  const digest = Buffer.from(sha256(Buffer.concat([Buffer.from(chainIdHex, "hex"), serTx(tx)])));
+  if (!chainIdHex) { receipt.verdict = "CHAIN-ID-UNMEASURED (post refused — fail-closed; dry law needs none, post does)"; console.log(JSON.stringify(receipt, null, 2)); process.exit(1); }
+const digest = Buffer.from(sha256(Buffer.concat([Buffer.from(chainIdHex, "hex"), serTx(tx)])));
   const sig = secp.sign(digest, privRaw, { prehash: false });
   const rHex = sig.r.toString(16).padStart(64, "0");
   const sHex = sig.s.toString(16).padStart(64, "0");
