@@ -121,6 +121,19 @@ jobs:
           CI_DELEGATION_ARMED: ${{ secrets.CI_DELEGATION_ARMED }}
           CI_SOCIAL_ARMED: ${{ secrets.CI_SOCIAL_ARMED }}
 
+      # R316-Z · TRUTHRAIL OUTCOME GATE — measures the OUTCOME on the live
+      # chain, not the machine. RED (fail run) only when the stream is armed
+      # and starving: armed + zero fleet posts in 24h after a healthy RPC
+      # round = the machine failed at its one job (the "green≠working"
+      # disease). Closed-loop (0 outside votes) is WARN, never red: outside
+      # votes depend on the world, not the machine. Writes
+      # state/truthrail.json + merges truthrail* fields into
+      # ci-last-heartbeat.json so the digest + summary inherit them.
+      - name: TruthRail outcome gate (R316-Z · measure the outcome, not the machine)
+        if: always()
+        working-directory: engine
+        run: node mini-services/saos-engine/truthrail-outcome.mjs
+
       - name: Commit state back (FF-only, no force, ever)
         working-directory: engine
         run: |
@@ -149,7 +162,7 @@ jobs:
             echo ""
             echo "- time: $(date -u +%FT%TZ)"
             if [ -f state/ci-last-heartbeat.json ]; then
-              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");console.log("- digest: "+(d.digest ?? "n/a")+" ("+(d.digestTitle ?? "n/a")+")");console.log("- post: "+d.post+" ("+(d.postAccount ?? "n/a")+")");console.log("- blurt: "+(d.blurt ?? "n/a")+" (live "+(d.blurtLive ?? "?")+")");console.log("- delegation: "+(d.delegation ?? "n/a")+" (ops "+(d.delegationOps ?? 0)+", "+(d.delegationSp ?? 0)+" SP)");console.log("- dex: "+d.dex+" ("+(d.dexReason ?? "n/a")+")");'
+              node -e 'const d=require("./state/ci-last-heartbeat.json");console.log("- custody: "+d.custody);console.log("- social: "+d.social+" (executed "+d.socialExecuted+")");console.log("- content: "+d.content+" (source "+d.contentSource+")");console.log("- digest: "+(d.digest ?? "n/a")+" ("+(d.digestTitle ?? "n/a")+")");console.log("- post: "+d.post+" ("+(d.postAccount ?? "n/a")+")");console.log("- blurt: "+(d.blurt ?? "n/a")+" (live "+(d.blurtLive ?? "?")+")");console.log("- delegation: "+(d.delegation ?? "n/a")+" (ops "+(d.delegationOps ?? 0)+", "+(d.delegationSp ?? 0)+" SP)");console.log("- dex: "+d.dex+" ("+(d.dexReason ?? "n/a")+")");console.log("- truthrail: "+(d.truthrail ?? "n/a")+" (posts24h "+(d.truthrailPosts24h ?? "?")+", outside "+(d.truthrailOutsideVotes ?? "?")+")");'
             else
               echo "- heartbeat state file missing (a step failed — see logs)"
             fi
@@ -184,6 +197,7 @@ jobs:
                 `- blurt: ${hb.blurt ?? "?"} (live ${hb.blurtLive ?? "?"})`,
                 `- delegation: ${hb.delegation ?? "?"} (ops ${hb.delegationOps ?? 0}, ${hb.delegationSp ?? 0} SP)`,
                 `- dex: ${hb.dex ?? "?"} (${hb.dexReason ?? "n/a"})`,
+                `- truthrail: ${hb.truthrail ?? "?"} (posts24h ${hb.truthrailPosts24h ?? "?"}, outside votes ${hb.truthrailOutsideVotes ?? "?"})`,
                 "",
                 "## Open operator decisions (P0 first)",
                 "",
