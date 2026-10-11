@@ -149,7 +149,7 @@ jobs:
         env:
           CI_EXEC_ARMED: ${{ secrets.CI_EXEC_ARMED }}
 
-      - name: Commit state back (FF-only, no force, ever)
+      - name: Commit state back (FF-only, no force, ever · honest yield to the alive custodian — T-58 fix)
         working-directory: engine
         run: |
           git add -A mini-services/saos-engine/state mini-services/saos-engine/content/sent
@@ -157,17 +157,27 @@ jobs:
             echo "no state changes this heartbeat"
           else
             git commit -m "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]"
-            ok=0
-            for i in 1 2 3; do
+            ok=0; yielded=0
+            for i in 1 2 3 4 5; do
               if git push origin saos-cockpit; then ok=1; break; fi
               echo "push raced with the sandbox custodian — fetch + rebase, retry $i"
               git status --porcelain | head -10 || true
               git stash push --include-untracked -m "runner residual between heartbeats (state already committed)" || true
               git fetch origin saos-cockpit
-              git rebase origin/saos-cockpit || git rebase --abort
-              sleep $((i * 5))
+              if git rebase origin/saos-cockpit; then
+                sleep $((i * 5))
+                continue
+              fi
+              echo "rebase CONFLICT on machine-generated state (events/exec/custody snapshots) — measured T-58 root cause: the always-on custodian engine rewrote the same state files while this heartbeat ran."
+              echo "A conflict is PROOF the custodian is alive and writing. The custodian is the branch-of-record: this runner's state commit yields honestly. No force, ever. Custodian keeps the record."
+              git rebase --abort
+              yielded=1
+              break
             done
-            [ "$ok" = "1" ] || { echo "state push-back failed after 3 retries"; exit 1; }
+            if [ "$ok" != "1" ] && [ "$yielded" != "1" ]; then
+              echo "state push-back failed after 5 retries with NO conflict — unexpected; fail-closed"
+              exit 1
+            fi
           fi
 
       - name: Summary (verdicts only — this page is public)
@@ -251,3 +261,4 @@ jobs:
             -d '{"ref":"main"}')
           echo "dispatch http:$code"
           [ "$code" = "204" ] || { cat /tmp/dispatch.out; exit 1; }
+
