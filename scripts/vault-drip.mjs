@@ -14,7 +14,7 @@ const ACCOUNT = String(process.argv[2] ?? "headcorner").trim();
 const ENGINE = String(process.argv[3] ?? "/tmp/engine").trim();
 const TMP = "/tmp/vdrip";
 const RPC = "https://blurt-rpc.saboin.com";
-const fail = (v, r) => { try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* best effort */ } console.error(JSON.stringify({ verdict: v, reason: String(r).slice(0, 200) })); process.exit(1); };
+const fail = (v, r) => { try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* best effort */ } console.error(JSON.stringify({ verdict: v, reason: String(r).slice(0, 600) })); process.exit(1); };
 
 const sha256hex = (b) => crypto.createHash("sha256").update(b).digest("hex");
 const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -110,7 +110,7 @@ for (const eraDef of ERAS) {
     } catch (e) { tried.push({ gen: c.gen, decode: "FAIL", err: String(e?.message ?? e).slice(0, 60) }); continue; }
     try {
       const j = await chainJudge(priv);
-      tried.push({ gen: c.gen, judged: true, match: j.match, pub8: j.blt.slice(0, 11), live8: String(j.live).slice(0, 11) });
+      tried.push({ gen: c.gen, judged: true, match: j.match, derived: j.blt, live: j.live });
       if (j.match) { chosen = c; break; }
     } catch (e) { tried.push({ gen: c.gen, judge: "FAIL", err: String(e?.message ?? e).slice(0, 60), ename: e?.name ?? null }); }
   }
