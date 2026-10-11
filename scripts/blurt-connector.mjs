@@ -83,19 +83,25 @@ function serOp(op) {
   const id = typeof name === "number" ? name : OP_IDS[String(name)];
   if (id === undefined) throw new Error("serializer: unknown op " + name);
   if (id === 0) { // vote
-    return Buffer.concat([serU32(0), serString(body.voter), serString(body.author), serString(body.permlink), serI32(body.weight)]);
+    return Buffer.concat([varint(0), serString(body.voter), serString(body.author), serString(body.permlink), serI32(body.weight)]);
   }
   if (id === 1) { // comment: parent_author, parent_permlink, author, permlink, title, body, json_metadata
-    return Buffer.concat([serU32(1), serString(body.parent_author ?? ""), serString(body.parent_permlink ?? ""),
+    return Buffer.concat([varint(1), serString(body.parent_author ?? ""), serString(body.parent_permlink ?? ""),
       serString(body.author), serString(body.permlink), serString(body.title ?? ""), serString(body.body), serString(body.json_metadata ?? "{}")]);
   }
   if (id === 2) { // transfer: from, to, amount(asset), memo
-    return Buffer.concat([serU32(2), serString(body.from), serString(body.to), serAsset(body.amount), serString(body.memo ?? "")]);
+    return Buffer.concat([varint(2), serString(body.from), serString(body.to), serAsset(body.amount), serString(body.memo ?? "")]);
   }
   throw new Error("serializer: unsupported op " + id);
 }
 function serTx(tx) {
-  return Buffer.concat([serU16(tx.ref_block_num), serU32(tx.ref_block_prefix), serU32(tx.expiration),
+  // expiration: the node wants an ISO string in JSON, but the BYTE law is
+  // fc::time_point_sec = u32 unix (measured 15:08:25 receipt: ours 00000000,
+  // node e3a6cb6a). Convert here — one object serves both laws.
+  const exp = typeof tx.expiration === "string"
+    ? Math.floor(Date.parse(tx.expiration) / 1000)
+    : tx.expiration;
+  return Buffer.concat([serU16(tx.ref_block_num), serU32(tx.ref_block_prefix), serU32(exp),
     varint(tx.operations.length), ...tx.operations.map(serOp), varint(0)]);
 }
 
