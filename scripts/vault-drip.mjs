@@ -36,7 +36,10 @@ function wifPriv(w) {
   const h = crypto.createHash("sha256").update(crypto.createHash("sha256").update(body).digest()).digest().subarray(0, 4);
   if (!h.equals(raw.subarray(raw.length - 4))) throw new Error("wif-checksum");
   if (body[0] !== 0x80) throw new Error("wif-prefix");
-  return body.subarray(1);
+  let key = body.subarray(1);
+  if (key.length === 33 && key[32] === 0x01) key = key.subarray(0, 32); // compressed-WIF flag byte (measured: GEN-2 flat is 52-char K/L)
+  if (key.length !== 32) throw new Error("bad-key-length-" + key.length);
+  return key;
 }
 
 // eras: GEN-2 (recovery meta) then GEN-1 (its era meta) - same flat shape each.
