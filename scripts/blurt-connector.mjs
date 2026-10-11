@@ -65,10 +65,32 @@ function serString(s) { const b = Buffer.from(s, "utf8"); return Buffer.concat([
 function serU16(n) { const b = Buffer.alloc(2); b.writeUInt16LE(n & 0xffff); return b; }
 function serU32(n) { const b = Buffer.alloc(4); b.writeUInt32LE(n >>> 0); return b; }
 function serI32(n) { const b = Buffer.alloc(4); b.writeInt32LE(n | 0); return b; }
+// steem-family op-id table (chain-proven: account_update=6 via blurt-ser;
+// vote=0/comment=1 are the family constants the byte-law dry exercises)
+const OP_IDS = { vote: 0, comment: 1, transfer: 2, transfer_to_vesting: 3, withdraw_vesting: 4, set_withdraw_vesting_route: 5, account_update: 6, account_create: 7, account_witness_vote: 8, account_witness_proxy: 9, delete_comment: 10, custom_json: 34 };
+function serAsset(s) { // "1.000 BLURT" -> u64 mantissa LE + u8 precision + nul-padded symbol
+  const m = /^([0-9]+)\.([0-9]{1,8}) ([A-Z]+)$/.exec(String(s));
+  if (!m) throw new Error("asset-format " + String(s).slice(0, 24));
+  const mant = BigInt(m[1] + m[2]);
+  const prec = m[2].length;
+  const b = Buffer.alloc(8 + 1);
+  b.writeBigUInt64LE(mant); b.writeUInt8(prec, 8);
+  const sym = Buffer.from(m[3], "ascii");
+  return Buffer.concat([b, sym, Buffer.from([0])]);
+}
 function serOp(op) {
-  const [id, body] = op;
+  const [name, body] = op;
+  const id = typeof name === "number" ? name : OP_IDS[String(name)];
+  if (id === undefined) throw new Error("serializer: unknown op " + name);
   if (id === 0) { // vote
     return Buffer.concat([serU32(0), serString(body.voter), serString(body.author), serString(body.permlink), serI32(body.weight)]);
+  }
+  if (id === 1) { // comment: parent_author, parent_permlink, author, permlink, title, body, json_metadata
+    return Buffer.concat([serU32(1), serString(body.parent_author ?? ""), serString(body.parent_permlink ?? ""),
+      serString(body.author), serString(body.permlink), serString(body.title ?? ""), serString(body.body), serString(body.json_metadata ?? "{}")]);
+  }
+  if (id === 2) { // transfer: from, to, amount(asset), memo
+    return Buffer.concat([serU32(2), serString(body.from), serString(body.to), serAsset(body.amount), serString(body.memo ?? "")]);
   }
   throw new Error("serializer: unsupported op " + id);
 }
