@@ -162,7 +162,7 @@ catch (e) { receipt.chainIdSource = "unavailable:" + String(e?.message ?? e).sli
   const tx = {
     ref_block_num: parseInt(blockId.slice(0, 8), 16) & 0xffff,
     ref_block_prefix: parseInt(blockId.slice(8, 16), 16) >>> 0,
-    expiration: Math.floor(Date.now() / 1000) + 120,
+    expiration: new Date((Math.floor(Date.now() / 1000) + 120) * 1000).toISOString().slice(0, 19), // fc::time_point_sec wants ISO
     operations: [["vote", { voter: account, author: account, permlink: "blurt-revival-probe", weight: 0 }]],
     extensions: [],
   };
