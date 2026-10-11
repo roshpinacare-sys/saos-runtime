@@ -100,12 +100,16 @@ for (const eraDef of ERAS) {
   let cands;
   try { cands = candidatesFrom(era); } catch (e) { tried.push({ era: eraDef.name, err: String(e?.message ?? e).slice(0, 80) }); continue; }
   for (const c of cands) {
+    let priv = null;
     try {
-      const priv = wifPriv(c.wif);
+      priv = wifPriv(c.wif);
+      tried.push({ gen: c.gen, decode: "ok", privLen: priv.length, isBuf: Buffer.isBuffer(priv) });
+    } catch (e) { tried.push({ gen: c.gen, decode: "FAIL", err: String(e?.message ?? e).slice(0, 60) }); continue; }
+    try {
       const j = await chainJudge(priv);
-      tried.push({ gen: c.gen, match: j.match, pub8: j.blt.slice(0, 11) });
+      tried.push({ gen: c.gen, judged: true, match: j.match, pub8: j.blt.slice(0, 11), live8: String(j.live).slice(0, 11) });
       if (j.match) { chosen = c; break; }
-    } catch (e) { tried.push({ gen: c.gen, err: String(e?.message ?? e).slice(0, 60) }); }
+    } catch (e) { tried.push({ gen: c.gen, judge: "FAIL", err: String(e?.message ?? e).slice(0, 60), ename: e?.name ?? null }); }
   }
   if (chosen) break;
 }
