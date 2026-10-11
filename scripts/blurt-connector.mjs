@@ -121,7 +121,7 @@ catch (e) { receipt.chainIdSource = "unavailable:" + String(e?.message ?? e).sli
     const raw = Buffer.from(hx, "hex");
     return raw.subarray(0, Math.max(0, raw.length - 4));
   };
-  const dBytes = bodyBytesOf(derived), eBytes = bodyBytesOf(expectedPub);
+  const dBytes = bodyBytesOf(derived.replace(/^[A-Z]{3}/, "")), eBytes = bodyBytesOf(expectedPub.replace(/^[A-Z]{3}/, ""));
   receipt.keyFit = {
     account, chainId: chainIdHex,
     derivedBody: dBytes.toString("hex").slice(0, 16) + "...",
