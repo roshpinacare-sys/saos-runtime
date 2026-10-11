@@ -90,7 +90,20 @@ async function chainJudge(priv) { // noble takes the decoded key bytes directly
   const j = await r.json();
   if (j.error) throw new Error(String(j.error?.message ?? "rpc").slice(0, 80));
   const live = j.result?.[0]?.posting?.key_auths?.[0]?.[0] ?? "";
-  return { blt, live, match: blt === live };
+  // blurt authority strings can carry a BROKEN base58 checksum (measured
+  // 2026-10-11: live chk 04e2055c vs computed d4a396b2 on identical body) -
+  // the lawful judge is the KEY BYTES, not the display string.
+  const bodyOf = (s) => {
+    let n2 = 0n;
+    for (const ch of s) { const i = B58.indexOf(ch); if (i < 0) throw new Error("b58"); n2 = n2 * 58n + BigInt(i); }
+    let hx = n2.toString(16).padStart(2, "0");
+    if (hx.length % 2) hx = "0" + hx;
+    const raw = Buffer.from(hx, "hex");
+    return raw.subarray(0, Math.max(0, raw.length - 4)); // strip checksum tail
+  };
+  const liveBody = live ? bodyOf(live) : Buffer.alloc(0);
+  const myBody = pub;
+  return { blt, live, match: myBody.equals(liveBody) && liveBody.length === 33 };
 }
 
 if (!fs.existsSync(path.join(ENGINE, "agent"))) fail("ENGINE-TREE-ABSENT", ENGINE);
