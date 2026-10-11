@@ -161,6 +161,8 @@ jobs:
             for i in 1 2 3; do
               if git push origin saos-cockpit; then ok=1; break; fi
               echo "push raced with the sandbox custodian — fetch + rebase, retry $i"
+              git status --porcelain | head -10 || true
+              git stash push --include-untracked -m "runner residual between heartbeats (state already committed)" || true
               git fetch origin saos-cockpit
               git rebase origin/saos-cockpit || git rebase --abort
               sleep $((i * 5))
