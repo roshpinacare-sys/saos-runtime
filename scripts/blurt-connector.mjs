@@ -118,7 +118,18 @@ async function main() {
     catch (e) { receipt.nodes.push({ url, live: false, ms: Date.now() - t0, err: String(e).slice(0, 60) }); }
   }
   const live = receipt.nodes.filter((n) => n.live).sort((a, b) => a.ms - b.ms);
-  if (!live.length) { receipt.verdict = "NO-LIVE-NODE"; console.log(JSON.stringify(receipt, null, 2)); process.exit(1); }
+  if (!live.length) {
+    // HONEST ALL-NODES-DOWN law (zai-13b, task 13-b): an external RPC outage is
+    // the world's failure, not this machine's — a red run here is noise that
+    // masks real failures (fleet law: מצבה-כנה במקום אדום). Record the state,
+    // exit 0 with a machine-readable marker; the receipt commit in the
+    // workflow is the clearly-named state file. Never a fake probe.
+    receipt.nodesDown = true;
+    receipt.marker = "BLURT-NODES-DOWN=true";
+    receipt.verdict = "NO-LIVE-NODE — כנה: כל-הצמתים-מתים; מצבה-כנה במקום אדום (רכבת fail-closed, owner מסובב צמתים)";
+    console.log(JSON.stringify(receipt, null, 2));
+    return;
+  }
   const node = live[0].url;
   receipt.primaryNode = node;
 
