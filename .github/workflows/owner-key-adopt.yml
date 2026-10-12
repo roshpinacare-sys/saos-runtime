@@ -54,7 +54,7 @@ jobs:
           const client = new dsteem.Client(['https://api.justyy.com', 'https://api.steemit.com']);
           let priv;
           try { priv = dsteem.PrivateKey.fromString(WIF); } catch (e) { fail('BAD-WIF', e.message); }
-          const derived = priv.getPublicKey().toString();
+          const derived = priv.createPublic().toString();
           (async () => {
             const accs = await client.database.getAccounts([ACCOUNT]).catch((e) => fail('ACCOUNT-LOOKUP-FAIL', e.message));
             const a = accs[0];
