@@ -51,12 +51,21 @@ jobs:
           const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 400) })); process.exit(1); };
           if (!WIF) fail('NO-SECRET', 'STEEM_ACTIVE_WIF missing in repo secrets');
           if (!/^STM[1-9A-HJ-NP-Za-km-z]{50,52}$/.test(NEWPUB)) fail('BAD-PUB', 'new posting pub malformed');
-          const client = new dsteem.Client(['https://api.justyy.com', 'https://api.steemit.com']);
+          const NODES = ['https://api.justyy.com', 'https://api.steemit.com'];
+          let client = new dsteem.Client(NODES[0]);
+          async function withClient(fn) {
+            let lastErr;
+            for (const node of NODES) {
+              const c = node === NODES[0] ? client : new dsteem.Client(node);
+              try { return await fn(c); } catch (e) { lastErr = e; client = new dsteem.Client(node); }
+            }
+            throw lastErr;
+          }
           let priv;
           try { priv = dsteem.PrivateKey.fromString(WIF); } catch (e) { fail('BAD-WIF', e.message); }
           const derived = priv.createPublic().toString();
           (async () => {
-            const accs = await client.database.getAccounts([ACCOUNT]).catch((e) => fail('ACCOUNT-LOOKUP-FAIL', e.message));
+            const accs = await withClient((c) => c.database.getAccounts([ACCOUNT])).catch((e) => fail('ACCOUNT-LOOKUP-FAIL', e.message));
             const a = accs[0];
             if (!a) return fail('ACCOUNT-LOOKUP-FAIL', 'no account');
             const liveActive = (a.active && a.active.key_auths ? a.active.key_auths : []).map((x) => x[0]);
@@ -85,7 +94,7 @@ jobs:
               extensions: [],
             }];
             if (DRY) {
-              const props = await client.database.getDynamicGlobalProperties().catch((e) => fail('DGP-FAIL', e.message));
+              const props = await withClient((c) => c.database.getDynamicGlobalProperties()).catch((e) => fail('DGP-FAIL', e.message));
               const tx = {
                 ref_block_num: props.head_block_number & 0xffff,
                 ref_block_prefix: Buffer.from(props.head_block_id, 'hex').readUInt32LE(4),
@@ -93,13 +102,13 @@ jobs:
                 extensions: [],
                 operations: [op],
               };
-              const signed = await client.broadcast.sign(tx, [priv]).catch((e) => fail('DRY-SIGN-FAIL', e.message));
+              const signed = await withClient((c) => c.broadcast.sign(tx, [priv])).catch((e) => fail('DRY-SIGN-FAIL', e.message));
               console.log(JSON.stringify({ verdict: 'DRY-RUN-OK', derived: derived.slice(0, 14) + '...', would_set_posting: newPosting, dry_sigs: signed.signatures.length }));
               process.exit(0);
             }
-            const res = await client.broadcast.sendOperations([op], [priv]).catch((e) => fail('BROADCAST-FAIL', e.message));
+            const res = await withClient((c) => c.broadcast.sendOperations([op], [priv])).catch((e) => fail('BROADCAST-FAIL', e.message));
             await new Promise((r) => setTimeout(r, 4000));
-            const accs2 = await client.database.getAccounts([ACCOUNT]).catch((e) => fail('VERIFY-LOOKUP-FAIL', e.message));
+            const accs2 = await withClient((c) => c.database.getAccounts([ACCOUNT])).catch((e) => fail('VERIFY-LOOKUP-FAIL', e.message));
             const p2 = (accs2[0].posting && accs2[0].posting.key_auths ? accs2[0].posting.key_auths : []).map((x) => x[0]);
             const ok = p2.includes(NEWPUB) && livePosting.every((k) => p2.includes(k));
             console.log(JSON.stringify({ verdict: ok ? 'ADOPTED-AND-VERIFIED' : 'VERIFY-FAILED', tx: (res && res.id) || null, block: (res && res.block_num) || null, posting_now: p2 }));
