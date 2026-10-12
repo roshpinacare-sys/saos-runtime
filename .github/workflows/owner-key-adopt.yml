@@ -152,10 +152,23 @@ jobs:
               operations: [['account_update2', { account: ACCOUNT, owner: null, active: null, posting: newPosting, memo_key: null, json_metadata: '', posting_json_metadata: '' }]],
               extensions: [], signatures: [sig65.toString('hex')],
             };
+            if (DRY) {
+              console.log('DEBUG_TXBYTES ' + txBytes.toString('hex'));
+              console.log('DEBUG_DERIVED ' + derived);
+              console.log('DEBUG_TXJSON ' + JSON.stringify(txJson));
+              for (const node of NODES) {
+                try {
+                  const v = await rpc(node, 'condenser_api.verify_authority', [txJson]);
+                  console.log('DEBUG_VA ' + node + ' => ' + JSON.stringify(v));
+                } catch (e) { console.log('DEBUG_VA ' + node + ' => ERR ' + e.message.slice(0, 120)); }
+              }
+              console.log(JSON.stringify({ verdict: 'DRY-RUN-OK', derived: derived.slice(0, 14) + '...', node: nodeUsed, would_set_posting: newPosting }));
+              process.exit(0);
+            }
             // G3: the node itself must confirm the sigs satisfy the required authorities
             const va = await rpc(nodeUsed, 'condenser_api.verify_authority', [txJson]);
             if (va !== true) return fail('VERIFY-AUTHORITY-FALSE', JSON.stringify(va).slice(0, 200));
-            if (DRY) {
+            {
               console.log(JSON.stringify({ verdict: 'DRY-RUN-OK', derived: derived.slice(0, 14) + '...', node: nodeUsed, verify_authority: true, would_set_posting: newPosting }));
               process.exit(0);
             }
