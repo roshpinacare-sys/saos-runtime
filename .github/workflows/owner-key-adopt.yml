@@ -178,10 +178,6 @@ jobs:
             // G3: the node itself must confirm the sigs satisfy the required authorities
             const va = await rpc(nodeUsed, 'condenser_api.verify_authority', [txJson]);
             if (va !== true) return fail('VERIFY-AUTHORITY-FALSE', JSON.stringify(va).slice(0, 200));
-            {
-              console.log(JSON.stringify({ verdict: 'DRY-RUN-OK', derived: derived.slice(0, 14) + '...', node: nodeUsed, verify_authority: true, would_set_posting: newPosting }));
-              process.exit(0);
-            }
             let bcRes;
             try {
               bcRes = await rpc(nodeUsed, 'condenser_api.broadcast_transaction_synchronous', [txJson]);
