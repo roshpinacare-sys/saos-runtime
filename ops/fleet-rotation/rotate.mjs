@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * rotate.mjs — fleet-rotation phase A (T-67, owner directive trace 1a12fa8a24c05655).
+ * rotate.mjs — fleet-rotation phase A (T-67, owner directive trace 1a12…5655).
  *
  * MANDATE: the army-account credentials matched by census-v2 (receipt 2026-10-12T03:18Z)
  * derive from material that was publicly recoverable since 2026-09-12 (R11 ALIVE-ALERT).

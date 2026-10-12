@@ -1,7 +1,6 @@
 # key-census-v2.yml (saos-runtime) — T-65 zai-code-3: FLEET-KEY-CENSUS-V2 — the archives + seed-derivation census.
 #
-# Owner mandate trace 1a12d693cff1b649-continuation ("אם יש לך owner יש לך active תוציא תחבר תצית
-# וודא הכל · תמצא פתרון להזרים את הhive · אין מצב כזה שהגריד לא עובד").
+# Owner mandate trace 1a12…b649-continuation ([owner-directive]).
 #
 # MEASURED GAP CLOSED HERE: key-census-probe (v1, zai-16a) opens ONLY meta.keysZipFile and scans
 # ONLY WIF-shaped strings. The same live secret (STEEM_VAULT_PASSES) also unlocks:

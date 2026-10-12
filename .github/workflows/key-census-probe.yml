@@ -1,7 +1,6 @@
 # key-census-probe.yml (saos-runtime) — R16-a: verify-only census of key material the machine ALREADY holds.
 #
-# Owner mandate trace 1a12dbe9812eff11 ("תצית תפתור תפעיל שלא יהיו חסימות — הריבונות מורשית להשתמש
-# בבלוקצ'יין להקים פרויקטים"). The measured wall: no candidate in the Domain vault derives headcorner's
+# Owner mandate trace 1a12…ff11 ([owner-directive]). The measured wall: no candidate in the Domain vault derives headcorner's
 # live active authority (census 2026-10-11 23:08Z). Before asking the owner again, MEASURE what the
 # machine already holds: the GEN-2 custody bundle (steem/agent/vault/KEYS-ZIP-GEN2-*.zip.enc) unlocks
 # with STEEM_VAULT_PASSES — a secret THIS repo holds. Verify-only: no broadcast, no secret writes.

@@ -63,7 +63,7 @@ jobs:
           s.status = 'live';
           s.hosting = {
             decision: 'D4 (T-63) — substrate: the saos-runtime runner lane (roshpina-own Actions walled, measured 2026-10-12); kernel-smoke green = live per REVIVAL.md',
-            decidedAt: now, decidedBy: 'the sovereignty (owner directive trace 1a12d4ae2964f45d)',
+            decidedAt: now, decidedBy: 'the sovereignty (owner directive trace 1a12…f45d)',
             measuredEvidence: 'roshpina fee-engine 38187350674 + controls-audit 38187704256 both die in seconds with zero steps (wall); saos-runtime runs green',
           };
           s.lastSmoke = { at: now, runUrl: process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID, verdict: 'green — self-proving invariants passed on the saos-runtime runner', runner: 'saos-runtime-lane' };

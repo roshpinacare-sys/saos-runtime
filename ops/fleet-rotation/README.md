@@ -1,7 +1,6 @@
 # fleet-rotation (T-67) — phase A
 
-**Owner directive** (trace 1a12fa8a24c05655, 2026-10-12): "no keys in public, nothing, no
-exposed secrets that would let them breach us; examine everything and optimize; broad execution."
+**Owner directive** (trace 1a12…5655, 2026-10-12): [owner-directive].
 
 ## The measured wall (zero-trust, re-measured tonight)
 

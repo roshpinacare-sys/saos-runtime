@@ -1,7 +1,6 @@
 // KEY-CENSUS-PROBE — verify-only: does the machine ALREADY hold a key that derives a live authority?
 // ════════════════════════════════════════════════════════════════════════════════════════════════════
-// Owner mandate trace 1a12dbe9812eff11 (2026-10-12): "כן אני מאשר זה המפתח שלי · תצית תפתור תפעיל
-// שלא יהיו חסימות · הריבונות מורשית להשתמש בבלוקצ'יין להקים פרויקטים ולבצע ולפתח".
+// Owner mandate trace 1a12…ff11 (2026-10-12): [owner-directive].
 //
 // רקע מדוד: gate-01 (G1) אומר "עדכן-סוד" — אבל census ה-Domain (2026-10-11 23:08Z) מדד שאף-מועמד
 // בכספת-Domain לא גוזר את רשות-ה-active החיה של headcorner. לפני ששואלים-את-הבעלים שוב — מודדים

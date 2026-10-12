@@ -1,6 +1,6 @@
 // RESOLVE-KEYS — מפענח-כרוך-ה-GEN-2 בזמן-ריצה ומוציא קובץ-מפתחות-0700 לצרכנים-באותו-job
 // ════════════════════════════════════════════════════════════════════════════════════════
-// R16-a · owner mandate trace 1a12dbe9812eff11. אח של key-census-probe (probe.cjs — מספק
+// R16-a · owner mandate trace 1a12…ff11. אח של key-census-probe (probe.cjs — מספק
 // את-כל-הפנימיים): מפענח את כרוך-ה-custody, מתאים מול-הרשויות-החיות, וכותב לקובץ-פלט
 // {account: {active, posting}} — לעולם לא מדפיס WIF, לעולם לא כותב מחוץ-לקובץ-היעד.
 // הקובץ חי רק-בתוך-ה-job (0700) ונמחק בסופו. צרכנים: grids/escrow-payroll.mjs --keys-file.

@@ -110,7 +110,7 @@ jobs:
             keysBackupPass: process.env.G2BKP,
             keysBackupFile: bkpFile,
             keysBackupSha256: shaF(bkpFile),
-            replacedArchive: m.keysZipFile + ' (kept in history; GEN-2-2026-10-12 — passphrase rotation by the sovereignty, owner directive trace 1a12d4ae2964f45d; payload identical, inner sha unchanged)',
+            replacedArchive: m.keysZipFile + ' (kept in history; GEN-2-2026-10-12 — passphrase rotation by the sovereignty, owner directive trace 1a12…f45d; payload identical, inner sha unchanged)',
             sealedAt: now,
             keysZipUnlockRef: 'gen2.keysZipUnlock',
             keysBackupUnlockRef: 'gen2.keysBackupUnlock',
@@ -120,12 +120,12 @@ jobs:
               masterPasswordRef: 'gen2.keysZipUnlock (STEEM_VAULT_PASSES bundle, steem + saos-runtime secrets) — repo-side system custody unchanged (operator doctrine 2026-09-10)',
               note: 'Executed by the runner itself (gen2-rotation.yml): fresh 32-char passes generated in-step (env-only), round-trip verified, inner sha pinned. GEN-1/T50 values superseded for the ACTIVE bundle; historical archives stay GEN-1-decryptable (documented boundary — passphrase rotation cannot re-protect already-published ciphertext; on-chain key-material rotation is a separate higher operation). PERSONAS_KEY escrow = armed decision D3b (Domain write-only secret).',
             },
-            personasEscrow: { status: 'armed', decidedIn: 'T-63 D3b, trace 1a12d4ae2964f45d', detail: 'PERSONAS_KEY lives in Domain repo secrets (write-only by design); escrow into this vault at the next Domain keeper window' },
+            personasEscrow: { status: 'armed', decidedIn: 'T-63 D3b, trace 1a12…f45d', detail: 'PERSONAS_KEY lives in Domain repo secrets (write-only by design); escrow into this vault at the next Domain keeper window' },
           };
           fs.writeFileSync('agent/recovery-meta.json', JSON.stringify(v3, null, 2) + '\n');
           const era2 = {
             format: 'gen-2-era-meta', createdAt: now,
-            createdBy: 'gen2-rotation.yml (saos-runtime) — T-63 D3, owner directive trace 1a12d4ae2964f45d',
+            createdBy: 'gen2-rotation.yml (saos-runtime) — T-63 D3, owner directive trace 1a12…f45d',
             eras: {
               gen1: { status: 'preserved-in-bundle', passLengths: { keysZipUnlock: 32, keysBackupUnlock: 32 }, note: 'untouched — seed-vault era (KEYS-SEED-2026-10-04) resolves through it' },
               'recovery-3': { status: 'superseded-for-active-bundle', passLengths: { keysZipUnlock: 32, keysBackupUnlock: 32 }, note: 'values preserved in bundle' },

@@ -1,7 +1,6 @@
 # escrow-payroll.yml (saos-runtime) — R16-a: THE on-chain payroll primitive, canary-first.
 #
-# Owner mandate trace 1a12dbe9812eff11 ("הריבונות מורשית להשתמש בבלוקצ'יין להקים פרויקטים
-# ולבצע ולפתח") + R30 full-lift (lane general). escrow_transfer/approve/release on Steem =
+# Owner mandate trace 1a12…ff11 ([owner-directive]) + R30 full-lift (lane general). escrow_transfer/approve/release on Steem =
 # payroll the CHAIN itself enforces (funds locked until both parties ratify; released only by
 # the authorized releaser). The canary lane (dust amounts, hard caps in code) runs entirely
 # between fleet accounts whose LIVE keys the machine holds (measured by key-census-probe

@@ -1,9 +1,7 @@
 // HIVE-CENSUS — verify-only: does the machine ALREADY hold a key that derives a LIVE HIVE authority?
 // ══════════════════════════════════════════════════════════════════════════════════════════════════════
 // T-65 (wave grid-never-down + hive-flow) · sibling of probe.cjs / resolve-keys.cjs (R16-a).
-// Owner mandate trace 1a12dbe9812eff11: "כן אני מאשר זה המפתח שלי · תצית תפתור תפעיל שלא יהיו
-// חסימות · הריבונות מורשית להשתמש בבלוקצ'יין להקים פרויקטים ולבצע ולפתח" + owner trace 1a12de177bf24415
-// ("תמצא פתרון להזרים את ה-hive ממי שאישר שיהיה נגיש").
+// Owner mandate trace 1a12…ff11: [owner-directive] + owner trace 1a12…4415 ([owner-directive]).
 //
 // מדוד מראש (2026-10-12 02:2xZ, read-only): כל 13 חשבונות-הצי קיימים ב-Hive עם authorities פעילים
 // (headcorner/cashmachine/haran/israelnews/lsa/macrame/siq/tov/wic/wog/woq/corner/treasury).

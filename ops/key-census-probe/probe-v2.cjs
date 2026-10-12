@@ -1,7 +1,6 @@
 // FLEET-KEY-CENSUS-V2 — verify-only: the archives + seed-derivation census the v1 probe never opened.
 // ══════════════════════════════════════════════════════════════════════════════════════════════════════
-// Owner mandate trace 1a12d693cff1b649-continuation (2026-10-12): "אם יש לך owner יש לך active
-// תוציא תחבר תצית וודא הכל... תמצא פתרון להזרים את הhive... אין מצב כזה שהגריד לא עובד".
+// Owner mandate trace 1a12…b649-continuation (2026-10-12): [owner-directive].
 //
 // MEASURED GAP (T-65): probe.cjs (v1) opens ONLY meta.keysZipFile and scans ONLY WIF-shaped
 // strings. The vault holds MORE sealed archives unlocked by the SAME live secret:

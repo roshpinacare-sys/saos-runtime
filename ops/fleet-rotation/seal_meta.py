@@ -62,7 +62,7 @@ v4.update({
     "rot2": {
         "id": "ROT2-PHASE-A-" + ts,
         "at": rot.get("at"),
-        "sealedFor": "fleet-rotation-a (T-67, owner trace 1a12fa8a24c05655)",
+        "sealedFor": "fleet-rotation-a (T-67, owner trace 1a12…5655)",
         "roster": roster,
         "ownerAuthorities": "UNTOUCHED in phase A (recovery window; phase B = separate explicit dispatch)",
         "note": "supersedes prior keysZip for LIVE use: prior archives stay in git history for archaeology",

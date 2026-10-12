@@ -1,7 +1,6 @@
 # treasury-ladder.yml (saos-runtime) — R16-b: the treasury's own income artery, canary-first.
 #
-# Owner traces 1a12defa20399391 ("כבר-שלחתי-מיליון-פעמים-את-המפתחות · תמצא · תצית") + 1a12de036c1159b5
-# ("אם-יש-לך-owner יש-לך-active · אין-מצב-כזה-שהוא-לא-עובד"). The exhaustive key census (R16-b,
+# Owner traces 1a12…9391 ([owner-directive]) + 1a12…59b5 ([owner-directive]). The exhaustive key census (R16-b,
 # 18 sealed bundles opened + full git-history pass mining + master-password derivation zoo) measured:
 # headcorner's STEEM active key (10-08 rotation) exists in NO machine-held material — but the machine
 # holds LIVE full control of 13 worker accounts. The treasury ladder runs the maker book on the
