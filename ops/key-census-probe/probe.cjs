@@ -303,4 +303,9 @@ async function main() {
   if (receipt.verdict === "MATCH-HEAD-ACTIVE") console.log("[probe] THE ARTERY KEY IS IN-MACHINE — next: key-adopt (sealed vault write + dex-grid dispatch)");
   process.exit(0);
 }
-main().catch((e) => { console.error("[probe] FATAL:", String(e?.message ?? e)); process.exit(1); });
+
+module.exports = { WIF_RE, ROSTER, rpcAny, wifToPubSafe, walkJson, collectWifsFromText, scanDir, decryptTry, classify, liveAuthorities, selftest };
+
+if (require.main === module) {
+  main().catch((e) => { console.error("[probe] FATAL:", String(e?.message ?? e)); process.exit(1); });
+}
