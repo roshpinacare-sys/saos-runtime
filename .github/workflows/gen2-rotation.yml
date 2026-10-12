@@ -17,7 +17,12 @@
 name: gen2-rotation
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "auto = converge-if-present · rotate = fresh-merge (refuses if gen2 present) · rotate-replace = fresh pass replacement (leak heal)"
+        required: false
+        default: auto
 
 permissions:
   contents: read
@@ -41,12 +46,25 @@ jobs:
           node -e "JSON.parse(process.env.STEEM_VAULT_PASSES)" || { echo "ABORT: bundle not valid JSON"; exit 1; }
           node -e "const b=JSON.parse(process.env.STEEM_VAULT_PASSES); const need=['recovery-3.keysZipUnlock','recovery-3.keysBackupUnlock']; for(const ref of need){let v=b; for(const k of ref.split('.')){ if(!(k in (v||{}))) { console.error('ABORT: bundle missing '+ref); process.exit(1);} v=v[k]; } if(typeof v!=='string'||v.length<8){ console.error('ABORT: bundle value malformed '+ref); process.exit(1);} }"
           if [ -z "${GH_PAT:-}" ]; then echo "ABORT: GH_PAT absent"; exit 1; fi
-          if node -e "const b=JSON.parse(process.env.STEEM_VAULT_PASSES); process.exit(b.gen2&&b.gen2.keysZipUnlock?0:1)"; then
-            echo "MODE=converge" >> "$GITHUB_ENV"
+          INPUT_MODE="${{ inputs.mode || 'auto' }}"
+          if node -e "const b=JSON.parse(process.env.STEEM_VAULT_PASSES); process.exit(b.gen2&&b.gen2.keysZipUnlock?0:1)"; then HASG2=1; else HASG2=0; fi
+          case "$INPUT_MODE" in
+            auto)
+              if [ "$HASG2" = "1" ]; then MODE=converge; else MODE=rotate; fi ;;
+            rotate)
+              if [ "$HASG2" = "1" ]; then echo "ABORT: rotate refused — gen2 already present (double-rotation guard)"; exit 1; fi
+              MODE=rotate ;;
+            rotate-replace)
+              echo "rotate-replace: fresh passes will REPLACE the existing gen2 era (leak-heal law)"
+              MODE=rotate ;;
+            *) echo "ABORT: unknown mode $INPUT_MODE"; exit 1 ;;
+          esac
+          echo "MODE=$MODE" >> "$GITHUB_ENV"
+          echo "INPUT_MODE=$INPUT_MODE" >> "$GITHUB_ENV"
+          if [ "$MODE" = "converge" ]; then
             echo "preflight OK — bundle already carries gen2 era → CONVERGE mode (files+metas converge to bundle; no double-rotation)"
           else
-            echo "MODE=rotate" >> "$GITHUB_ENV"
-            echo "preflight OK — no gen2 in bundle → ROTATE mode (fresh passes, era-merge, secret PUT)"
+            echo "preflight OK — ROTATE mode (fresh passes, era-merge, secret PUT)"
           fi
           echo "bundle eras: $(node -e "console.log(Object.keys(JSON.parse(process.env.STEEM_VAULT_PASSES)).join(','))")"
 
@@ -63,6 +81,10 @@ jobs:
             echo "rotate: fresh passes generated (lengths: ${#G2ZIP}/${#G2BKP})"
           fi
           [ -n "$G2ZIP" ] && [ -n "$G2BKP" ] || { echo "ABORT: gen2 passes empty"; exit 1; }
+          # MASK LAW (T-68): GITHUB_ENV values are echoed raw in step headers — register masks
+          # BEFORE any later step can print them. This closes the 00:11Z log-leak class forever.
+          echo "::add-mask::$G2ZIP"
+          echo "::add-mask::$G2BKP"
           {
             echo "G2ZIP<<EOF"; echo "$G2ZIP"; echo "EOF";
             echo "G2BKP<<EOF"; echo "$G2BKP"; echo "EOF";
@@ -184,7 +206,8 @@ jobs:
           const sodium = require('libsodium-wrappers');
           const bundle = JSON.parse(process.env.STEEM_VAULT_PASSES);
           const mode = process.env.MODE || 'rotate';
-          if (mode === 'rotate' && bundle.gen2 && bundle.gen2.keysZipUnlock) { console.error('ABORT: rotate mode but gen2 present — refusing to double-rotate'); process.exit(1); }
+          const REPLACE = (process.env.INPUT_MODE === 'rotate-replace');
+          if (mode === 'rotate' && bundle.gen2 && bundle.gen2.keysZipUnlock && !REPLACE) { console.error('ABORT: rotate mode but gen2 present — refusing to double-rotate'); process.exit(1); }
           if (mode === 'rotate') bundle.gen2 = { keysZipUnlock: process.env.G2ZIP, keysBackupUnlock: process.env.G2BKP };
           const PAT = process.env.GH_PAT;
           const H = { Authorization: `Bearer ${PAT}`, Accept: 'application/vnd.github+json' };
@@ -199,7 +222,7 @@ jobs:
               body: JSON.stringify({ encrypted_value: Buffer.from(sealed).toString('base64'), key_id: pk.key_id }),
             });
             if (r.status !== 201 && r.status !== 204) throw new Error(`secret PUT ${repo}: HTTP ${r.status}`);
-            console.log(`secret STEEM_VAULT_PASSES on ${repo}: HTTP ${r.status} (mode=${mode}, eras: ${Object.keys(bundle).join(',')})`);
+            console.log(`secret STEEM_VAULT_PASSES on ${repo}: HTTP ${r.status} (mode=${mode}, replace=${REPLACE}, eras: ${Object.keys(bundle).join(',')})`);
           };
           (async () => { await put('steem'); await put('saos-runtime'); })().catch(e => { console.error('ABORT:', e.message); process.exit(1); });
           NODE

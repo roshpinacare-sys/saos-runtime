@@ -72,6 +72,7 @@ jobs:
           set -Eeuo pipefail
           GEN2ZIP="$(node -e 'const b=JSON.parse(process.env.STEEM_VAULT_PASSES); process.stdout.write((b.gen2&&b.gen2.keysZipUnlock)||(b["recovery-3"]&&b["recovery-3"].keysZipUnlock)||"")')"
           export GEN2ZIP
+          echo "::add-mask::$GEN2ZIP"
           if [ -z "$GEN2ZIP" ]; then echo "ABORT: no seal pass"; exit 1; fi
           python3 ops/fleet-rotation/seal_meta.py
           cd steem-engine
