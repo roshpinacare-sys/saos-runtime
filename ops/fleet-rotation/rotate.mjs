@@ -267,26 +267,36 @@ async function rotateMode(matchPath, outPath) {
   const rot = { at: new Date().toISOString(), phase: "A", accounts: [], custody: { puts: [] } };
 
   async function custodyPut(acc) {
-    if (!GH) return;
+    if (!GH) { acc.custodyError = "GH_PAT absent — custody skipped (loud)"; log({ custody: "SKIP", account: acc.chain + ":" + acc.account, reason: "no PAT" }); return; }
     const H = { Authorization: "Bearer " + GH, Accept: "application/vnd.github+json" };
     const sodium = await import("libsodium-wrappers");
     await sodium.ready;
+    // T-68: accumulate ALL rotated material so far (per-account last-wins flaw retired)
+    const accumulated = {};
+    for (const a of rot.accounts) {
+      if (!a.material) continue;
+      accumulated[a.chain] = accumulated[a.chain] || {};
+      accumulated[a.chain][a.account] = a.material;
+    }
+    const count = Object.values(accumulated).reduce((n, m) => n + Object.keys(m).length, 0);
     for (const repo of ["steem", "saos-runtime", "Domain"]) {
       try {
         const pkr = await fetch("https://api.github.com/repos/roshpinacare-sys/" + repo + "/actions/secrets/public-key", { headers: H });
         if (!pkr.ok) throw new Error("pk HTTP " + pkr.status);
         const pk = await pkr.json();
-        const sealed = sodium.crypto_box_seal(Buffer.from(JSON.stringify({ rot2: acc.material, at: acc.at })), Buffer.from(pk.key, "base64"));
+        const sealed = sodium.crypto_box_seal(Buffer.from(JSON.stringify({ rot2: accumulated, at: acc.at })), Buffer.from(pk.key, "base64"));
         const r = await fetch("https://api.github.com/repos/roshpinacare-sys/" + repo + "/actions/secrets/ROT2_FLEET_KEYS", {
           method: "PUT", headers: { ...H, "Content-Type": "application/json" },
           body: JSON.stringify({ encrypted_value: Buffer.from(sealed).toString("base64"), key_id: pk.key_id }),
         });
         if (r.status !== 201 && r.status !== 204) throw new Error("PUT HTTP " + r.status);
-        acc.custody.push(repo);
+        if (!acc.custody.includes(repo)) acc.custody.push(repo);
       } catch (e) {
         acc.custodyError = String(e.message || e).slice(0, 80);
+        log({ custody: "FAIL", repo, account: acc.chain + ":" + acc.account, err: acc.custodyError });
       }
     }
+    log({ custody: "PUT", account: acc.chain + ":" + acc.account, accumulatedAccounts: count });
   }
 
   function materialFor(chain, account) {

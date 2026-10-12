@@ -19,7 +19,8 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
+  models: read
 
 concurrency:
   group: fleet-rotation-a
