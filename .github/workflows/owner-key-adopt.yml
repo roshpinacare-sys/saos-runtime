@@ -144,8 +144,16 @@ jobs:
             ]);
             const txBytes = Buffer.concat([u16(txParts.refBlockNum), u32(txParts.refBlockPrefix), u32(txParts.expirationUnix), varint(1), op, varint(0)]);
             const digest = sha256(Buffer.concat([Buffer.alloc(32, 0), txBytes]));
-            const sig = secp.sign(digest, priv, { prehash: false }).normalizeS();
-            const sig65 = Buffer.concat([Buffer.from([sig.recovery + 31]), Buffer.from(sig.toCompactRawBytes())]);
+            const raw = secp.sign(digest, priv, { prehash: false });
+            // Manual canonical low-S normalization (FC law) — no library-behavior dependence
+            const N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+            let s = raw.s, rec = Number(raw.recovery);
+            if (s > N / 2n) { s = N - s; rec = rec ^ 1; }
+            if (s > N / 2n) return fail('NON-CANONICAL-S', 'normalization failed');
+            const rBuf = Buffer.from(raw.r.toString(16).padStart(64, '0'), 'hex');
+            const sBuf = Buffer.from(s.toString(16).padStart(64, '0'), 'hex');
+            const sig65 = Buffer.concat([Buffer.from([rec + 31]), rBuf, sBuf]);
+            if (sBuf[0] & 0x80) return fail('NON-CANONICAL-S', 's high bit set');
             const txJson = {
               ref_block_num: txParts.refBlockNum, ref_block_prefix: txParts.refBlockPrefix,
               expiration: new Date(txParts.expirationUnix * 1000).toISOString().slice(0, 19),
