@@ -44,7 +44,6 @@ jobs:
           set -Eeuo pipefail
           G2ZIP="$(openssl rand -base64 24 | tr '+/' '-_' | tr -d '\n')"
           G2BKP="$(openssl rand -base64 24 | tr '+/' '-_' | tr -d '\n')"
-          echo "GEN2 lengths: ${#G2ZIP}/${#G2BKP}" >> "$GITHUB_OUTPUT"
           echo "zipLen=${#G2ZIP}" >> "$GITHUB_OUTPUT"
           {
             echo "G2ZIP<<EOF"; echo "$G2ZIP"; echo "EOF";
