@@ -1,6 +1,6 @@
 {
  "protocol": "SAOS-KEY-CENSUS-PROBE/1",
- "at": "2026-10-12T02:29:28.349Z",
+ "at": "2026-10-12T02:32:59.315Z",
  "mode": "verify-only (no broadcast, no secret writes, no authority changes)",
  "roster": [
   "headcorner",

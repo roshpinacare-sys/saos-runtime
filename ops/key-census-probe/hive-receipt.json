@@ -1,7 +1,7 @@
 {
   "protocol": "SAOS-HIVE-CENSUS-PROBE/1",
   "wave": "T-65 (grid-never-down + hive-flow)",
-  "at": "2026-10-12T02:29:32.448Z",
+  "at": "2026-10-12T02:33:02.762Z",
   "mode": "verify-only (no broadcast, no secret writes, no authority changes)",
   "roster": [
     "headcorner",
@@ -20,7 +20,7 @@
     "hcsoldier6"
   ],
   "hiveChain": {
-    "headBlock": 110697122,
+    "headBlock": 110697191,
     "nodes": [
       "https://api.hive.blog",
       "https://api.openhive.network",
@@ -153,6 +153,83 @@
   "derivedNoMatch": 18,
   "verdict": "MATCH-HIVE",
   "honesty": "אפס חומר-פרטי בקבלה: מפתחות-ציבוריים-נגזרים בלבד. סיסמאות env-only; WIF-ים לעולם לא בלוג/דיסק-מחוץ-ל-/tmp. Hive ו-Steem חולקים פורמט-מפתח (fork) — קידומת STM ציבורית בשתי-השרשרות, ההשוואה מול רשויות-חיות-פומביות.",
+  "hiveAccounts": {
+    "headcorner": {
+      "exists": true,
+      "vestingShares": "34718.849155 VESTS",
+      "delegatedVesting": "9000.000000 VESTS",
+      "receivedVesting": "15108.966270 VESTS"
+    },
+    "cashmachine": {
+      "exists": true,
+      "vestingShares": "3421.964041 VESTS",
+      "delegatedVesting": "3338.027489 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "haran": {
+      "exists": true,
+      "vestingShares": "244.537626 VESTS",
+      "delegatedVesting": "0.000000 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "israelnews": {
+      "exists": true,
+      "vestingShares": "206.197460 VESTS",
+      "delegatedVesting": "0.000000 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "lsa": {
+      "exists": true,
+      "vestingShares": "3626.995576 VESTS",
+      "delegatedVesting": "1756.856426 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "macrame": {
+      "exists": true,
+      "vestingShares": "2156.959384 VESTS",
+      "delegatedVesting": "0.000000 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "siq": {
+      "exists": true,
+      "vestingShares": "3431.136504 VESTS",
+      "delegatedVesting": "3162.341942 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "tov": {
+      "exists": true,
+      "vestingShares": "4497.933657 VESTS",
+      "delegatedVesting": "4392.141510 VESTS",
+      "receivedVesting": "6000.000000 VESTS"
+    },
+    "wic": {
+      "exists": true,
+      "vestingShares": "1065.011187 VESTS",
+      "delegatedVesting": "0.000000 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "wog": {
+      "exists": true,
+      "vestingShares": "1252.614307 VESTS",
+      "delegatedVesting": "0.000000 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "woq": {
+      "exists": true,
+      "vestingShares": "252.454809 VESTS",
+      "delegatedVesting": "0.000000 VESTS",
+      "receivedVesting": "0.000000 VESTS"
+    },
+    "hcsoldier4": {
+      "exists": false
+    },
+    "hcsoldier5": {
+      "exists": false
+    },
+    "hcsoldier6": {
+      "exists": false
+    }
+  },
   "matchSummary": {
     "accounts": 9,
     "roles": {
