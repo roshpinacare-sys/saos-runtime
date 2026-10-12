@@ -840,6 +840,7 @@ jobs:
           relay "saos-runtime" "sovereign-evolution.yml" 1500
 
       - name: Deterministic pulse — self-reschedule the next heartbeat
+        if: always()
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
