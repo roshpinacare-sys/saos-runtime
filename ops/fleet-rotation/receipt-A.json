@@ -1,11 +1,11 @@
 {
   "protocol": "SAOS-FLEET-ROTATION-A/1",
-  "at": "2026-10-12T20:44:34.763Z",
+  "at": "2026-10-12T21:34:03.771Z",
   "phase": "A",
   "summary": {
-    "rotatedVerified": 19,
+    "rotatedVerified": 18,
     "verifyPending": 0,
-    "skipped": 2,
+    "skipped": 3,
     "failed": 1,
     "total": 22
   },
@@ -18,257 +18,257 @@
       "account": "cashmachine",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "6aa7962a1f643a8fbc",
-      "digestFp": "aa089bae11b65a38",
+      "txid": "3f28c403b745e4b60d",
+      "digestFp": "ba9ab7c54ed08f9f",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6sFHvJM8s",
-        "posting": "STM4z1nPW51m",
-        "memo": "STM8ek4N6RV9"
-      },
-      "newPubFp": {
         "active": "STM7sqdFFjSm",
         "posting": "STM6ubGy4nKV",
         "memo": "STM5NRKU77vt"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM4ynahfZyB",
+        "posting": "STM52Wu9d2Bv",
+        "memo": "STM5VTkaht9y"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "haran",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "10ee9116b07ca9df8c",
-      "digestFp": "5d9db245abb6ff4c",
+      "txid": "c221579d95026e37bd",
+      "digestFp": "9173d2940ae55aa1",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6Rh6N53bB",
-        "posting": "STM7fozp9kLT",
-        "memo": "STM6byJfWU6S"
-      },
-      "newPubFp": {
         "active": "STM5UmasUNya",
         "posting": "STM4tfzy9kMy",
         "memo": "STM6LV6WQKvc"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM8aV5L4SnF",
+        "posting": "STM5X6uygqSp",
+        "memo": "STM8N85cS8QS"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "israelnews",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "3f4e88f43f3a56d192",
-      "digestFp": "f4513222a35913cc",
+      "txid": "bf5c83c592aa98a9a5",
+      "digestFp": "398fb28dc0037a00",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5sbPHGRKG",
-        "posting": "STM5WREcqUfp",
-        "memo": "STM53ooy2QY4"
-      },
-      "newPubFp": {
         "active": "STM65BZo2fBL",
         "posting": "STM7pT5MNrhS",
         "memo": "STM75Tm8HXAH"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM8m7zxsMuS",
+        "posting": "STM8V9xEthRZ",
+        "memo": "STM6qgcGY6WT"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "lsa",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "328731f5b9b6de912a",
-      "digestFp": "4a711cb9135114de",
+      "txid": "24e4aaba20480ebec7",
+      "digestFp": "69d6372d7b42c50a",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6KcTKXUgV",
-        "posting": "STM8eYdheKWE",
-        "memo": "STM86PxjQRmT"
-      },
-      "newPubFp": {
         "active": "STM8DHNwN38Z",
         "posting": "STM6ZqSuxZiP",
         "memo": "STM7mZVK2DzY"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM6g3KEoQ9U",
+        "posting": "STM5Yh8zvwao",
+        "memo": "STM6pAqaSH7V"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "macrame",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "af04024583dee5d6ae",
-      "digestFp": "8fb02b34ffca1cd7",
+      "txid": "bd467374990fd6e496",
+      "digestFp": "283ffc9a2e7de656",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM76xGFFo73",
-        "posting": "STM7TFKTWe9d",
-        "memo": "STM7wR6XS5yC"
-      },
-      "newPubFp": {
         "active": "STM7NJQ6fYcF",
         "posting": "STM6gqrDruGh",
         "memo": "STM6cv6nSiKM"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM5MCZ4Xqgi",
+        "posting": "STM7xSr5u4Q6",
+        "memo": "STM6tD4Xgk1B"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "siq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "75cd13b4af39ce10c3",
-      "digestFp": "ca65dfe85326bb4f",
+      "txid": "264a218e17d9cf2084",
+      "digestFp": "caab03fa3f2a7b0f",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8hYQGnK4M",
-        "posting": "STM8AxsGakd8",
-        "memo": "STM68FyFYtuR"
-      },
-      "newPubFp": {
         "active": "STM83yDuwfpq",
         "posting": "STM52aQ4HspA",
         "memo": "STM8CCc1rvZD"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM7a8BwYdcn",
+        "posting": "STM6ucW9GYSy",
+        "memo": "STM8MCDXUvRU"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "tov",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "464ef9302e519b980d",
-      "digestFp": "a75632feaa776e98",
+      "txid": "ad7e031b6834f711f1",
+      "digestFp": "7144da6b31b3d005",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6RVTCmHwM",
-        "posting": "STM7ertKsqKW",
-        "memo": "STM6rbUqboHb"
-      },
-      "newPubFp": {
         "active": "STM5FtMCJQ4t",
         "posting": "STM6oU7oiAEp",
         "memo": "STM8PbYMQFwj"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM76TVXSqob",
+        "posting": "STM7CiF3C9fC",
+        "memo": "STM6XfDrxBLa"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "wic",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "2575e3bbb495464a25",
-      "digestFp": "841ac726ffdceb97",
+      "txid": "d393f07b761e5fffba",
+      "digestFp": "14bb4c2ada1cffce",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM81Hg2Vi3X",
-        "posting": "STM59dhVbNmG",
-        "memo": "STM6yKPqDikj"
-      },
-      "newPubFp": {
         "active": "STM6pPqsrQEj",
         "posting": "STM6sKcXdWWD",
         "memo": "STM6m5DWD74E"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM5PGFCS8Zv",
+        "posting": "STM5taPxn71t",
+        "memo": "STM73vNfBgjZ"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "wog",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "893786d3c03623c8bb",
-      "digestFp": "9176a847c97f2131",
+      "txid": "89f9da79dfff57900f",
+      "digestFp": "a256080923c50e25",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6ciCTX9bu",
-        "posting": "STM8dDcmZLo6",
-        "memo": "STM84Qd9xu9C"
-      },
-      "newPubFp": {
         "active": "STM5o22XwqzN",
         "posting": "STM5XQbmsR8z",
         "memo": "STM4w5T1DBad"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM7kLZKHUeS",
+        "posting": "STM5TDXPX8L8",
+        "memo": "STM7YLavFTz7"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "woq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "d89c6ba19238581c5f",
-      "digestFp": "af0a64efffe1c872",
+      "txid": "5e520d00261a20ca1a",
+      "digestFp": "0bc4b56f22ad5318",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6ooN7LASV",
-        "posting": "STM8iKjzDXd2",
-        "memo": "STM7YyfyLayr"
-      },
-      "newPubFp": {
         "active": "STM4wyHT3knj",
         "posting": "STM8H6YPK7ap",
         "memo": "STM7qkov447T"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "newPubFp": {
+        "active": "STM7DfyTX3w2",
+        "posting": "STM7NcbFSz4Q",
+        "memo": "STM5mSEUm66K"
+      },
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "hcsoldier4",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "d17cd92f30b8a68732",
-      "digestFp": "497e4dfb005ecd24",
+      "txid": "8cd86f870bd8a273b0",
+      "digestFp": "e700d72d35d70cea",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8YzKfp2MZ",
-        "posting": "STM7XDF4JDPT",
+        "active": "STM8U9e91aSs",
+        "posting": "STM54TH4BFbn",
         "memo": "STM8T4ndfFuE"
       },
       "newPubFp": {
-        "active": "STM8U9e91aSs",
-        "posting": "STM54TH4BFbn"
+        "active": "STM638X2KZuQ",
+        "posting": "STM8FhsKpiod"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "hcsoldier5",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "9064628e1af409e587",
-      "digestFp": "b4e7ee2ea471ed1f",
+      "txid": "dc56d0ef9bc2ff4652",
+      "digestFp": "ab8def29b6c2b844",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7hQRuoVZF",
-        "posting": "STM5ZApTRx1v",
+        "active": "STM6JjaTNNms",
+        "posting": "STM5Z42acmKJ",
         "memo": "STM7wEE2KefA"
       },
       "newPubFp": {
-        "active": "STM6JjaTNNms",
-        "posting": "STM5Z42acmKJ"
+        "active": "STM62bwR9QXQ",
+        "posting": "STM5Ap9xCw7G"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "steem",
       "account": "hcsoldier6",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "db23c367cdd57674d6",
-      "digestFp": "b07a26cf62e6e3a3",
+      "txid": "e8488b8dd5fd3ef6c9",
+      "digestFp": "3e36547f4ce59974",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM794x6Kgii",
-        "posting": "STM68mShpV4F",
+        "active": "STM879JeRTu2",
+        "posting": "STM7BJVNeTpY",
         "memo": "STM4zUMqzDjr"
       },
       "newPubFp": {
-        "active": "STM879JeRTu2",
-        "posting": "STM7BJVNeTpY"
+        "active": "STM6UHunRLJv",
+        "posting": "STM6QfAEJaEe"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "hive",
@@ -278,52 +278,45 @@
     {
       "chain": "hive",
       "account": "haran",
-      "verdict": "FAIL-BROADCAST",
-      "signerRole": "active",
-      "oldPubFp": {
-        "active": "STM8iFM1GZvo",
-        "posting": "STM4zHsUCWiB",
-        "memo": "STM7b51qcvqo"
-      },
-      "error": "fetch failed"
+      "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
       "account": "israelnews",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "b6a98c99343116af71",
-      "digestFp": "f68e18d62bf5fac4",
+      "txid": "634958286a8bb033a9",
+      "digestFp": "f23be31d6b45c967",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM86N4tSnF6",
-        "posting": "STM8h8SsxV5S",
+        "active": "STM55U9uVZNF",
+        "posting": "STM7qXua7s3b",
         "memo": "STM7qiznscic"
       },
       "newPubFp": {
-        "active": "STM55U9uVZNF",
-        "posting": "STM7qXua7s3b"
+        "active": "STM65EVV26bb",
+        "posting": "STM5SS4FArsC"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "hive",
       "account": "lsa",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "52943963d4ddf50aaf",
-      "digestFp": "2ee52d1a278a089b",
+      "txid": "aa62e331fe5a80f8b6",
+      "digestFp": "7ba63d72125a185f",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7HZppCEhE",
-        "posting": "STM7ntibbSg9",
+        "active": "STM6JVwtVHXK",
+        "posting": "STM6mVptroiu",
         "memo": "STM5Ctguov5Q"
       },
       "newPubFp": {
-        "active": "STM6JVwtVHXK",
-        "posting": "STM6mVptroiu"
+        "active": "STM6TMpNdnUG",
+        "posting": "STM6eA7v7xrN"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "hive",
@@ -335,76 +328,69 @@
       "account": "siq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "4bf04f52522226679b",
-      "digestFp": "8643efaf72b47511",
+      "txid": "d02e0132085c00c824",
+      "digestFp": "85cd7f07dab5e8b0",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7kvB6g9LD",
-        "posting": "STM5Z54binae",
+        "active": "STM7zYhjghgv",
+        "posting": "STM5v23xWQmT",
         "memo": "STM4xe3pLfnQ"
       },
       "newPubFp": {
-        "active": "STM7zYhjghgv",
-        "posting": "STM5v23xWQmT"
+        "active": "STM7k6gvYBK1",
+        "posting": "STM5zCxJhCeZ"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "hive",
       "account": "wic",
-      "verdict": "ROTATED-VERIFIED",
+      "verdict": "FAIL-BROADCAST",
       "signerRole": "active",
-      "txid": "1b004af2aa9a64601f",
-      "digestFp": "5ec3ad07d4823edf",
-      "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5ecrBTrC3",
-        "posting": "STM6fQh8WCj8",
+        "active": "STM7E6JZkYjP",
+        "posting": "STM5vZoWhm4m",
         "memo": "STM55CjMnwks"
       },
-      "newPubFp": {
-        "active": "STM7E6JZkYjP",
-        "posting": "STM5vZoWhm4m"
-      },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "error": "fetch failed"
     },
     {
       "chain": "hive",
       "account": "wog",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "716fcce5d00f2dbf92",
-      "digestFp": "8fafc3d90917c10d",
+      "txid": "73c8c8636f9b4848a0",
+      "digestFp": "394c179d87135902",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6jiz4MiWR",
-        "posting": "STM8SYgSzzky",
+        "active": "STM5ajNDZogw",
+        "posting": "STM53optTu3U",
         "memo": "STM6H6U3Aywi"
       },
       "newPubFp": {
-        "active": "STM5ajNDZogw",
-        "posting": "STM53optTu3U"
+        "active": "STM6kYxgwpFk",
+        "posting": "STM7nyMkhQcn"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     },
     {
       "chain": "hive",
       "account": "woq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "5424ee0e4997eb7388",
-      "digestFp": "9b7f76296f3d2d53",
+      "txid": "6f07a6c909bcc1e9ba",
+      "digestFp": "2276a5fe2982da0d",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6JTGF8nvG",
-        "posting": "STM8jWqzu4Wv",
+        "active": "STM56KFYYRMd",
+        "posting": "STM7f3cxVyn8",
         "memo": "STM5pXs2rBEj"
       },
       "newPubFp": {
-        "active": "STM56KFYYRMd",
-        "posting": "STM7f3cxVyn8"
+        "active": "STM7K9H8MsXM",
+        "posting": "STM7GzN8BJAN"
       },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "custodyError": "Cannot read properties of undefined (reading 'includes')"
     }
   ],
   "laws": [
