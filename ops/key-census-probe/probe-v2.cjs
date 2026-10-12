@@ -41,8 +41,9 @@ const SEED_ORDERS = {
   "name+seed+role": (a, r, s) => `${a}${s}${r}`,
 };
 const ROLES_V2 = ["active", "owner", "posting", "memo"];
-const MAX_SEEDS_PER_ARCHIVE = 500;
-const MAX_DERIVES = 260000; // local CPU only — no network in the derive loop (G3)
+const MAX_SEEDS_PER_ARCHIVE = 300;
+const MAX_SEEDS_TOTAL = 400;
+const MAX_DERIVES = 130000; // local CPU only — no network in the derive loop (G3); sized for the 20min job wall
 
 // ── pure crypto half (selftested offline) ────────────────────────────────────
 function sha256buf(x) { return crypto.createHash("sha256").update(Buffer.from(x, "utf8")).digest(); }
@@ -278,7 +279,9 @@ async function runV2(armSpec = null) {
       receipt.archives.push({ file: c.file, opened: true, openedBy, innerShaOk: shaOk, files: ss.files, wifs: wf.length, seeds: ss.seeds.length });
     }
     const wSeen = new Set(); const wuniq = wifs.filter((w) => (wSeen.has(w.wif) ? false : (wSeen.add(w.wif), true)));
-    const sSeen = new Set(); const suniq = seeds.filter((s) => (sSeen.has(s.seed) ? false : (sSeen.add(s.seed), true)));
+    const sSeen = new Set(); let suniq = seeds.filter((s) => (sSeen.has(s.seed) ? false : (sSeen.add(s.seed), true)));
+    suniq.sort((a, b) => a.pri - b.pri);
+    if (suniq.length > MAX_SEEDS_TOTAL) suniq = suniq.slice(0, MAX_SEEDS_TOTAL);
     receipt.scanned.archivesOpened = receipt.archives.filter((a) => a.opened && a.extracted !== false).length;
     receipt.scanned.wifCandidates = wuniq.length;
     receipt.scanned.seedCandidates = suniq.length;
@@ -297,33 +300,45 @@ async function runV2(armSpec = null) {
       receipt.scanned.derives++;
     }
 
-    // 5) seed derivation — the measured gap. Priority: active-first (the jackpot), budget-capped.
+    // 5) seed derivation — the measured gap. Phase A = the jackpot queries (headcorner/cornerstone
+    // actives, 15 derives/seed); Phase B = all names x active; Phase C = remaining roles. Names are
+    // DEDUPED across chains (same secp256k1: one derivation, two comparisons). Progress lines keep
+    // the step log alive (measured: a silent 20min wall taught nothing).
+    const names = [...new Set(Object.values(livePubs).map((x) => x.chain === "hive" ? "" : "").concat(Object.keys(livePubs).map((k) => livePubs[k].chain === "hive" ? k.slice(5) : k)))];
     let budget = MAX_DERIVES - receipt.scanned.derives;
     const orderNames = Object.keys(SEED_ORDERS);
     let exhausted = false;
-    for (const roles of [["active"], ["owner", "posting", "memo"]]) {
-      if (exhausted || budget <= 0) break;
-      for (const s of suniq) {
-        if (exhausted || budget <= 0) { exhausted = budget <= 0; break; }
+    const deriveTry = (acct, role, seed, on, archive, tag) => {
+      if (budget-- <= 0) { exhausted = true; return; }
+      const comp = SEED_ORDERS[on];
+      const wif = deriveWif(comp(acct, role, seed));
+      const pub = P.wifToPubSafe(wif);
+      const m = classifyPub(pub, livePubs);
+      if (m && m.role === role) {
+        receipt.matches.push({ ...m, sourceTag: archive + "::" + tag, how: "seed-derive:" + on });
+        rememberSecret(m, wif);
+      }
+    };
+    const runPhase = (targets, roles, phase) => {
+      let done = 0;
+      for (const sd of suniq) {
+        if (exhausted) break;
         for (const on of orderNames) {
-          const comp = SEED_ORDERS[on];
-          for (const chainKey of Object.keys(livePubs)) {
-            const acct = livePubs[chainKey].chain === "hive" ? chainKey.slice(5) : chainKey;
-            for (const role of roles) {
-              if (budget-- <= 0) { exhausted = true; break; }
-              const pub = derivePubOf(comp(acct, role, s.seed));
-              const m = classifyPub(pub, livePubs);
-              if (m && m.role === role) {
-                receipt.matches.push({ ...m, sourceTag: s.archive + "::" + s.tag, how: "seed-derive:" + on });
-                rememberSecret(m, deriveWif(comp(acct, role, s.seed)));
-              }
-            }
+          if (exhausted) break;
+          for (const acct of targets) {
+            for (const role of roles) deriveTry(acct, role, sd.seed, on, sd.archive, sd.tag);
             if (exhausted) break;
           }
           if (exhausted) break;
         }
+        done++;
+        if (done % 50 === 0) console.log("[census-v2] phase=" + phase + " seeds=" + done + "/" + suniq.length + " derives=" + (MAX_DERIVES - budget) + " matches=" + receipt.matches.length);
       }
-    }
+    };
+    const jackpot = ["headcorner", "cornerstone"];
+    runPhase(jackpot, ["active"], "A-jackpot");
+    if (!exhausted && budget > 0) runPhase(names, ["active"], "B-all-active");
+    if (!exhausted && budget > 0) runPhase(names, ["owner", "posting", "memo"], "C-rest");
 
     // 6) verdict
     const headSteemActive = receipt.matches.find((m) => m.account === "headcorner" && m.chain === "steem" && m.role === "active");

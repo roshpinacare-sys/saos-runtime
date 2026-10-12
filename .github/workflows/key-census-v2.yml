@@ -30,7 +30,7 @@ concurrency:
 jobs:
   census:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
       CI_ADOPT_WIF_ACTIVE: ${{ secrets.CI_ADOPT_WIF_ACTIVE }}
