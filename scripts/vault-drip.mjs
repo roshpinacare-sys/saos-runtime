@@ -5,16 +5,24 @@
 // (GEN-2 then GEN-1), sha-pins each archive, chain-judges every candidate
 // generation against the LIVE blurt posting authority (keyless saboin RPC),
 // and emits ONLY the fitting WIF to stdout. Wipe on every path. Fail-closed.
+// Estate-pseudonym law (refs layer, wave 19): argv carries a REF ("acct-NN");
+// the real chain name is resolved ONLY here from FLEET_ROSTER_MAP (Actions
+// secret) or the untracked local .roster-map.local.json. Unresolved ref =
+// fail-honest skip — never fabricate a name, never commit one.
 import { execFileSync } from "node:child_process";
 import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { R, resolved } from "./refs.mjs";
 
-const ACCOUNT = String(process.argv[2] ?? "headcorner").trim();
+const ACCOUNT_REF = String(process.argv[2] ?? "acct-00").trim();
 const ENGINE = String(process.argv[3] ?? "/tmp/engine").trim();
 const TMP = "/tmp/vdrip";
 const RPC = "https://blurt-rpc.saboin.com";
 const fail = (v, r) => { try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* best effort */ } console.error(JSON.stringify({ verdict: v, reason: String(r).slice(0, 600) })); process.exit(1); };
+
+const ACCOUNT = R(ACCOUNT_REF);
+if (!ACCOUNT) fail("ROSTER-UNRESOLVED", `ref ${ACCOUNT_REF} not resolvable (FLEET_ROSTER_MAP secret absent/malformed${resolved() ? " — ref missing" : ""}) — name-dependent vault work skipped, fail-honest (never fabricate)`);
 
 const sha256hex = (b) => crypto.createHash("sha256").update(b).digest("hex");
 const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";

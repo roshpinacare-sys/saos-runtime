@@ -112,6 +112,7 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
           STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+          FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
         run: |
           npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
           # T-66b (2026-10-12T15:00Z) removed ops/army-cache-resolve.cjs + ops/key-census-probe/probe.cjs
@@ -126,7 +127,7 @@ jobs:
           // Owner mandate trace 1a12…ff11 (2026-10-12): [owner-directive].
           //
           // רקע מדוד: gate-01 (G1) אומר "עדכן-סוד" — אבל census ה-Domain (2026-10-11 23:08Z) מדד שאף-מועמד
-          // בכספת-Domain לא גוזר את רשות-ה-active החיה של headcorner. לפני ששואלים-את-הבעלים שוב — מודדים
+          // בכספת-Domain לא גוזר את רשות-ה-active החיה של acct-00 (ref · שכבת-ה-pseudonym, גל-19). לפני ששואלים-את-הבעלים שוב — מודדים
           // מה-המכונה-כבר-מחזיקה: כרוך-ה-custody של GEN-2 (steem/agent/vault/KEYS-ZIP-GEN2-*.zip.enc) נפתח
           // ב-STEEM_VAULT_PASSES — סוד שהריפו-הזה מחזיק. ה-payload הפנימי = מערכת-המפתחות של הצי.
           //
@@ -145,11 +146,21 @@ jobs:
           const path = require("path");
           const steem = require("steem");
 
+          // refs layer (estate-pseudonym law, wave 19): the roster travels as REFS only.
+          // Real chain names are resolved from FLEET_ROSTER_MAP (repo secret) — nested
+          // {refs:{ref:name}} / {names:{name:ref}} / flat shapes accepted. Unresolved =
+          // honest abort (verify-only has nothing to classify; NEVER fabricate a name).
+          const REFS_ENV = (() => { try { const m = JSON.parse(process.env.FLEET_ROSTER_MAP || ""); const f = {}; if (m && m.refs) Object.assign(f, m.refs); if (m && m.names) Object.assign(f, m.names); for (const [k, v] of Object.entries(m || {})) if (typeof v === "string") f[k] = v; const r2n = {}, n2r = {}; for (const [k, v] of Object.entries(f)) { if (typeof k !== "string" || typeof v !== "string") continue; if (k.startsWith("acct-")) { r2n[k] = v; n2r[v] = k; } else { n2r[k] = v; r2n[v] = k; } } return { r2n, n2r }; } catch { return { r2n: {}, n2r: {} }; } })();
+          const ref2name = (r) => REFS_ENV.r2n[r] || null;
+          const name2ref = (n) => REFS_ENV.n2r[n] || String(n || "");
+
           const WIF_RE = /^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/;
-          const ROSTER = [
-            "headcorner", "cashmachine", "haran", "israelnews", "lsa", "macrame",
-            "siq", "tov", "wic", "wog", "woq", "hcsoldier4", "hcsoldier5", "hcsoldier6",
+          const ROSTER_REFS = [
+            "acct-00", "acct-01", "acct-02", "acct-03", "acct-04", "acct-05", "acct-06",
+            "acct-07", "acct-08", "acct-09", "acct-10", "acct-11", "acct-12", "acct-13",
           ];
+          const ROSTER = ROSTER_REFS.map(ref2name);
+          const ROSTER_UNRESOLVED = ROSTER.some((n) => !n);
           const STEEM_NODES = ["https://api.steemit.com", "https://api.justyy.com", "https://steem-rpc.publicnode.com"];
 
           async function rpcAny(method, params) {
@@ -259,6 +270,7 @@ jobs:
           }
 
           async function liveAuthorities() {
+            if (ROSTER_UNRESOLVED) throw new Error("ROSTER-UNRESOLVED — FLEET_ROSTER_MAP secret absent/malformed; honest abort (verify-only, never fabricate)");
             const accounts = await rpcAny("condenser_api.get_accounts", [ROSTER]);
             const map = {};
             for (const a of accounts) {
@@ -276,7 +288,8 @@ jobs:
               protocol: "SAOS-KEY-CENSUS-PROBE/1",
               at: new Date().toISOString(),
               mode: "verify-only (no broadcast, no secret writes, no authority changes)",
-              roster: ROSTER,
+              roster: ROSTER_REFS,
+              rosterResolved: !ROSTER_UNRESOLVED,
               livePubs: null,
               decrypt: { attempts: [], zipFile: null, innerSha256: null, shaOk: null },
               scanned: { files: 0, wifCandidates: 0 },
@@ -373,7 +386,7 @@ jobs:
               const results = uniq.map((c) => classify(c, receipt.livePubs));
               receipt.matches = results.filter((r) => r.ok).map((r) => ({ account: r.account, role: r.role, sourceTag: r.tag, derivedPub: r.derivedPub }));
               receipt.derivedNoMatch = results.filter((r) => !r.ok && r.derivedPub).length;
-              const headActive = receipt.matches.find((m) => m.account === "headcorner" && m.role === "active");
+              const headActive = receipt.matches.find((m) => m.account === ref2name("acct-00") && m.role === "active");
               receipt.verdict = headActive ? "MATCH-HEAD-ACTIVE" : (receipt.matches.length ? "MATCH-OTHER" : "NO-MATCH");
               return receipt;
             } finally {
@@ -388,17 +401,17 @@ jobs:
             const wif = steem.auth.toWif("probe-selftest-user", "probe-selftest-pass", "active");
             assert(WIF_RE.test(wif), "synthetic WIF passes the shape law");
             const pub = steem.auth.wifToPublic(wif);
-            const live = { headcorner: { active: pub, posting: null, owner: null } };
+            const live = { acct00Fixture: { active: pub, posting: null, owner: null } };
             const c1 = classify({ wif, tag: "selftest" }, live);
-            assert(c1.ok && c1.account === "headcorner" && c1.role === "active" && c1.derivedPub === pub, "classify match on synthetic vector");
+            assert(c1.ok && c1.account === "acct00Fixture" && c1.role === "active" && c1.derivedPub === pub, "classify match on synthetic vector");
             // וקטור 2: WIF סינתטי אחר לא מתאים
             const wif2 = steem.auth.toWif("probe-selftest-user", "other-pass", "active");
             const c2 = classify({ wif: wif2, tag: "selftest" }, live);
             assert(!c2.ok && c2.derivedPub && c2.reason === "no-live-match", "classify honest no-match");
             // וקטור 3: JSON-walk מתייג לפי-מסלול-מפתחות
             const wifs = [];
-            walkJson({ headcorner: { active: wif, nested: [{ deep: wif2 }] } }, ["f.json"], wifs, 0);
-            assert(wifs.length === 2 && wifs[0].tag === "f.json.headcorner.active" && wifs[1].tag === "f.json.headcorner.nested.[0].deep", "JSON walk tags paths");
+            walkJson({ acct00Fixture: { active: wif, nested: [{ deep: wif2 }] } }, ["f.json"], wifs, 0);
+            assert(wifs.length === 2 && wifs[0].tag === "f.json.acct00Fixture.active" && wifs[1].tag === "f.json.acct00Fixture.nested.[0].deep", "JSON walk tags paths");
             // וקטור 4: טקסט-גולמי
             const t = [];
             collectWifsFromText(`junk ${wif} junk\nmore ${wif2}`, "plain.txt", t);
@@ -421,12 +434,12 @@ jobs:
             console.log(`[probe] verdict=${receipt.verdict}`);
             console.log(`[probe] decrypt=${receipt.decrypt.zipFile ?? "none"} · shaOk=${receipt.decrypt.shaOk}`);
             console.log(`[probe] scanned files=${receipt.scanned.files} · wifCandidates=${receipt.scanned.wifCandidates} · derivedNoMatch=${receipt.derivedNoMatch}`);
-            for (const m of receipt.matches) console.log(`[probe] MATCH ${m.account} · ${m.role} · src=${m.sourceTag} · pub=${m.derivedPub}`);
+            for (const m of receipt.matches) console.log(`[probe] MATCH ${name2ref(m.account)} · ${m.role} · src=${m.sourceTag} · pub=${m.derivedPub}`);
             if (receipt.verdict === "MATCH-HEAD-ACTIVE") console.log("[probe] THE ARTERY KEY IS IN-MACHINE — next: key-adopt (sealed vault write + dex-grid dispatch)");
             process.exit(0);
           }
 
-          module.exports = { WIF_RE, ROSTER, rpcAny, wifToPubSafe, walkJson, collectWifsFromText, scanDir, decryptTry, classify, liveAuthorities, selftest };
+          module.exports = { WIF_RE, ROSTER, ROSTER_REFS, ROSTER_UNRESOLVED, ref2name, name2ref, rpcAny, wifToPubSafe, walkJson, collectWifsFromText, scanDir, decryptTry, classify, liveAuthorities, selftest };
 
           if (require.main === module) {
             main().catch((e) => { console.error("[probe] FATAL:", String(e?.message ?? e)); process.exit(1); });
@@ -552,18 +565,18 @@ jobs:
                * incomplete revival (the engine would re-pull and fall back) — refuse
                * honestly instead of writing a partial cache. */
               const roster = P.ROSTER;
-              /* custody roles (engine law): headcorner = master via ACTIVE key (the
-                * probe arms --arm-role active; the engine counts headcorner via
-                * active), the other 13 = ARMY via posting. Demanding posting for
-                * headcorner aborted run 38279425315 at 16:44:05Z on the live MASTER
-                * re-seal ("roster incomplete — missing posting for: headcorner") —
-                * a false red: the live bundle has no headcorner posting by design. */
+              /* custody roles (engine law): the head (acct-00 ref, decoded via the refs
+                * layer) = master via ACTIVE key (the probe arms --arm-role active; the
+                * engine counts it via active), the other 13 = ARMY via posting.
+                * Demanding posting for the head aborted run 38279425315 at 16:44:05Z on
+                * the live MASTER re-seal ("roster incomplete — missing posting") — a
+                * false red: the live bundle has no head posting by design. */
               const missing = roster.filter((name) => {
                 const e = byAccount.get(name) || {};
-                return name === "headcorner" ? !e.activeWif : !e.wif;
+                return name === P.ref2name("acct-00") ? !e.activeWif : !e.wif;
               });
               if (missing.length) {
-                console.error(`army-cache-resolve: roster incomplete — missing ${missing.join(", ")} — honest abort (fail-closed)`);
+                console.error(`army-cache-resolve: roster incomplete — missing ${missing.map((n) => P.name2ref(n)).join(", ")} — honest abort (fail-closed)`);
                 process.exit(1);
               }
 
@@ -591,7 +604,7 @@ jobs:
               console.log(`army-cache-resolve: IGNITED bundle=${zipFile} pass=${hitName} outer=${outerSha.slice(0, 8)} inner=${innerSha.slice(0, 8)}`);
               console.log(`army-cache-resolve: roster ${roster.length - missing.length}/${roster.length} · candidates=${cands.length} · chainMatched=${matched}`);
               for (const a of accounts) {
-                console.log(`army-cache-resolve: READY ${a.name} · posting=${a.gens[0].wif ? "yes" : "no"} · active=${a.gens[0].activeWif ? "yes" : "no"}`);
+                console.log(`army-cache-resolve: READY ${P.name2ref(a.name)} · posting=${a.gens[0].wif ? "yes" : "no"} · active=${a.gens[0].activeWif ? "yes" : "no"}`);
               }
               console.log("army-cache-resolve: cache written 0600 — the CHAIN judges every WIF in the beat (this file is material, not truth)");
             } finally {
@@ -675,7 +688,10 @@ jobs:
           # is NOT run here (measured-empty 2026-10-12) — heartbeat stays lean.
           if [ -n "$STEEM_ACTIVE_WIF" ]; then
             if [ ! -d /tmp/steemjs/node_modules/steem ]; then npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error; fi
-            NODE_PATH=/tmp/steemjs/node_modules node "$GITHUB_WORKSPACE/ops/key-census-probe/probe-v2.cjs" --arm ../../.secrets/headcorner.key --arm-account headcorner --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
+            # acct-00 refs only (estate-pseudonym law) — note: ops/key-census-probe/probe-v2.cjs was
+            # archived out of the public tree (2026-10-12, PUBLISH-POLICY), so this arm soft-fails
+            # honestly until the probe returns home (long-term: the private engine tree).
+            NODE_PATH=/tmp/steemjs/node_modules node "$GITHUB_WORKSPACE/ops/key-census-probe/probe-v2.cjs" --arm ../../.secrets/acct-00.key --arm-account acct-00 --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
           else
             echo "STEEM_ACTIVE_WIF absent — grid ticks honestly UNARMED (owner one-action pending; law-grid-exec-alive holds the alarm)"
           fi

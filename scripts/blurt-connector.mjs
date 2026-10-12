@@ -9,9 +9,14 @@
 //   post    — dry checks + broadcast. Refuses unless CI_BLURT_ENABLED === "true"
 //             (owner DecisionQueue law: GEN-2 rotation first, then flip).
 // Secrets: CI_BLURT_POSTING_WIF (preferred) or CI_ADOPT_WIF_POSTING fallback.
+// Estate-pseudonym law (refs layer, wave 19): BLURT_ACCOUNT carries a REF
+// ("acct-NN"); the real chain name is resolved ONLY here from FLEET_ROSTER_MAP
+// (Actions secret) or the untracked local .roster-map.local.json — and the
+// committed receipt records the REF, never the resolved name.
 // Prints a receipt JSON to stdout. Exit 0 = mode succeeded.
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { R, refOf, resolved as rosterResolved } from "./refs.mjs";
 
 const require = createRequire(import.meta.url);
 const secp = require("@noble/secp256k1");
@@ -138,7 +143,14 @@ async function main() {
   // 2) key-fit — derived pubkey must equal the chain's posting authority
   const wif = (process.env.CI_BLURT_POSTING_WIF || process.env.CI_ADOPT_WIF_POSTING || "").trim();
   if (!wif) { receipt.verdict = "DRY-REFUSED-NO-WIF (fail-closed by law)"; console.log(JSON.stringify(receipt, null, 2)); process.exit(1); }
-  const account = (process.env.BLURT_ACCOUNT || "headcorner").trim();
+  const accountRef = (process.env.BLURT_ACCOUNT || "acct-00").trim();
+  const account = R(accountRef);
+  if (!account) {
+    receipt.rosterResolved = false;
+    receipt.verdict = `ROSTER-UNRESOLVED (ref ${accountRef} not resolvable — name-dependent chain work skipped, fail-honest; never fabricate)`;
+    console.log(JSON.stringify(receipt, null, 2)); process.exit(1);
+  }
+  receipt.accountRef = accountRef; // scrub-at-write: receipts are committed, names never are
   let chainIdHex = null;
 try { chainIdHex = await rpc(node, "condenser_api.get_chain_id", []); receipt.chainIdSource = "rpc:get_chain_id"; }
 catch (e) { receipt.chainIdSource = "unavailable:" + String(e?.message ?? e).slice(0, 60); } // saboin has no get_chain_id (measured 2026-10-11); DRY needs none
@@ -162,7 +174,7 @@ catch (e) { receipt.chainIdSource = "unavailable:" + String(e?.message ?? e).sli
   };
   const dBytes = bodyBytesOf(derived.replace(/^[A-Z]{3}/, "")), eBytes = bodyBytesOf(expectedPub.replace(/^[A-Z]{3}/, ""));
   receipt.keyFit = {
-    account, chainId: chainIdHex,
+    account: refOf(account), chainId: chainIdHex,
     derivedBody: dBytes.toString("hex").slice(0, 16) + "...",
     expectedBody: eBytes.toString("hex").slice(0, 16) + "...",
     match: dBytes.equals(eBytes) && eBytes.length === 33,

@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       account:
-        default: 'headcorner'
+        default: 'acct-00'  # ref — the inline resolver below decodes it via FLEET_ROSTER_MAP (estate-pseudonym law)
       new_posting_pub:
         default: 'STM8StTG4aesGfmAUgBpMU9LKvoz98E5uz9eCCtEUvYM8Ywk398TD'
       dry_run:
@@ -32,6 +32,7 @@ jobs:
     timeout-minutes: 8
     env:
       STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
       IN_ACCOUNT: ${{ github.event.inputs.account }}
       IN_PUB: ${{ github.event.inputs.new_posting_pub }}
       IN_DRY: ${{ github.event.inputs.dry_run }}
@@ -55,6 +56,10 @@ jobs:
           const ripemd160 = (b) => crypto.createHash('ripemd160').update(b).digest();
           const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
           const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 300) })); process.exit(1); };
+          // refs layer (estate-pseudonym law, wave 19): IN_ACCOUNT carries a REF ("acct-NN");
+          // the real chain name is resolved from FLEET_ROSTER_MAP only — unresolved = fail-honest.
+          const REF2NAME = (() => { try { const m = JSON.parse(process.env.FLEET_ROSTER_MAP || ''); const f = {}; if (m && m.refs) Object.assign(f, m.refs); if (m && m.names) Object.assign(f, m.names); for (const [k, v] of Object.entries(m || {})) if (typeof v === 'string') f[k] = v; const out = {}; for (const [k, v] of Object.entries(f)) { if (k.startsWith('acct-')) out[k] = v; else out[v] = k; } return out; } catch { return {}; } })();
+          const ref2name = (r) => REF2NAME[r] || null;
           const b58dec = (s) => {
             let n = 0n;
             for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
@@ -83,7 +88,8 @@ jobs:
             return j.result;
           }
           (async () => {
-            const ACCOUNT = (process.env.IN_ACCOUNT || 'headcorner').trim();
+            const ACCOUNT = ref2name((process.env.IN_ACCOUNT || 'acct-00').trim());
+            if (!ACCOUNT) fail('ROSTER-UNRESOLVED', 'account ref not resolvable from FLEET_ROSTER_MAP — name-dependent adopt skipped, fail-honest (never fabricate)');
             const NEWPUB = (process.env.IN_PUB || 'STM8StTG4aesGfmAUgBpMU9LKvoz98E5uz9eCCtEUvYM8Ywk398TD').trim();
             const DRY = String(process.env.IN_DRY ?? 'true') === 'true';
             const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();

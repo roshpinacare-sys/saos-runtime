@@ -2,9 +2,9 @@
 #
 # Owner traces 1a12…9391 ([owner-directive]) + 1a12…59b5 ([owner-directive]). The exhaustive key census (R16-b,
 # 18 sealed bundles opened + full git-history pass mining + master-password derivation zoo) measured:
-# headcorner's STEEM active key (10-08 rotation) exists in NO machine-held material — but the machine
+# acct-00's STEEM active key (10-08 rotation) exists in NO machine-held material — but the machine
 # holds LIVE full control of 13 worker accounts. The treasury ladder runs the maker book on the
-# escrow-agent account (hcsoldier4) — an income artery NO owner key can block.
+# escrow-agent account (acct-11) — an income artery NO owner key can block. (refs: estate-pseudonym law, wave 19)
 #
 # Safety: plan-file-only (SAOS-TREASURY-LADDER-PLAN/1) · canary caps forever in code (≤0.3/leg,
 # ≤0.6 open STEEM) · key-gate vs LIVE authority per run · STASIS obeyed · maker-only (never cross) ·
