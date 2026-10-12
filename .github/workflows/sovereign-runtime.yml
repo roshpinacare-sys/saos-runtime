@@ -87,6 +87,30 @@ jobs:
       - name: Selftest gate (fail-closed — red run = public alarm)
         working-directory: engine/mini-services/saos-engine
         run: node selftest.mjs
+      # R-VAULTPASS-2 (exec-20 · owner=active): completes the loop R-VAULTPASS-1
+      # left open — the passes left the repo into STEEM_VAULT_PASSES, but the
+      # engine's own revival never consumed the secret (measured 02:12Z:
+      # REVIVAL-FAIL 0/14 → post ENOENT → the grid stood down). This step runs
+      # the census-PROVEN resolve path (receipt 01:56Z: GEN-2 bundle opens via
+      # bundle.gen2.keysZipUnlock; 27 WIFs matched LIVE chain authorities) and
+      # writes the engine cache in the exact schema the engine's own vault
+      # writer uses. The beat then chain-judges EVERY WIF itself (adoptFromCache)
+      # — the file is material, the chain is the only judge. Fail-soft by law:
+      # an ignition failure never silences the beat; the engine's own honest
+      # REVIVAL-FAIL remains the red signal.
+      - name: Ignite army custody from the sealed GEN-2 bundle (R-VAULTPASS-2 · owner=active)
+        working-directory: engine
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+        run: |
+          npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
+          if NODE_PATH=/tmp/steemjs/node_modules node ../ops/army-cache-resolve.cjs --out .secrets/army-keys.json; then
+            echo "IGNITED: army cache written (0600) — the beat will chain-judge every WIF"
+          else
+            echo "::warning::IGNITION-FAIL (honest) — the engine's own revival verdict carries the red; the beat is not silenced"
+            echo "- ignition: FAIL (honest red — resolver output above)" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Chain anchor probe (on-chain custody anchor must sit in HEAD lineage)
         working-directory: engine
