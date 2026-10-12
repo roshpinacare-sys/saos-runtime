@@ -756,8 +756,73 @@ jobs:
           '
       - name: Commit state back (FF-only, no force, ever · honest yield to the alive custodian — T-58 fix)
         working-directory: engine
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git add -A mini-services/saos-engine/state mini-services/saos-engine/content/sent
+          # 23-f last-mile rescue (verdicts-only, scrubbed, never fails the beat):
+          # when the rebase path below yields to the custodian, the fresh verdict
+          # (heartbeat + custody) must still reach saos-cockpit — PUT it straight
+          # via the Contents API (no rebase, no force, sha-guarded, 404-tolerant).
+          cat > /tmp/api-last-mile-23f.py <<'PYF23F'
+          import base64, json, os, re, subprocess, urllib.error, urllib.request
+          tok = os.environ.get("GH_PAT", "")
+          if not tok:
+              print("API last-mile skipped (no GH_PAT env - honest)")
+          else:
+              b58 = re.compile(rb"[1-9A-HJ-NP-Za-km-z]{50}")
+              h40 = re.compile(rb"[0-9a-fA-F]{40}")
+              for path in [p.strip() for p in os.environ.get("CANDS", "").splitlines() if p.strip()]:
+                  try:
+                      g = subprocess.run(["git", "show", "HEAD:" + path], capture_output=True, timeout=20)
+                      raw = g.stdout
+                  except Exception:
+                      raw = b""
+                  if not raw:
+                      print("API last-mile failed for %s (honest: unreadable from HEAD)" % path); continue
+                  if len(raw) > 100 * 1024:
+                      print("API last-mile skipped %s (honest: %d bytes > 100KB cap)" % (path, len(raw))); continue
+                  if b58.search(raw) or h40.search(raw) or b"ghp_" in raw or b"github_pat_" in raw:
+                      print("API last-mile skipped %s (honest: key-material pattern - verdicts-only by design)" % path); continue
+                  try:
+                      sha = None
+                      try:
+                          rq = urllib.request.Request("https://api.github.com/repos/roshpinacare-sys/steem/contents/" + path + "?ref=saos-cockpit")
+                          rq.add_header("Authorization", "token " + tok)
+                          rq.add_header("Accept", "application/vnd.github+json")
+                          with urllib.request.urlopen(rq, timeout=30) as resp:
+                              sha = json.load(resp).get("sha")
+                      except urllib.error.HTTPError as ge:
+                          if ge.code != 404:
+                              raise
+                      body = {"message": "beat verdict: state via API last-mile (survives reconcile races)",
+                              "content": base64.b64encode(raw).decode(), "branch": "saos-cockpit"}
+                      if sha:
+                          body["sha"] = sha
+                      pq = urllib.request.Request("https://api.github.com/repos/roshpinacare-sys/steem/contents/" + path,
+                                                  data=json.dumps(body).encode(), method="PUT")
+                      pq.add_header("Authorization", "token " + tok)
+                      pq.add_header("Accept", "application/vnd.github+json")
+                      with urllib.request.urlopen(pq, timeout=30) as resp:
+                          out = json.load(resp)
+                      print("API last-mile OK for %s (commit %s)" % (path, str(out.get("commit", {}).get("sha", ""))[:12]))
+                  except Exception as e:
+                      print("API last-mile failed for %s (honest: %s)" % (path, str(e)[:120]))
+          PYF23F
+          api_last_mile_rescue() {
+            local cands
+            cands=$(
+              { git cat-file -e HEAD:mini-services/saos-engine/state/ci-last-heartbeat.json 2>/dev/null && echo "mini-services/saos-engine/state/ci-last-heartbeat.json"
+                git cat-file -e HEAD:mini-services/saos-engine/state/army-custody.json 2>/dev/null && echo "mini-services/saos-engine/state/army-custody.json"
+                git diff-tree --no-commit-id --name-only -r HEAD -- mini-services/saos-engine/state 2>/dev/null | grep -E '/[^/]*custody[^/]*\.json$' || true
+              } | sort -u
+            )
+            if [ -n "$cands" ]; then
+              CANDS="$cands" python3 /tmp/api-last-mile-23f.py || true
+            else
+              echo "API last-mile: no verdict candidates in this commit"
+            fi
+          }
           if git diff --cached --quiet; then
             echo "no state changes this heartbeat"
           else
@@ -773,6 +838,10 @@ jobs:
                 sleep $((i * 5))
                 continue
               fi
+              # 23-f: fire the API last-mile rescue BEFORE yielding — the fresh
+              # verdict must reach saos-cockpit even when the git path yields
+              # to the custodian (honest per-file logs, beat never fails here).
+              api_last_mile_rescue || true
               # rebase failed: a real conflict (rebase in progress) OR a
               # refusal to start ("cannot rebase: unstaged changes" — a stash
               # failure left residuals). Both mean the branch-of-record moved
