@@ -1,0 +1,439 @@
+{
+  "protocol": "SAOS-FLEET-ROTATION-A/1",
+  "at": "2026-10-12T20:17:22.715Z",
+  "phase": "A",
+  "summary": {
+    "rotatedVerified": 20,
+    "verifyPending": 0,
+    "skipped": 0,
+    "failed": 2,
+    "total": 22
+  },
+  "custodySecrets": [
+    "ROT2_FLEET_KEYS on steem + saos-runtime + Domain (sealed, incremental per account)"
+  ],
+  "accounts": [
+    {
+      "chain": "steem",
+      "account": "cashmachine",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "ced2926caabcfe8310",
+      "digestFp": "35de4073038e1748",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM69FaFcqvk",
+        "posting": "STM5KbAxqY7M",
+        "memo": "STM6pVH8a6oN"
+      },
+      "newPubFp": {
+        "active": "STM6sFHvJM8s",
+        "posting": "STM4z1nPW51m",
+        "memo": "STM8ek4N6RV9"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "haran",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "bc0bffa7ace6a2b46f",
+      "digestFp": "f41d3ef56073c196",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM7JD8fvhkk",
+        "posting": "STM89dgugjvB",
+        "memo": "STM5ffU9rvJ4"
+      },
+      "newPubFp": {
+        "active": "STM6Rh6N53bB",
+        "posting": "STM7fozp9kLT",
+        "memo": "STM6byJfWU6S"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "israelnews",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "ab2f2b6fa025b59f98",
+      "digestFp": "4b93fe65c8c93a66",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5FpYirBcW",
+        "posting": "STM6JBXHRcV4",
+        "memo": "STM5yNTkgKyM"
+      },
+      "newPubFp": {
+        "active": "STM5sbPHGRKG",
+        "posting": "STM5WREcqUfp",
+        "memo": "STM53ooy2QY4"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "lsa",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "b18c7e83922179a0c1",
+      "digestFp": "3253b0582e7196ea",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM6cXYkXGqT",
+        "posting": "STM5VhuZCu4Q",
+        "memo": "STM5ipQEDcaY"
+      },
+      "newPubFp": {
+        "active": "STM6KcTKXUgV",
+        "posting": "STM8eYdheKWE",
+        "memo": "STM86PxjQRmT"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "macrame",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "20060ec3f1c0e5cd90",
+      "digestFp": "092a5e0ff7d2a8b2",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM8RPDKxeKh",
+        "posting": "STM51ssqJxXq",
+        "memo": "STM8HJsJsHnH"
+      },
+      "newPubFp": {
+        "active": "STM76xGFFo73",
+        "posting": "STM7TFKTWe9d",
+        "memo": "STM7wR6XS5yC"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "siq",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "7f3a46b2d1e4bebbd4",
+      "digestFp": "7b37c81411c3239c",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM7xa4HmQ1W",
+        "posting": "STM7BA3ewULw",
+        "memo": "STM8Ja9EKoBi"
+      },
+      "newPubFp": {
+        "active": "STM8hYQGnK4M",
+        "posting": "STM8AxsGakd8",
+        "memo": "STM68FyFYtuR"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "tov",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "6dd83267073e218220",
+      "digestFp": "dce6b9d962b15ac4",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM82yhm3sWi",
+        "posting": "STM7jqKwNq53",
+        "memo": "STM7rbUdM4UQ"
+      },
+      "newPubFp": {
+        "active": "STM6RVTCmHwM",
+        "posting": "STM7ertKsqKW",
+        "memo": "STM6rbUqboHb"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "wic",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "2eaa5ce7edf4e9d022",
+      "digestFp": "311dcc744bb03a1c",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5oK5jeC9P",
+        "posting": "STM6PF6jQDQC",
+        "memo": "STM5YmHca5pE"
+      },
+      "newPubFp": {
+        "active": "STM81Hg2Vi3X",
+        "posting": "STM59dhVbNmG",
+        "memo": "STM6yKPqDikj"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "wog",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "2dcc8c1ae772ad2a71",
+      "digestFp": "6c67b4382feec8be",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM4y5FXeJP6",
+        "posting": "STM65KVktKfJ",
+        "memo": "STM6a2B3NPpW"
+      },
+      "newPubFp": {
+        "active": "STM6ciCTX9bu",
+        "posting": "STM8dDcmZLo6",
+        "memo": "STM84Qd9xu9C"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "woq",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "71001ea0274d599cdc",
+      "digestFp": "d7c97bb911a833c1",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM835qJhkgu",
+        "posting": "STM6CNQ2ceBw",
+        "memo": "STM6eZoaS6aK"
+      },
+      "newPubFp": {
+        "active": "STM6ooN7LASV",
+        "posting": "STM8iKjzDXd2",
+        "memo": "STM7YyfyLayr"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "hcsoldier4",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "2a05458741f248413a",
+      "digestFp": "0e7f37b647f66f02",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5P6Um1UsZ",
+        "posting": "STM8FzM5YF5p",
+        "memo": "STM8T4ndfFuE"
+      },
+      "newPubFp": {
+        "active": "STM8YzKfp2MZ",
+        "posting": "STM7XDF4JDPT"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "hcsoldier5",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "3ae5eec060f596e993",
+      "digestFp": "62c2cfbac80c9dd1",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5qsD2EcyM",
+        "posting": "STM5cJfhdP4g",
+        "memo": "STM7wEE2KefA"
+      },
+      "newPubFp": {
+        "active": "STM7hQRuoVZF",
+        "posting": "STM5ZApTRx1v"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "steem",
+      "account": "hcsoldier6",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "d65e57afba8875f6c6",
+      "digestFp": "33c3f33e2c792a3f",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5WStGACQZ",
+        "posting": "STM7CPzmWrkd",
+        "memo": "STM4zUMqzDjr"
+      },
+      "newPubFp": {
+        "active": "STM794x6Kgii",
+        "posting": "STM68mShpV4F"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "cashmachine",
+      "verdict": "FAIL-BROADCAST",
+      "signerRole": "active",
+      "oldPubFp": {
+        "active": "STM6scpMYNJh",
+        "posting": "STM4wV3LNCxa",
+        "memo": "STM58G9GqCBU"
+      },
+      "error": "fetch failed"
+    },
+    {
+      "chain": "hive",
+      "account": "haran",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "c9a31d84d84af8fe31",
+      "digestFp": "1d00e4034e574618",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5kc85yED5",
+        "posting": "STM7jWm8CT67",
+        "memo": "STM7b51qcvqo"
+      },
+      "newPubFp": {
+        "active": "STM8iFM1GZvo",
+        "posting": "STM4zHsUCWiB"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "israelnews",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "75cb4f3f0408742c22",
+      "digestFp": "c54649279c0da1f0",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM5g7qbepCF",
+        "posting": "STM5JSQKTSKU",
+        "memo": "STM7qiznscic"
+      },
+      "newPubFp": {
+        "active": "STM86N4tSnF6",
+        "posting": "STM8h8SsxV5S"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "lsa",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "e021a3caa879ecf36c",
+      "digestFp": "7cbfbe6bfdcdbe93",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM4y91SbKMw",
+        "posting": "STM8BDzuh9VG",
+        "memo": "STM5Ctguov5Q"
+      },
+      "newPubFp": {
+        "active": "STM7HZppCEhE",
+        "posting": "STM7ntibbSg9"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "macrame",
+      "verdict": "FAIL-BROADCAST",
+      "signerRole": "active",
+      "oldPubFp": {
+        "active": "STM54zPNNozY",
+        "posting": "STM6LBRqTtdz",
+        "memo": "STM599wdMN9m"
+      },
+      "error": "fetch failed"
+    },
+    {
+      "chain": "hive",
+      "account": "siq",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "b3c510027c40c55045",
+      "digestFp": "ec7bd30ff4133942",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM6J2KujKbk",
+        "posting": "STM7wCzq7Do6",
+        "memo": "STM4xe3pLfnQ"
+      },
+      "newPubFp": {
+        "active": "STM7kvB6g9LD",
+        "posting": "STM5Z54binae"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "wic",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "0ac49c790b0b9db009",
+      "digestFp": "05aac4c1e4d88163",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM4yj9Xsxsm",
+        "posting": "STM8XTNmt9E1",
+        "memo": "STM55CjMnwks"
+      },
+      "newPubFp": {
+        "active": "STM5ecrBTrC3",
+        "posting": "STM6fQh8WCj8"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "wog",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "64bd8fe317382dc7be",
+      "digestFp": "8c6f86a29e1bb3b2",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM8iqMxxXio",
+        "posting": "STM596HWXKhd",
+        "memo": "STM6H6U3Aywi"
+      },
+      "newPubFp": {
+        "active": "STM6jiz4MiWR",
+        "posting": "STM8SYgSzzky"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    },
+    {
+      "chain": "hive",
+      "account": "woq",
+      "verdict": "ROTATED-VERIFIED",
+      "signerRole": "active",
+      "txid": "9ed5ffd69060a618c5",
+      "digestFp": "1ad5384ce28a27d8",
+      "chainVerified": true,
+      "oldPubFp": {
+        "active": "STM6ABMLPFiW",
+        "posting": "STM5vejvpKTW",
+        "memo": "STM5pXs2rBEj"
+      },
+      "newPubFp": {
+        "active": "STM6JTGF8nvG",
+        "posting": "STM8jWqzu4Wv"
+      },
+      "custodyError": "sodium.crypto_box_seal is not a function"
+    }
+  ],
+  "laws": [
+    "byte-law: node get_transaction_hex == local serialization before any signature",
+    "consensus digest: sha256(chainId || serialized minus tx-level ext byte)",
+    "self-verified signatures (secp256k1) before broadcast",
+    "chain-judge pre (matched wif vs live authority) and post (RPC authority == new pub)",
+    "owner authorities untouched (phase B separate)",
+    "zero material in receipt/logs (fingerprints only)"
+  ]
+}
