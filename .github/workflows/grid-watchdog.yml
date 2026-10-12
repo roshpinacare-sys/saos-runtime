@@ -65,6 +65,45 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Due gate — full observe only when due
+        env:
+          WD_RUN_ID: ${{ github.run_id }}
+          WD_GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          python3 - <<'WDGATE'
+          import json, sys
+          from datetime import datetime, timezone
+          try:
+              st = json.load(open("state/grid-status.json"))
+              gen = datetime.strptime(st.get("generatedAt", ""), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+              age = (datetime.now(timezone.utc) - gen).total_seconds()
+              reds = st.get("reds", [])
+              n = len(reds) if isinstance(reds, list) else 0
+              if age < 0:
+                  raise ValueError("generatedAt in the future (clock skew)")
+              full = 1800 if (n > 0 or age > 7200) else 7200
+          except Exception as e:
+              print("due-gate: state unreadable -> treating as DUE (fail-open): %s" % str(e)[:120])
+              sys.exit(0)
+          if age < full:
+              print("watchdog not due (age %ds < %ds; reds=%d)" % (age, full, n))
+              open("/tmp/wd-notdue", "w").write("1")
+          else:
+              print("watchdog DUE (age %ds >= %ds; reds=%d) -> full observe" % (age, full, n))
+          sys.exit(0)
+          WDGATE
+          if [ -f /tmp/wd-notdue ]; then
+            code=$(curl -s -m 15 -o /tmp/wd-cancel.out -w "%{http_code}" -X POST \
+              -H "Authorization: token ${WD_GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/roshpinacare-sys/saos-runtime/actions/runs/${WD_RUN_ID}/cancel")
+            echo "watchdog not due -> self-cancel requested (http:${code}); observe skipped cheaply (run shows cancelled = not-due)"
+            sleep 45
+            exit 0
+          fi
+          exit 0
+
       - name: Observe
         run: |
           if [ -n "${GH_PAT:-}" ]; then TOKEN="$GH_PAT"; CROSS=true; else TOKEN="$GITHUB_TOKEN"; CROSS=false; fi
