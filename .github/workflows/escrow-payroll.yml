@@ -58,7 +58,12 @@ jobs:
 
       - name: Selftest gate (offline vectors — red selftest never reaches the chain)
         working-directory: dex
-        run: NODE_PATH=/tmp/steemjs/node_modules node grids/escrow-payroll.mjs --selftest
+        run: |
+          set -Eeuo pipefail
+          # ESM imports resolve from the checkout (NODE_PATH does not apply to import) —
+          # the exact runtime deps of the escrow import tree (mover/key-gate/brake/events).
+          npm install --omit=dev --no-audit --no-fund --loglevel=error bs58 steem@0.7.11 @noble/hashes @noble/curves
+          NODE_PATH=/tmp/steemjs/node_modules node grids/escrow-payroll.mjs --selftest
 
       - name: Resolve live fleet keys from the sealed GEN-2 bundle (in-run, 0600, never logged)
         run: NODE_PATH=/tmp/steemjs/node_modules node ops/key-census-probe/resolve-keys.cjs --out /tmp/fk.json
