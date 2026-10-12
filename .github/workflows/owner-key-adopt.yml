@@ -128,10 +128,12 @@ jobs:
               console.log(JSON.stringify({ verdict: 'ALREADY-REGISTERED', posting: livePosting }));
               process.exit(0);
             }
+            // FC flat_map law: key_auths are SERIALIZED SORTED by the key string —
+            // we must pre-sort or the node's digest differs from ours (measured: rejection).
             const newPosting = {
               weight_threshold: thr,
-              account_auths: (acc.posting && acc.posting.account_auths) || [],
-              key_auths: [...livePosting.map((k) => [k, 1]), [NEWPUB, 1]],
+              account_auths: ((acc.posting && acc.posting.account_auths) || []).slice().sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)),
+              key_auths: [...livePosting.map((k) => [k, 1]), [NEWPUB, 1]].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)),
             };
             const gp = await rpc(nodeUsed, 'condenser_api.get_dynamic_global_properties', []);
             const txParts = {
