@@ -193,7 +193,7 @@ function extract(srcName, decPath, outDir) {
 }
 
 // ── main ─────────────────────────────────────────────────────────────────────
-async function runV2() {
+async function runV2(armSpec = null) {
   const receipt = {
     protocol: "SAOS-FLEET-KEY-CENSUS-V2/1",
     at: new Date().toISOString(),
@@ -283,6 +283,9 @@ async function runV2() {
     receipt.scanned.wifCandidates = wuniq.length;
     receipt.scanned.seedCandidates = suniq.length;
 
+    const matchSecret = new Map(); // matchKey -> { wif } (in-memory only; never logged/receipted)
+    const rememberSecret = (m, wif) => { matchSecret.set(m.chain + ":" + m.account + ":" + m.role, wif); };
+
     // 4) direct WIF classify (v1 behavior, now across ALL opened archives + CI secrets)
     for (const [name, val] of Object.entries({ "secret:CI_ADOPT_WIF_ACTIVE": process.env.CI_ADOPT_WIF_ACTIVE || "", "secret:CI_ADOPT_WIF_POSTING": process.env.CI_ADOPT_WIF_POSTING || "" })) {
       if (val && P.WIF_RE.test(val.trim())) wuniq.push({ wif: val.trim(), tag: name });
@@ -290,7 +293,7 @@ async function runV2() {
     for (const c of wuniq) {
       const pub = P.wifToPubSafe(c.wif);
       const m = classifyPub(pub, livePubs);
-      if (m) receipt.matches.push({ ...m, sourceTag: c.tag, how: "wif-direct" });
+      if (m) { receipt.matches.push({ ...m, sourceTag: c.tag, how: "wif-direct" }); rememberSecret(m, c.wif); }
       receipt.scanned.derives++;
     }
 
@@ -312,6 +315,7 @@ async function runV2() {
               const m = classifyPub(pub, livePubs);
               if (m && m.role === role) {
                 receipt.matches.push({ ...m, sourceTag: s.archive + "::" + s.tag, how: "seed-derive:" + on });
+                rememberSecret(m, deriveWif(comp(acct, role, s.seed)));
               }
             }
             if (exhausted) break;
@@ -326,6 +330,34 @@ async function runV2() {
     const anyActive = receipt.matches.find((m) => m.role === "active");
     receipt.verdict = headSteemActive ? "HEAD-ACTIVE-DERIVED" : (anyActive ? "MATCH-ACTIVE-OTHER" : (receipt.matches.length ? "MATCH-OTHER" : (receipt.scanned.archivesOpened ? "NO-MATCH" : "DECRYPT-FAILED")));
     receipt.honesty += ` חקירה: ${receipt.scanned.archivesOpened} ארכיונים נפתחו מתוך ${cands.length} מועמדים; ${receipt.scanned.derives} גזירות בוצעו (תקציב ${MAX_DERIVES}).`;
+
+    // T-65 ARM-MODE (opt-in via --arm): chain-judged credential delivery for the grid wire.
+    // The WIF travels ONLY: matchSecret -> fresh chain-judge -> 0600 file. Receipt keeps a fingerprint.
+    if (armSpec) {
+      receipt.arm = { requested: armSpec.chain + ":" + armSpec.account + ":" + armSpec.role, armed: false };
+      const key = armSpec.chain + ":" + armSpec.account + ":" + armSpec.role;
+      const wif = matchSecret.get(key);
+      if (!wif) { console.log("GRID-ARM-REFUSED no-match for " + key); }
+      else {
+        const fresh = await liveAuthAll();
+        const fk = fresh[armSpec.chain === "hive" ? "hive:" + armSpec.account : armSpec.account];
+        const want = fk ? fk[armSpec.role] : null;
+        const pub = P.wifToPubSafe(wif);
+        if (want && pub === want) {
+          fs.mkdirSync(path.dirname(path.resolve(armSpec.path)), { recursive: true });
+          fs.writeFileSync(armSpec.path, armSpec.account + " " + wif + "\n", { mode: 0o600 });
+          const fp = crypto.createHash("sha256").update(wif, "utf8").digest("hex").slice(0, 8);
+          receipt.arm.armed = true;
+          receipt.arm.fingerprint = fp;
+          const mm = receipt.matches.find((m) => m.chain === armSpec.chain && m.account === armSpec.account && m.role === armSpec.role);
+          receipt.arm.sourceTag = mm ? mm.sourceTag : null;
+          receipt.arm.how = mm ? mm.how : null;
+          console.log("GRID-ARMED chain-judged fp=" + fp + " how=" + (mm ? mm.how : "?") + " -> " + path.basename(armSpec.path));
+        } else {
+          console.log("GRID-ARM-REFUSED chain-judge-failed (fresh authority mismatch — fail-closed)");
+        }
+      }
+    }
     return receipt;
   } finally {
     try { fs.rmSync(work, { recursive: true, force: true }); } catch {}
@@ -363,7 +395,14 @@ async function main() {
   if (process.argv.includes("--selftest")) { selftest(); process.exit(0); }
   const idx = process.argv.indexOf("--receipt");
   const outPath = idx >= 0 ? process.argv[idx + 1] : null;
-  const receipt = await runV2();
+  let armSpec = null;
+  const armIdx = process.argv.indexOf("--arm");
+  if (armIdx >= 0) {
+    const g = (f, d) => { const i = process.argv.indexOf(f); return i >= 0 ? process.argv[i + 1] : d; };
+    armSpec = { path: process.argv[armIdx + 1], account: g("--arm-account", "headcorner"), role: g("--arm-role", "active"), chain: g("--arm-chain", "steem") };
+  }
+  const receipt = await runV2(armSpec);
+  if (armSpec && !receipt.arm?.armed) { /* soft: honest verdict already printed; caller decides */ }
   console.log("VERDICT:", receipt.verdict);
   console.log("archives:", JSON.stringify(receipt.archives.map((a) => ({ file: a.file, opened: !!a.opened, openedBy: a.openedBy || null, wifs: a.wifs == null ? null : a.wifs, seeds: a.seeds == null ? null : a.seeds }))));
   console.log("scanned:", JSON.stringify(receipt.scanned));
