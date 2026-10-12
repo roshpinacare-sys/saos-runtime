@@ -1,0 +1,32 @@
+{
+ "crossRepo": true,
+ "generatedAt": "2026-10-12T20:12:26Z",
+ "redCount": 4,
+ "reds": [
+  "blurt.live",
+  "custody.coverage",
+  "delegation.verdict",
+  "social.verdict"
+ ],
+ "signals": {
+  "billingBlock": false,
+  "blurtLive": 0,
+  "blurtTotal": 12,
+  "custodyTotal": 14,
+  "custodyVerified": 1,
+  "dexAnchorAgeMs": 945926,
+  "fleetDigestAgeS": 11,
+  "fleetDigestCommitAt": "2026-10-12T20:12:12Z",
+  "heartbeatAgeS": 480,
+  "heartbeatAt": "2026-10-12T20:04:20.533Z",
+  "officeScheduleAgeS": 17185,
+  "officeScheduleAt": "2026-10-12T15:25:59Z",
+  "potentialAgeS": 16549,
+  "potentialCommitAt": "2026-10-12T15:36:34Z",
+  "pulseAgeS": 501,
+  "pulseRunAt": "2026-10-12T20:04:00Z",
+  "pulseRunId": 38301775264,
+  "socialExecuted": 0,
+  "socialRefused": 13
+ }
+}
