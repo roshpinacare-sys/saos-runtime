@@ -1,104 +1,22 @@
-# repair-rot2-custody.yml — T-68 (examine-and-fix pulse, trace 1a130a768c39d211).
+# RETIRED 2-a (lane-dedup law): the custody recovery described below is now
+# implemented — with hole-verification against the phase-A receipt of record,
+# fingerprint cross-checks vs newPubFp, inner-sha integrity pinning, receipt +
+# honest verdict (PASS / FAIL-LOST / FAIL-CUSTODY), schedule + dispatch, and the
+# FIXED interop-safe sodium loader — in .github/workflows/custody-recover.yml.
+# ONE custody lane only.
 #
-# MEASURED: fleet-rotation-a phase A rotated 22/22 authority sets (chain-verified) at 15:52–15:54Z,
-# and the ROT2 seal landed on steem main (b656343455) — but the incremental custody secret
-# ROT2_FLEET_KEYS is ABSENT on all three repos (silent PUT failures — under diagnosis; GH_PAT
-# secret has been refreshed meanwhile). This lane repairs custody from the custody-of-record:
-# it decrypts the ROT2 archive with the bundle gen2 pass (env-only, masked) and PUTs the WHOLE
-# new-keys map as ONE secret (last-wins flaw of the per-account design retired by design change).
+# History preserved: T-68 (261eabe) built the decrypt+PUT core; 23-d (1cba732)
+# added decrypt-before-unzip (measured exit 9: unzip ran on openssl-sealed
+# ciphertext before the PUT phase) — that knowledge is carried verbatim inside
+# custody-recover.yml + ops/fleet-rotation/custody-recover.mjs.
 #
-# Fail-closed: no plaintext ever leaves /tmp (shredded), pass values masked, statuses loud.
-name: repair-rot2-custody
+# `on: {}` = no triggers — inert by law. Dispatch custody-recover.yml instead.
+name: repair-rot2-custody (RETIRED — folded into custody-recover)
 
-on:
-  workflow_dispatch: {}
-
-permissions:
-  contents: read
-
-concurrency:
-  group: repair-rot2-custody
-  cancel-in-progress: false
+on: {}
 
 jobs:
-  repair:
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
-      GH_PAT: ${{ secrets.GH_PAT }}
     steps:
-      - name: Preflight
-        run: |
-          set -Eeuo pipefail
-          [ -n "${STEEM_VAULT_PASSES:-}" ] || { echo "ABORT: bundle absent"; exit 1; }
-          [ -n "${GH_PAT:-}" ] || { echo "ABORT: GH_PAT absent"; exit 1; }
-          echo "preflight OK"
-
-      - name: Checkout steem main (custody of record)
-        run: |
-          set -Eeuo pipefail
-          git clone --depth 1 --branch main "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" steem
-          cd steem
-          echo "steem main @ $(git rev-parse --short HEAD)"
-
-      - name: Custody PUT per repo (steem, saos-runtime, Domain — loud statuses)
-        working-directory: steem
-        run: |
-          set -Eeuo pipefail
-          npm i --no-save libsodium-wrappers --silent
-          G2ZIP="$(node -e "const b=JSON.parse(process.env.STEEM_VAULT_PASSES); process.stdout.write((b.gen2&&b.gen2.keysZipUnlock)||'')")"
-          echo "::add-mask::$G2ZIP"
-          ROT2FILE="$(node -e "const m=JSON.parse(require('fs').readFileSync('agent/recovery-meta.json','utf8')); process.stdout.write((m.rot2&&m.rot2.id&&m.keysZipFile)||'')")"
-          # 23-d fix (measured exit 9, runs 38274624858 + 38303059408): the archive is
-          # openssl-sealed ciphertext — unzip-on-ciphertext dies "End-of-central-directory
-          # signature not found" (exit 9) BEFORE the PUT phase ever runs. Decrypt first
-          # (gen2 bundle pass, env-only via PASS, masked above — the exact pass the
-          # sovereign resolver proved opens ROT2 at 19:28Z), then unzip the plaintext.
-          mkdir -p /tmp/r2c2 && chmod 700 /tmp/r2c2
-          PASS="$G2ZIP" openssl enc -d -aes-256-cbc -pbkdf2 -iter 300000 -in "$ROT2FILE" -out /tmp/r2c2/keys.zip -pass env:PASS \
-            || { echo "DECRYPT-FAIL on $ROT2FILE (pass ref: bundle.gen2.keysZipUnlock) — honest abort, no PUT"; rm -rf /tmp/r2c2; exit 1; }
-          unzip -o -q /tmp/r2c2/keys.zip -d /tmp/r2c2
-          PASS="$G2ZIP" node - <<'NODE'
-          const fs = require('fs');
-          const sodium = require('libsodium-wrappers');
-          const payload = JSON.parse(fs.readFileSync('/tmp/r2c2/rot2-keys.json', 'utf8'));
-          const chains = Object.keys(payload.accounts || {});
-          const total = chains.reduce((n, c) => n + Object.keys(payload.accounts[c]).length, 0);
-          if (!total) { console.error('ABORT: rot2 payload empty'); process.exit(1); }
-          console.log(`rot2 payload: ${total} accounts across ${chains.join(',')} (material never logged)`);
-          const PAT = process.env.GH_PAT;
-          const H = { Authorization: `Bearer ${PAT}`, Accept: 'application/vnd.github+json' };
-          (async () => {
-            await sodium.ready;
-            for (const repo of ['steem', 'saos-runtime', 'Domain']) {
-              try {
-                const pkr = await fetch(`https://api.github.com/repos/roshpinacare-sys/${repo}/actions/secrets/public-key`, { headers: H });
-                if (!pkr.ok) throw new Error(`pk HTTP ${pkr.status}`);
-                const pk = await pkr.json();
-                const sealed = sodium.crypto_box_seal(Buffer.from(JSON.stringify({ rot2: payload.accounts, at: payload.at, repairedBy: 'repair-rot2-custody T-68' }), 'utf8'), Buffer.from(pk.key, 'base64'));
-                const r = await fetch(`https://api.github.com/repos/roshpinacare-sys/${repo}/actions/secrets/ROT2_FLEET_KEYS`, {
-                  method: 'PUT', headers: { ...H, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ encrypted_value: Buffer.from(sealed).toString('base64'), key_id: pk.key_id }),
-                });
-                console.log(`ROT2_FLEET_KEYS PUT on ${repo}: HTTP ${r.status} ${r.status === 201 || r.status === 204 ? 'OK' : 'FAIL'}`);
-                if (r.status !== 201 && r.status !== 204) throw new Error(`PUT HTTP ${r.status}`);
-              } catch (e) { console.error(`CUSTODY-FAIL ${repo}: ${e.message}`); process.exitCode = 1; }
-            }
-          })();
-          NODE
-          rm -rf /tmp/r2c /tmp/r2c2
-
-      - name: Verify custody (secret names only — write-only API, values unreadable)
-        run: |
-          set -Eeuo pipefail
-          OK=0
-          for repo in steem saos-runtime Domain; do
-            if curl -s -H "Authorization: Bearer $GH_PAT" "https://api.github.com/repos/roshpinacare-sys/$repo/actions/secrets?per_page=50" | grep -q '"ROT2_FLEET_KEYS"'; then
-              echo "custody verified on $repo: ROT2_FLEET_KEYS present"; OK=$((OK+1))
-            else
-              echo "CUSTODY-MISSING on $repo"
-            fi
-          done
-          [ "$OK" = "3" ] || { echo "ABORT: custody incomplete ($OK/3) — failing honestly"; exit 1; }
-          echo "CUSTODY REPAIR COMPLETE: 3/3 repos hold ROT2_FLEET_KEYS (full rotated-keys map)"
+      - run: echo "retired lane — see custody-recover.yml (2-a lane dedup)"

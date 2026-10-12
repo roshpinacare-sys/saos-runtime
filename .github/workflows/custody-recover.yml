@@ -1,0 +1,133 @@
+# custody-recover.yml — 2-a: complete phase-A custody that died on the libsodium
+# CJS-interop bug (measured 2026-10-12 20:15Z: "sodium.crypto_box_seal is not a
+# function" -> 20 rotated accounts with NO custody -> verdict law red ->
+# grid-watchdog custody.coverage RED -> estate social/delegation lanes self-locked).
+#
+# Recovery of record: the ROT2 archive on steem MAIN (custody branch — vault of
+# record; fd651d7 -> 1af5917, re-sealed under the gen2-era pass, meta v4
+# inner-sha pinned). This lane (workflow_dispatch + schedule):
+#   a. checks out steem main (custody of record)
+#   b. opens the ROT2 archive with the STEEM_VAULT_PASSES bundle ladder
+#      (gen2 -> recovery-3 -> gen1 x zip/backup; meta pass last resort) —
+#      pass VALUES env-only + masked, never logged
+#   c. verifies the archive holds material for EVERY custody hole (derived from
+#      the phase-A receipt of record ops/fleet-rotation/receipt-A.json) with
+#      fingerprint cross-check vs newPubFp — counts + pub fingerprints only
+#   d. completes the custody: crypto_box_seal (FIXED interop-safe loader) + PUT
+#      ROT2_FLEET_KEYS to steem, saos-runtime, Domain via GH_PAT — whole-map PUT
+#      per the T-68 design change (per-account last-wins flaw retired)
+#   e. receipt (fingerprints only) committed to saos-runtime + verdict law:
+#      PASS only with zero custody holes; FAIL-LOST honestly when hole material
+#      is absent from the archive of record (receipt documents the owner-authority
+#      reset path); FAIL-CUSTODY for retryable operational failures.
+#
+# LANE DEDUP LAW: this lane SUPERSEDES repair-rot2-custody.yml (T-68 built the
+# decrypt+PUT core; 23-d (1cba732) added decrypt-before-unzip — knowledge carried
+# here verbatim). repair-rot2-custody.yml is retired inert (`on: {}`); one custody
+# lane only.
+name: custody-recover
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "41 3 * * *" # daily 03:41Z — self-disarming after a PASS (no-holes = no-op)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: custody-recover
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout steem main (custody branch — vault of record)
+        run: |
+          set -Eeuo pipefail
+          git clone --depth 1 --branch main "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" steem-engine
+          cd steem-engine
+          echo "steem main @ $(git rev-parse --short HEAD)"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps (pinned pattern from fleet-rotation-a)
+        run: npm i --no-save --silent libsodium-wrappers
+
+      - name: Preflight (secrets present, syntax, offline selftest incl. seal roundtrip)
+        run: |
+          set -Eeuo pipefail
+          [ -n "${STEEM_VAULT_PASSES:-}" ] || { echo "ABORT: STEEM_VAULT_PASSES absent"; exit 1; }
+          [ -n "${GH_PAT:-}" ] || { echo "ABORT: GH_PAT absent"; exit 1; }
+          node --check ops/fleet-rotation/custody-recover.mjs
+          node ops/fleet-rotation/custody-recover.mjs --selftest
+          echo "preflight OK"
+
+      - name: Mask bundle passes (values never appear in logs)
+        run: |
+          set -Eeuo pipefail
+          node -e '
+            let b = null; try { b = JSON.parse(process.env.STEEM_VAULT_PASSES); } catch {}
+            let n = 0;
+            for (const era of ["gen2", "recovery-3", "gen1"]) {
+              for (const f of ["keysZipUnlock", "keysBackupUnlock"]) {
+                if (b && b[era] && typeof b[era][f] === "string" && b[era][f]) { console.log("::add-mask::" + b[era][f]); n++; }
+              }
+            }
+            console.log("masked " + n + " bundle pass values (refs only in logs)");
+          '
+
+      - name: Recover custody (decrypt ROT2 of record, verify holes, seal+PUT, verify)
+        id: recover
+        run: |
+          set -Eeuo pipefail
+          set +e
+          REC_HOLES_RECEIPT=ops/fleet-rotation/receipt-A.json node ops/fleet-rotation/custody-recover.mjs --run ops/fleet-rotation/custody-receipt.json
+          RC=$?
+          set -e
+          echo "custody-recover exit=$RC"
+          echo "rc=$RC" >> "$GITHUB_OUTPUT"
+          [ -f ops/fleet-rotation/custody-receipt.json ] || { echo "HARD-FAIL: recover died without a receipt"; exit 1; }
+
+      - name: Receipt commit (fingerprints only — push verified, false-OK law)
+        run: |
+          set -Eeuo pipefail
+          git config user.name "custody-recover[bot]"
+          git config user.email "custody-recover[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-runtime.git"
+          git add ops/fleet-rotation/custody-receipt.json
+          git commit -m "custody-recover: receipt $(date -u +%FT%TZ) [skip ci]" || echo "no receipt delta"
+          PUSHED=0
+          for i in 1 2 3; do
+            if git -c rebase.autoStash=true pull --rebase origin main && git push origin HEAD:main; then PUSHED=1; break; fi
+            sleep $((i*5))
+          done
+          [ "$PUSHED" = "1" ] || { echo "PUSH-FAIL: receipt push exhausted — failing honestly (false-OK law)"; exit 1; }
+          sleep 2
+          git fetch -q origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then echo "PUSH-VERIFY-FAIL"; exit 1; fi
+          echo "receipt push verified: $(git rev-parse --short HEAD)"
+
+      - name: Verdict law (PASS only with zero custody holes + 3/3 repos verified)
+        run: |
+          set -Eeuo pipefail
+          node -e '
+            const r = JSON.parse(require("fs").readFileSync("ops/fleet-rotation/custody-receipt.json", "utf8"));
+            const h = r.holes || {};
+            console.log("custody-recover verdict:", r.verdict, "| holes:", JSON.stringify({ total: h.total, covered: h.covered, absent: h.absent }), "| integrity:", r.source && r.source.integrity);
+            if (r.recoveryPath) console.log("recovery path:", r.recoveryPath);
+            if (r.verdict === "PASS") process.exit(0);
+            if (r.verdict === "FAIL-LOST") { console.error("VERDICT: FAIL-LOST — archive of record lacks hole material; owner-authority reset path is the only recovery (documented in the receipt)"); process.exit(2); }
+            process.exit(1);
+          '
