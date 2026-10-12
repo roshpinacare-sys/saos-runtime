@@ -571,9 +571,22 @@ jobs:
                 * Demanding posting for the head aborted run 38279425315 at 16:44:05Z on
                 * the live MASTER re-seal ("roster incomplete — missing posting") — a
                 * false red: the live bundle has no head posting by design. */
+              /* 23-d HEAD-EXEMPTION (23-b designated repair): an army-era bundle that
+                * carries ZERO head entries (fleet-rotation-a "owner untouched" law —
+                * ROT2 seals 22 army accounts, no head key of any role) must not fail
+                * the roster gate: the head is custody-served SEPARATELY via the
+                * engine's master-era vault rail (GEN-2 MASTER-era source on the branch
+                * of record — measured alive 19:46:28Z while the army refused).
+                * Aborted runs 38283505555 ("missing headcorner") + 38297860040
+                * ("missing acct-00"): decrypt SUCCEEDED both times — only this gate
+                * stood between the live army keys and the cache. When the head IS
+                * carried, the 47e0ee45 role law still applies (active demanded). */
+              const headEntry = byAccount.get(P.ref2name("acct-00")) || null;
+              const headCarried = Boolean(headEntry && (headEntry.wif || headEntry.activeWif));
               const missing = roster.filter((name) => {
                 const e = byAccount.get(name) || {};
-                return name === P.ref2name("acct-00") ? !e.activeWif : !e.wif;
+                if (name === P.ref2name("acct-00")) return headCarried ? !e.activeWif : false;
+                return !e.wif;
               });
               if (missing.length) {
                 console.error(`army-cache-resolve: roster incomplete — missing ${missing.map((n) => P.name2ref(n)).join(", ")} — honest abort (fail-closed)`);
@@ -582,10 +595,17 @@ jobs:
 
               /* exact mirror of pullArmyKeysFromVault()'s cache schema: accounts sorted,
                * one GEN-2 generation entry per account, gens carry wif/pub/activeWif/activePub. */
+              /* 23-d schema mirror: pullArmyKeysFromVault() admits ONLY accounts that
+                * carry material (gens filtered on wif; no-material names land in its
+                * missing list) — a no-material head entry in the cache would send the
+                * engine's narrow adoption rail (adoptAccountPostingWif) into a re-pull
+                * that CLOBBERS the army-era cache with stale branch-era keys
+                * (measured 22-e-1). Omission keeps the head on the master-era rail. */
               const accounts = roster.slice().sort().map((name) => {
-                const e = byAccount.get(name);
+                const e = byAccount.get(name) || {};
+                if (!e.wif && !e.activeWif) return null;
                 return { name, gens: [{ gen: "GEN-2", wif: e.wif ?? null, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }] };
-              });
+              }).filter(Boolean);
               const cache = {
                 extractedAt: new Date().toISOString(),
                 generations: [{ gen: "GEN-2", outerSha: outerSha.slice(0, 8), innerSha: innerSha.slice(0, 8) }],
