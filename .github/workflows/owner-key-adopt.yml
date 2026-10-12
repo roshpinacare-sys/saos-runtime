@@ -5,7 +5,7 @@
 #  G3: condenser verify_authority with the SIGNED tx must return true — else refuse.
 # Only then: broadcast_transaction_synchronous + independent chain re-verification.
 # The key is never logged, never printed, never written to disk.
-# Sig law (FC/graphene): 65B = [recid+31] || r || s. Op id 35 = account_update2.
+# Sig law (FC/graphene): 65B = [recid+31] || r || s. Op id 43 = account_update2 (steem-js wire map).
 name: owner-key-adopt
 
 on:
@@ -142,7 +142,7 @@ jobs:
               expirationUnix: Math.floor(new Date(gp.time + 'Z').getTime() / 1000) + 90,
             };
             const op = Buffer.concat([
-              varint(35), str(ACCOUNT), varint(0), varint(0), varint(1), authBytes(newPosting), varint(0), str(''), str(''), varint(0),
+              varint(43), str(ACCOUNT), varint(0), varint(0), varint(1), authBytes(newPosting), varint(0), str(''), str(''), varint(0),
             ]);
             const txBytes = Buffer.concat([u16(txParts.refBlockNum), u32(txParts.refBlockPrefix), u32(txParts.expirationUnix), varint(1), op, varint(0)]);
             const digest = sha256(Buffer.concat([Buffer.alloc(32, 0), txBytes]));
