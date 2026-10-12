@@ -668,7 +668,19 @@ jobs:
 
       - name: Beat env + posting arming (standing order travels as a repo secret)
         working-directory: engine/mini-services/saos-engine
-        run: node ci-cycle.mjs
+        run: |
+          set -o pipefail
+          node ci-cycle.mjs 2>&1 | tee /tmp/ci-cycle.out
+          # 23-g: the beat prints the fresh CI-HEARTBEAT verdict but never
+          # writes it to the engine-tree state file — capture it verbatim so
+          # the state commit + 23-f API last-mile rescue PUT the TRUE verdict.
+          JSON=$(sed -n 's/^CI-HEARTBEAT //p' /tmp/ci-cycle.out | tail -1)
+          if [ -n "$JSON" ]; then
+            printf '%s' "$JSON" > state/ci-last-heartbeat.json
+            echo "engine-tree state/ci-last-heartbeat.json updated from CI-HEARTBEAT verdict"
+          else
+            echo "no CI-HEARTBEAT line on stdout — heartbeat state left untouched (honest)"
+          fi
         env:
           SAOS_OFFLINE: "1"
           SAOS_CI_SKIP_MASTER: "1"
