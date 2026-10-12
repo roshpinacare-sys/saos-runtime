@@ -799,16 +799,20 @@ jobs:
                   if b58.search(raw) or h40.search(raw) or b"ghp_" in raw or b"github_pat_" in raw:
                       print("API last-mile skipped %s (honest: key-material pattern - verdicts-only by design)" % path); continue
                   try:
-                      sha = None
+                      sha = None; branch_b = None
                       try:
                           rq = urllib.request.Request("https://api.github.com/repos/roshpinacare-sys/steem/contents/" + path + "?ref=saos-cockpit")
                           rq.add_header("Authorization", "token " + tok)
                           rq.add_header("Accept", "application/vnd.github+json")
                           with urllib.request.urlopen(rq, timeout=30) as resp:
-                              sha = json.load(resp).get("sha")
+                              meta = json.load(resp); sha = meta.get("sha")
+                              try: branch_b = base64.b64decode(meta.get("content") or "")  # 24-c: branch's current bytes for the identical-content guard
+                              except Exception: branch_b = None
                       except urllib.error.HTTPError as ge:
                           if ge.code != 404:
                               raise
+                      if branch_b is not None and branch_b == raw:  # 24-c: never PUT byte-identical content (junk empty commits / stale copies)
+                          print("API last-mile: content identical to branch (ref=%s) - nothing to rescue" % ref); continue
                       body = {"message": "beat verdict: state via API last-mile (survives reconcile races)",
                               "content": base64.b64encode(raw).decode(), "branch": "saos-cockpit"}
                       if sha:
@@ -842,6 +846,7 @@ jobs:
           else
             git commit -m "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]"
             BEAT_SHA=$(git rev-parse HEAD)  # 23-h: pin rescue read to this commit - during a stopped rebase HEAD is the custodian tip (stale)
+            export BEAT_SHA  # 24-c: make the pinned beat sha visible to every child process (python included), not only via the env-prefix
             ok=0; yielded=0
             for i in 1 2 3 4 5; do
               if git push origin saos-cockpit; then ok=1; break; fi
