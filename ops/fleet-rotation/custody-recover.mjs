@@ -2,28 +2,36 @@
 /**
  * custody-recover.mjs — 2-a: complete the phase-A custody that died on the
  * libsodium CJS-interop bug (measured 2026-10-12 20:15Z: "sodium.crypto_box_seal
- * is not a function" -> 20 rotated accounts without custody -> estate fail-closed).
+ * is not a function" -> rotated accounts without custody -> estate fail-closed).
  *
  * Recovery of record: the ROT2 archive on steem main (custody branch — vault of
- * record), re-sealed under the gen2-era pass, meta v4 inner-sha pinned
- * (steem fd651d7 -> 1af5917). This lane:
- *   1. derives custody holes from the phase-A receipt of record (receipt-A.json:
- *      ROTATED* verdicts with empty custodyRepos)
- *   2. opens agent/vault/KEYS-ROT2-*.zip.enc with the STEEM_VAULT_PASSES bundle
+ * record), re-sealed under the gen2-era pass, meta v4 inner-sha pinned. When a
+ * custody hole's material is ABSENT from the HEAD archive of record (e.g. a
+ * later re-seal overwrote an earlier same-named archive), this lane digs the
+ * prior seal commits' archive blobs out of steem git history (the estate's
+ * documented archaeology path) and chain-judges that material against the LIVE
+ * on-chain authorities — only live-matching material enters custody.
+ *
+ * Flow:
+ *   1. derive custody holes from the phase-A receipt of record (receipt-A.json:
+ *      ROTATED* verdicts with empty custodyRepos — the verdict law's definition)
+ *   2. open agent/vault/KEYS-ROT2-*.zip.enc with the STEEM_VAULT_PASSES bundle
  *      ladder (gen2 -> recovery-3 -> gen1 x zip/backup, meta pass last) — pass
  *      VALUES env-only + ::add-mask::-ed, never logged
- *   3. verifies every hole's material is IN the archive, cross-checked against
+ *   3. verify every hole's material is IN the archive, cross-checked against
  *      the receipt's newPubFp fingerprints (counts + pub fingerprints only)
- *   4. completes custody: crypto_box_seal via the FIXED interop-safe loader +
- *      PUT ROT2_FLEET_KEYS to steem, saos-runtime, Domain (whole-map PUT per
- *      the T-68 design change — the per-account last-wins flaw is retired)
- *   5. receipt (fingerprints only) + verdict law:
- *        PASS          zero custody holes remain (archive covered + 3/3 repos verified)
- *        FAIL-LOST     hole material ABSENT from the archive of record — the
- *                      owner-authority reset path is the only recovery (receipt
- *                      documents it; custody PUT withheld so partial coverage
- *                      cannot masquerade as complete)
- *        FAIL-CUSTODY  archive covered but opening/PUT/verify failed (retryable)
+ *   4. holes absent from the HEAD archive: dig prior seal commits from git
+ *      history, decrypt, chain-judge vs live chain authorities
+ *   5. custody: crypto_box_seal via the FIXED interop-safe loader + PUT
+ *      ROT2_FLEET_KEYS to steem, saos-runtime, Domain (whole recoverable map;
+ *      the T-68 design change retired the per-account last-wins flaw)
+ *   6. receipt (fingerprints only) + verdict law:
+ *        PASS          zero custody holes remain (all covered + 3/3 repos verified)
+ *        FAIL-LOST     hole material absent from archive of record AND history —
+ *                      the owner-authority reset path is the only recovery
+ *                      (documented; covered material is still custody-PUT-ed)
+ *        FAIL-CUSTODY  operational failure (unopenable archive, PUT/verify fail,
+ *                      chain-judge RPC dead) — retryable
  *
  * LAWS: zero key material in logs/receipt (12-char pub fingerprints + sha
  * prefixes only); plaintext confined to 0700 /tmp and shredded; fail-closed;
@@ -42,10 +50,34 @@ import { execFileSync } from "child_process";
 const STEEM_DIR = process.env.REC_STEEM_DIR || "steem-engine";
 const API = "https://api.github.com/repos/roshpinacare-sys/";
 const HOLES_RECEIPT = process.env.REC_HOLES_RECEIPT || "ops/fleet-rotation/receipt-A.json";
+const RPCS = process.env.REC_RPC_JSON ? JSON.parse(process.env.REC_RPC_JSON) : {
+  steem: ["https://api.steemit.com", "https://api.steemitdev.com", "https://steem.foxleycoin.com"],
+  hive: ["https://api.hive.blog", "https://api.openhive.network", "https://hived.emre.sh"],
+};
+
+// house crypto helpers (same module fleet-rotation-a uses for chain-judges)
+const P = (await import(path.resolve(import.meta.dirname, "../key-census-probe/probe.cjs"))).default;
 
 function log(o) { console.log(typeof o === "string" ? o : JSON.stringify(o)); }
 function pubFp(pub) { return String(pub).slice(0, 12); }
 function sha256hex(buf) { return crypto.createHash("sha256").update(buf).digest("hex"); }
+
+async function rpcFor(chain, method, params) {
+  let lastErr = null;
+  for (const url of RPCS[chain]) {
+    try {
+      const r = await fetch(url, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", method, params, id: 1 }),
+        signal: AbortSignal.timeout(20000),
+      });
+      const j = await r.json();
+      if (j.error) { lastErr = new Error(String(j.error.message || "rpc error").slice(0, 120)); continue; }
+      return j.result;
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error("all rpc endpoints failed for " + chain);
+}
 
 /* ── 2-a: CJS-interop-safe libsodium loader (same fix as rotate.mjs) ────── */
 let _sodium = null;
@@ -94,9 +126,86 @@ function bundlePassLadder(meta) {
   return ladder;
 }
 
-function writeReceipt(out, obj) {
-  fs.writeFileSync(out, JSON.stringify(obj, null, 1) + "\n");
+/* decrypt a sealed archive with the ladder; returns {dec, passRef, innerSha16,
+ * integrity} or null. inPath: ciphertext, expectInnerSha: pin or null. */
+function openSealedArchive(inPath, meta, ladder, work, tag) {
+  const dec = path.join(work, "keys-" + tag + ".zip");
+  for (const pr of ladder) {
+    let ok = false;
+    try {
+      execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "300000",
+        "-in", inPath, "-out", dec, "-pass", "env:CUSTREC_PASS"],
+        { env: { ...process.env, CUSTREC_PASS: pr.pass }, stdio: "pipe" });
+      ok = fs.existsSync(dec) && fs.readFileSync(dec).subarray(0, 2).toString() === "PK";
+    } catch { ok = false; }
+    if (!ok) { try { fs.unlinkSync(dec); } catch {} continue; }
+    const inner = fs.readFileSync(dec);
+    const innerSha = sha256hex(inner);
+    const integrity = meta && meta.keysZipInnerSha256
+      ? (innerSha === meta.keysZipInnerSha256 ? "pinned-MATCH" : "pinned-MISMATCH")
+      : "unpinned";
+    return { dec, passRef: pr.ref, innerSha16: innerSha.slice(0, 16), integrity };
+  }
+  try { fs.unlinkSync(dec); } catch {}
+  return null;
 }
+
+function unzipPayload(dec, extDir) {
+  try {
+    fs.rmSync(extDir, { recursive: true, force: true });
+    fs.mkdirSync(extDir, { recursive: true });
+    execFileSync("unzip", ["-o", "-q", dec, "-d", extDir], { stdio: "pipe" });
+    return JSON.parse(fs.readFileSync(path.join(extDir, "rot2-keys.json"), "utf8"));
+  } catch { return null; }
+}
+
+/* live chain-judge: every role's wif must derive to the LIVE on-chain authority */
+async function chainJudge(chain, account, material) {
+  const a = (await rpcFor(chain, "condenser_api.get_accounts", [[account]]))[0];
+  if (!a) return { judge: "ABSENT-ON-CHAIN" };
+  const roles = {};
+  let all = true, any = false;
+  for (const [role, m] of Object.entries(material || {})) {
+    if (!m || !m.wif) { roles[role] = "ABSENT"; all = false; continue; }
+    any = true;
+    const want = role === "memo" ? a.memo_key : (a[role] || {}).key_auths?.[0]?.[0];
+    const got = P.wifToPubSafe(m.wif);
+    if (want && got && want === got) roles[role] = "LIVE-MATCH";
+    else { roles[role] = "LIVE-MISMATCH"; all = false; }
+  }
+  if (!any) return { judge: "NO-MATERIAL", roles };
+  return { judge: all ? "ALL-LIVE-MATCH" : "PARTIAL-MISMATCH", roles };
+}
+
+/* git history dig: prior seal commits' archive blobs (the estate's documented
+ * archaeology path — "prior archives stay in git history" per meta v4). */
+function sealCommits(metaKeysZipFile) {
+  try {
+    execFileSync("git", ["fetch", "--depth=30", "origin", "main"], { cwd: STEEM_DIR, stdio: "pipe" });
+  } catch (e) { log({ historyDig: "deepen-failed", err: String(e.message || e).slice(0, 60) }); }
+  const vaultDir = "agent/vault";
+  let shas = [];
+  for (const ref of ["origin/main", "HEAD"]) {
+    try {
+      shas = execFileSync("git", ["log", "--format=%H", "-n", "20", ref, "--", vaultDir],
+        { cwd: STEEM_DIR, stdio: "pipe" }).toString().trim().split("\n").filter(Boolean);
+      if (shas.length) break;
+    } catch (e) { log({ historyDig: "log-fail", ref, err: String(e.message || e).slice(0, 50) }); }
+  }
+  // HEAD blob already tried — drop commits whose archive blob equals it
+  let headBlob = "";
+  for (const ref of ["origin/main", "HEAD"]) {
+    try { headBlob = execFileSync("git", ["rev-parse", ref + ":" + metaKeysZipFile], { cwd: STEEM_DIR, stdio: "pipe" }).toString().trim(); if (headBlob) break; } catch {}
+  }
+  return shas.filter((s) => {
+    try {
+      const blob = execFileSync("git", ["rev-parse", s + ":" + metaKeysZipFile], { cwd: STEEM_DIR, stdio: "pipe" }).toString().trim();
+      return blob !== headBlob;
+    } catch { return false; }
+  });
+}
+
+function writeReceipt(out, obj) { fs.writeFileSync(out, JSON.stringify(obj, null, 1) + "\n"); }
 
 /* ── run: the recovery ──────────────────────────────────────────────────── */
 async function runMode(receiptOut) {
@@ -162,12 +271,9 @@ async function runMode(receiptOut) {
 
   const work = fs.mkdtempSync(path.join(os.tmpdir(), "custrec-"));
   fs.chmodSync(work, 0o700);
-  const dec = path.join(work, "keys.zip");
   const extDir = path.join(work, "x");
 
   const ladder = bundlePassLadder(meta);
-  const tried = [];
-  let opened = null;
   if (!ladder.length) {
     writeReceipt(receiptOut, { protocol: "SAOS-CUSTODY-RECOVER/1", at: startedAt, verdict: "FAIL-CUSTODY",
       holes: { total: holes.length, covered: 0, absent: [], details: [] },
@@ -175,40 +281,19 @@ async function runMode(receiptOut) {
     log({ VERDICT: "FAIL-CUSTODY", reason: "empty pass ladder" });
     process.exit(1);
   }
-  for (const pr of ladder) {
-    let ok = false;
-    try {
-      execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "300000",
-        "-in", encPath, "-out", dec, "-pass", "env:CUSTREC_PASS"],
-        { env: { ...process.env, CUSTREC_PASS: pr.pass }, stdio: "pipe" });
-      ok = fs.existsSync(dec) && fs.readFileSync(dec).subarray(0, 2).toString() === "PK";
-    } catch { ok = false; }
-    tried.push({ passRef: pr.ref, opened: ok });
-    if (!ok) { try { fs.unlinkSync(dec); } catch {} continue; }
-    const inner = fs.readFileSync(dec);
-    const innerSha = sha256hex(inner);
-    const integrity = meta && meta.keysZipInnerSha256
-      ? (innerSha === meta.keysZipInnerSha256 ? "pinned-MATCH" : "pinned-MISMATCH")
-      : "unpinned";
-    opened = { passRef: pr.ref, innerSha16: innerSha.slice(0, 16), integrity };
-    log({ archive: encRel, openedWith: pr.ref, innerSha16: opened.innerSha16, integrity });
-    break;
-  }
+  const opened = openSealedArchive(encPath, meta, ladder, work, "head");
+  const tried = [{ archive: encRel, openedWith: opened ? opened.passRef : null }];
   if (!opened) {
     writeReceipt(receiptOut, { protocol: "SAOS-CUSTODY-RECOVER/1", at: startedAt, verdict: "FAIL-CUSTODY",
       holes: { total: holes.length, covered: 0, absent: [], details: [] },
-      error: "ROT2 archive unopenable with any ladder pass", source: { archive: encRel, passLadderTried: tried } });
-    log({ VERDICT: "FAIL-CUSTODY", reason: "archive unopenable", tried: tried.map((t) => t.passRef).join(",") });
+      error: "ROT2 archive of record unopenable with any ladder pass", source: { archive: encRel } });
+    log({ VERDICT: "FAIL-CUSTODY", reason: "archive unopenable", tried: tried.map((t) => t.archive).join(",") });
     process.exit(1);
   }
+  log({ archive: encRel, openedWith: opened.passRef, innerSha16: opened.innerSha16, integrity: opened.integrity });
 
   // 3) unzip + parse the material bundle (plaintext lives only in 0700 /tmp)
-  fs.mkdirSync(extDir, { recursive: true });
-  let payload = null;
-  try {
-    execFileSync("unzip", ["-o", "-q", dec, "-d", extDir], { stdio: "pipe" });
-    payload = JSON.parse(fs.readFileSync(path.join(extDir, "rot2-keys.json"), "utf8"));
-  } catch { payload = null; }
+  let payload = unzipPayload(opened.dec, extDir);
   if (!payload || !payload.accounts) {
     writeReceipt(receiptOut, { protocol: "SAOS-CUSTODY-RECOVER/1", at: startedAt, verdict: "FAIL-CUSTODY",
       holes: { total: holes.length, covered: 0, absent: [], details: [] },
@@ -224,6 +309,7 @@ async function runMode(receiptOut) {
   const details = [];
   const absent = [];
   let covered = 0;
+  let custodyMap = JSON.parse(JSON.stringify(payload.accounts)); // the recoverable map so far
   for (const h of holes) {
     const mat = (payload.accounts[h.chain] || {})[h.account] || null;
     const roles = {};
@@ -239,24 +325,71 @@ async function runMode(receiptOut) {
       else if (m) { roles[role] = { status: "FP-MISMATCH", pubFp: m.pub ? pubFp(m.pub) : null, expectFp: h.expect[role] }; full = false; }
       else { roles[role] = { status: "ABSENT" }; full = false; }
     }
-    if (full) covered++; else absent.push(h.chain + ":" + h.account);
-    details.push({ chain: h.chain, account: h.account, inArchive: !!mat, roles });
+    if (full) covered++; else absent.push(h);
+    details.push({ chain: h.chain, account: h.account, inArchive: !!mat, verifiedBy: mat ? "receipt-newPubFp" : null, roles });
   }
-  log({ archiveCoverage: { holes: holes.length, covered, absent: absent.join(",") || "none" } });
+  log({ archiveCoverage: { holes: holes.length, covered, absent: absent.map((h) => h.chain + ":" + h.account).join(",") || "none" } });
 
-  // 5) custody PUT — all-or-nothing (partial custody must not masquerade as coverage)
+  // 5) history dig for holes absent from the archive of record (live chain-judge)
+  const historyDug = [];
+  let rpcDead = false;
+  if (absent.length) {
+    const commits = sealCommits(encRel);
+    log({ historyDig: "start", candidateSealCommits: commits.length, absent: absent.map((h) => h.chain + ":" + h.account).join(",") });
+    for (const sha of commits) {
+      if (!absent.length) break;
+      let digMeta = null, blobPath = "";
+      try {
+        digMeta = JSON.parse(execFileSync("git", ["show", sha + ":agent/recovery-meta.json"], { cwd: STEEM_DIR, stdio: "pipe", maxBuffer: 16 * 1024 * 1024 }).toString());
+        blobPath = digMeta.keysZipFile || encRel;
+        const blob = execFileSync("git", ["show", sha + ":" + blobPath], { cwd: STEEM_DIR, stdio: "pipe", maxBuffer: 64 * 1024 * 1024 });
+        blobPath = path.join(work, "hist-" + sha.slice(0, 8) + ".zip.enc");
+        fs.writeFileSync(blobPath, blob);
+      } catch (e) { log({ historyDig: "extract-fail", commit: sha.slice(0, 8), err: String(e.message || e).slice(0, 60) }); continue; }
+      const digOpened = openSealedArchive(blobPath, digMeta, ladder, work, "hist-" + sha.slice(0, 8));
+      if (!digOpened) { log({ historyDig: "unopenable", commit: sha.slice(0, 8) }); continue; }
+      const digPayload = unzipPayload(digOpened.dec, path.join(work, "xh-" + sha.slice(0, 8)));
+      if (!digPayload || !digPayload.accounts) { log({ historyDig: "parse-fail", commit: sha.slice(0, 8) }); continue; }
+      log({ historyDig: "opened", commit: sha.slice(0, 8), openedWith: digOpened.passRef, innerSha16: digOpened.innerSha16, integrity: digOpened.integrity });
+      for (const h of [...absent]) {
+        const mat = (digPayload.accounts[h.chain] || {})[h.account] || null;
+        if (!mat) continue;
+        let judge;
+        try { judge = await chainJudge(h.chain, h.account, mat); } catch (e) {
+          rpcDead = true;
+          log({ historyDig: "rpc-fail", hole: h.chain + ":" + h.account, err: String(e.message || e).slice(0, 60) });
+          continue;
+        }
+        if (judge.judge !== "ALL-LIVE-MATCH") {
+          log({ historyDig: "judge-reject", hole: h.chain + ":" + h.account, judge: judge.judge });
+          continue;
+        }
+        custodyMap[h.chain] = custodyMap[h.chain] || {};
+        custodyMap[h.chain][h.account] = mat;
+        covered++; absent.splice(absent.indexOf(h), 1);
+        const det = details.find((d) => d.chain === h.chain && d.account === h.account);
+        if (det) { det.inArchive = true; det.verifiedBy = "live-chain-judge@" + sha.slice(0, 8); det.roles = Object.fromEntries(Object.keys(mat).map((r) => [r, { status: "LIVE-MATCH", pubFp: mat[r] && mat[r].pub ? pubFp(mat[r].pub) : null }])); }
+        historyDug.push({ chain: h.chain, account: h.account, fromCommit: sha.slice(0, 8), fromArchive: blobPath ? digMeta.keysZipFile : "?", openedWith: digOpened.passRef, integrity: digOpened.integrity, judge: judge.judge, roles: Object.keys(mat) });
+        log({ historyDig: "RECOVERED", hole: h.chain + ":" + h.account, fromCommit: sha.slice(0, 8), judge: judge.judge });
+      }
+      try { execFileSync("shred", ["-u", digOpened.dec], { stdio: "pipe" }); } catch {}
+    }
+    log({ historyDig: { recovered: historyDug.length, stillAbsent: absent.map((h) => h.chain + ":" + h.account).join(",") || "none" } });
+  }
+  const custodyAccounts = Object.values(custodyMap).reduce((n, m) => n + Object.keys(m).length, 0);
+
+  // 6) custody PUT — recoverable map (never partial-masquerading: the receipt
+  //    carries the absent list and the verdict stays FAIL-LOST while holes remain)
   const custodyRes = [];
-  if (covered < holes.length) {
-    log({ custody: "WITHHELD", reason: "FAIL-LOST — not all hole material present in the archive of record" });
-  } else {
+  if (covered > 0) {
     for (const repo of ["steem", "saos-runtime", "Domain"]) {
-      const entry = { repo, put: "FAIL", verified: false };
+      const entry = { repo, put: "FAIL", verified: false, accountsInPayload: custodyAccounts };
       try {
         const pkr = await fetch(API + repo + "/actions/secrets/public-key", { headers: H });
         if (!pkr.ok) throw new Error("pk HTTP " + pkr.status);
         const pk = await pkr.json();
         const sealed = sodium.crypto_box_seal(
-          Buffer.from(JSON.stringify({ rot2: payload.accounts, at: payload.at || startedAt, recoveredBy: "custody-recover 2-a" })),
+          Buffer.from(JSON.stringify({ rot2: custodyMap, at: payload.at || startedAt, recoveredBy: "custody-recover 2-a" })),
           Buffer.from(pk.key, "base64"));
         const r = await fetch(API + repo + "/actions/secrets/ROT2_FLEET_KEYS", {
           method: "PUT", headers: { ...H, "Content-Type": "application/json" },
@@ -276,16 +409,21 @@ async function runMode(receiptOut) {
           if (!r.ok) throw new Error("list HTTP " + r.status);
           const j = await r.json();
           entry.verified = (j.secrets || []).some((s) => s.name === "ROT2_FLEET_KEYS");
-        } catch (e) { entry.verified = false; }
+        } catch { entry.verified = false; }
         if (!entry.verified && attempt === 0) await new Promise((r) => setTimeout(r, 4000));
       }
     }
-    log({ custody: custodyRes.map((c) => c.repo + "=" + c.put + (c.verified ? "+verified" : "-unverified")).join(" ") });
+    log({ custody: custodyRes.map((c) => c.repo + "=" + c.put + (c.verified ? "+verified" : "-unverified") + "(" + c.accountsInPayload + " accounts)").join(" ") });
+  } else {
+    log({ custody: "WITHHELD", reason: "no recoverable hole material in archive of record or history" });
   }
 
-  // 6) verdict law (honest)
+  // 7) verdict law (honest)
   const allPutOk = custodyRes.length > 0 && custodyRes.every((c) => c.put === "OK" && c.verified);
-  const verdict = covered < holes.length ? "FAIL-LOST" : (allPutOk ? "PASS" : "FAIL-CUSTODY");
+  let verdict;
+  if (covered === holes.length && allPutOk) verdict = "PASS";
+  else if (covered < holes.length && !rpcDead) verdict = "FAIL-LOST";
+  else verdict = "FAIL-CUSTODY";
   const receipt = {
     protocol: "SAOS-CUSTODY-RECOVER/1",
     at: startedAt,
@@ -299,35 +437,35 @@ async function runMode(receiptOut) {
       innerSha16: opened.innerSha16,
       integrity: opened.integrity,
       metaSkew,
-      passLadderTried: tried,
       accountsInArchive: totalAccounts,
+      historyDug,
     },
-    holes: { total: holes.length, covered, absent, details },
+    holes: { total: holes.length, covered, absent: absent.map((h) => h.chain + ":" + h.account), details },
     custody: {
       secret: "ROT2_FLEET_KEYS",
       repos: custodyRes,
-      design: "whole-map PUT (T-68): one sealed PUT per repo carries ALL hole material; per-account last-wins flaw retired",
+      design: "whole recoverable map in one sealed PUT per repo (T-68 design; per-account last-wins flaw retired); absent holes stay documented here, never silently dropped",
     },
     verdict,
     laws: [
       "zero key material in receipt/logs — pub fingerprints (12-char) + sha prefixes only",
       "pass values env-only + masked, never logged",
       "plaintext confined to 0700 /tmp, shredded after use",
-      "fingerprint cross-check: archive material pub must equal receipt-of-record newPubFp",
-      "custody PUT withheld on FAIL-LOST (partial coverage must not masquerade as complete)",
+      "HEAD-archive material verified vs receipt newPubFp; history-dug material verified vs LIVE chain authorities",
+      "custody PUT carries the recoverable set; absent holes keep the verdict red (FAIL-LOST) with the owner-authority reset path documented",
     ],
   };
-  if (verdict === "FAIL-LOST") {
-    receipt.recoveryPath = "owner-authority reset is the only recovery for: " + absent.join(",") +
-      " — owner keys were untouched in phase A by law, so owner-signed re-adoption/rotation (owner-key-adopt lane) can restore these accounts; no key material for them exists in the ROT2 archive of record";
+  if (verdict === "FAIL-LOST" || absent.length) {
+    receipt.recoveryPath = "owner-authority reset is the only recovery for: " +
+      (absent.map((h) => h.chain + ":" + h.account).join(",") || "none") +
+      " — owner keys were untouched in phase A by law, so owner-signed re-adoption/rotation (owner-key-adopt lane) can restore these accounts; no usable material for them exists in the archive of record or its history";
   }
   writeReceipt(receiptOut, receipt);
-  log({ VERDICT: verdict, holes: holes.length, covered, absent: absent.join(",") || "none" });
+  log({ VERDICT: verdict, holes: holes.length, covered, absent: absent.map((h) => h.chain + ":" + h.account).join(",") || "none" });
 
-  // 7) shred plaintext, exit by verdict
-  try { execFileSync("shred", ["-u", dec], { stdio: "pipe" }); } catch { try { fs.unlinkSync(dec); } catch {} }
-  try { fs.rmSync(extDir, { recursive: true, force: true }); } catch {}
-  try { fs.rmdirSync(work); } catch {}
+  // 8) shred plaintext, exit by verdict
+  try { execFileSync("shred", ["-u", opened.dec], { stdio: "pipe" }); } catch { try { fs.unlinkSync(opened.dec); } catch {} }
+  try { fs.rmSync(work, { recursive: true, force: true }); } catch {}
   process.exit(verdict === "PASS" ? 0 : verdict === "FAIL-LOST" ? 2 : 1);
 }
 
