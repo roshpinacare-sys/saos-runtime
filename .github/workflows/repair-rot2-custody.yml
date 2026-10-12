@@ -50,8 +50,15 @@ jobs:
           G2ZIP="$(node -e "const b=JSON.parse(process.env.STEEM_VAULT_PASSES); process.stdout.write((b.gen2&&b.gen2.keysZipUnlock)||'')")"
           echo "::add-mask::$G2ZIP"
           ROT2FILE="$(node -e "const m=JSON.parse(require('fs').readFileSync('agent/recovery-meta.json','utf8')); process.stdout.write((m.rot2&&m.rot2.id&&m.keysZipFile)||'')")"
-          unzip -o -q "$ROT2FILE" -d /tmp/r2c2 2>/dev/null || { mkdir -p /tmp/r2c2 && unzip -o -q "$ROT2FILE" -d /tmp/r2c2; }
-          chmod 700 /tmp/r2c2
+          # 23-d fix (measured exit 9, runs 38274624858 + 38303059408): the archive is
+          # openssl-sealed ciphertext — unzip-on-ciphertext dies "End-of-central-directory
+          # signature not found" (exit 9) BEFORE the PUT phase ever runs. Decrypt first
+          # (gen2 bundle pass, env-only via PASS, masked above — the exact pass the
+          # sovereign resolver proved opens ROT2 at 19:28Z), then unzip the plaintext.
+          mkdir -p /tmp/r2c2 && chmod 700 /tmp/r2c2
+          PASS="$G2ZIP" openssl enc -d -aes-256-cbc -pbkdf2 -iter 300000 -in "$ROT2FILE" -out /tmp/r2c2/keys.zip -pass env:PASS \
+            || { echo "DECRYPT-FAIL on $ROT2FILE (pass ref: bundle.gen2.keysZipUnlock) — honest abort, no PUT"; rm -rf /tmp/r2c2; exit 1; }
+          unzip -o -q /tmp/r2c2/keys.zip -d /tmp/r2c2
           PASS="$G2ZIP" node - <<'NODE'
           const fs = require('fs');
           const sodium = require('libsodium-wrappers');
