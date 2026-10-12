@@ -183,9 +183,21 @@ jobs:
           else
             echo "CI_EXEC_ARMED absent — burst ticks honestly UNARMED (verdicts record why no ops ran), by law"
           fi
+          # T-65 (zai-code-3) · secret-first grid arming: if the owner armed
+          # STEEM_ACTIVE_WIF, chain-judge it and deliver it to the signer (0600).
+          # Absent secret = the burst ticks honestly UNARMED (artery-grid law
+          # law-grid-exec-alive holds the red until then). The heavy vault census
+          # is NOT run here (measured-empty 2026-10-12) — heartbeat stays lean.
+          if [ -n "$STEEM_ACTIVE_WIF" ]; then
+            if [ ! -d /tmp/steemjs/node_modules/steem ]; then npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error; fi
+            NODE_PATH=/tmp/steemjs/node_modules node "$GITHUB_WORKSPACE/ops/key-census-probe/probe-v2.cjs" --arm ../../.secrets/headcorner.key --arm-account headcorner --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
+          else
+            echo "STEEM_ACTIVE_WIF absent — grid ticks honestly UNARMED (owner one-action pending; law-grid-exec-alive holds the alarm)"
+          fi
           HYPER_BURST_MS=90000 node hypergrid-burst.mjs
         env:
           CI_EXEC_ARMED: ${{ secrets.CI_EXEC_ARMED }}
+          STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
 
       # Z-20-e (exec-20 · owner=active): THE HIVE BEAT — the user's standing order
       # "תמצא פתרון להזרים את הhive" closed at the WORKFLOW layer (the engine's own

@@ -351,7 +351,13 @@ async function runV2(armSpec = null) {
     if (armSpec) {
       receipt.arm = { requested: armSpec.chain + ":" + armSpec.account + ":" + armSpec.role, armed: false };
       const key = armSpec.chain + ":" + armSpec.account + ":" + armSpec.role;
-      const wif = matchSecret.get(key);
+      let wif = null;
+      if (armSpec.useSecret) {
+        const sec = (process.env.STEEM_ACTIVE_WIF || "").trim();
+        if (sec && P.WIF_RE.test(sec)) wif = sec;
+        else console.log("GRID-ARM-SECRET absent-or-malformed — honest refusal");
+      }
+      if (!wif && !armSpec.useSecret) wif = matchSecret.get(key);
       if (!wif) { console.log("GRID-ARM-REFUSED no-match for " + key); }
       else {
         const fresh = await liveAuthAll();
@@ -414,7 +420,7 @@ async function main() {
   const armIdx = process.argv.indexOf("--arm");
   if (armIdx >= 0) {
     const g = (f, d) => { const i = process.argv.indexOf(f); return i >= 0 ? process.argv[i + 1] : d; };
-    armSpec = { path: process.argv[armIdx + 1], account: g("--arm-account", "headcorner"), role: g("--arm-role", "active"), chain: g("--arm-chain", "steem") };
+    armSpec = { path: process.argv[armIdx + 1], account: g("--arm-account", "headcorner"), role: g("--arm-role", "active"), chain: g("--arm-chain", "steem"), useSecret: process.argv.includes("--arm-secret") };
   }
   const receipt = await runV2(armSpec);
   if (armSpec && !receipt.arm?.armed) { /* soft: honest verdict already printed; caller decides */ }
