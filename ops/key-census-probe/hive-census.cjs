@@ -99,6 +99,7 @@ async function main() {
     // 1) אמת-חיה של Hive (ציבורי)
     const chain = await hiveChain();
     receipt.hiveChain = { headBlock: chain.headBlock, nodes: HIVE_NODES, accountsSeen: Object.keys(chain.livePubs).length };
+    receipt.hiveAccounts = chain.hiveAccounts;
     console.log(`[hive-census] hive head_block=${chain.headBlock} · accounts on hive=${Object.keys(chain.livePubs).length}/${P.ROSTER.length}`);
 
     // 2) פיענוח כרוך-ה-custody (דפוס resolve-keys.cjs — קרדיט R16-a)
