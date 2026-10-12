@@ -177,11 +177,18 @@ function bundleGet(bundle, ref) {
   return typeof v === "string" && v.length >= 8 ? v : null;
 }
 
-function extract(decPath, outDir) {
-  if (/\.tar\.enc$/.test(decPath) || /\.tar$/.test(decPath)) {
+function extract(srcName, decPath, outDir) {
+  if (/\.tar(\.enc)?$/.test(srcName)) {
     execFileSync("tar", ["-xf", decPath, "-C", outDir], { stdio: "pipe" });
-  } else {
+  } else if (/\.zip(\.enc)?$/.test(srcName)) {
     execFileSync("unzip", ["-o", "-q", decPath, "-d", outDir], { stdio: "pipe" });
+  } else {
+    // sniff: gzip magic 1f8b, zip PK, tar ustar at 257
+    const fd = fs.openSync(decPath, "r");
+    const head = Buffer.alloc(4); fs.readSync(fd, head, 0, 4, 0); fs.closeSync(fd);
+    if (head[0] === 0x1f && head[1] === 0x8b) execFileSync("tar", ["-xzf", decPath, "-C", outDir], { stdio: "pipe" });
+    else if (head[0] === 0x50 && head[1] === 0x4b) execFileSync("unzip", ["-o", "-q", decPath, "-d", outDir], { stdio: "pipe" });
+    else execFileSync("tar", ["-xf", decPath, "-C", outDir], { stdio: "pipe" });
   }
 }
 
@@ -254,7 +261,7 @@ async function runV2() {
       }
       const inner = path.join(work, "inner-" + path.basename(c.file).replace(/\.enc$/, ""));
       fs.mkdirSync(inner, { recursive: true });
-      try { extract(decPath, inner); } catch (e) {
+      try { extract(path.basename(c.file), decPath, inner); } catch (e) {
         receipt.archives.push({ file: c.file, opened: true, openedBy, extracted: false, why: String(e?.message ?? e).slice(0, 80) });
         continue;
       }
