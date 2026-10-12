@@ -94,6 +94,41 @@ async function dgpo(chain) { return rpcFor(chain, "condenser_api.get_dynamic_glo
 
 const auth = (pub) => ({ weight_threshold: 1, account_auths: [], key_auths: [[pub, 1]] });
 
+/* ── 2-a: CJS-interop-safe libsodium loader (THE custody bug) ───────────
+ * Measured 2026-10-12 20:15Z (run: fleet-rotation-a phase A): `await import(
+ * "libsodium-wrappers")` returns a module namespace whose named exports NEVER
+ * include the crypto functions — the real wrappers ride under `.default` and
+ * attach their functions ONLY after `ready` resolves (verified on
+ * libsodium-wrappers 0.8.4). Bare `sodium.crypto_box_seal` = TypeError ->
+ * incremental custody died 20/20 while rotation kept broadcasting.
+ * The `_m.default ?? _m` pick works in both interop worlds, and the explicit
+ * function check makes any future packaging shift fail FAST and loud. */
+let _sodium = null;
+async function loadSodium() {
+  if (_sodium) return _sodium;
+  const _m = await import("libsodium-wrappers");
+  const sodium = _m.default ?? _m;
+  await sodium.ready;
+  if (typeof sodium.crypto_box_seal !== "function" || typeof sodium.crypto_box_seal_open !== "function") {
+    throw new Error("libsodium interop FAIL: crypto_box_seal/open missing after interop-safe load");
+  }
+  _sodium = sodium;
+  return _sodium;
+}
+
+/* selftest vector 7: crypto_box_seal seal->open roundtrip on an ephemeral
+ * generated keypair + dummy payload. Zero network, zero key material (memory
+ * only) — makes this whole bug class die at preflight instead of mid-custody. */
+async function sodiumSealSelftest() {
+  const sodium = await loadSodium();
+  const kp = sodium.crypto_box_keypair();
+  const payload = Buffer.from(JSON.stringify({ selftest: "crypto_box_seal roundtrip" }));
+  const sealed = Buffer.from(sodium.crypto_box_seal(payload, kp.publicKey));
+  const opened = Buffer.from(sodium.crypto_box_seal_open(sealed, kp.publicKey, kp.privateKey));
+  if (!opened.equals(payload)) throw new Error("sodium selftest: seal->open roundtrip mismatch");
+  return sodium;
+}
+
 /* house WIF form: 37-byte era (0x80 + 32B key + 4B chk, NO compressed flag) —
  * the steem-lib wifToPublic (used by census/custody chain-judges) mis-strips
  * the 38-byte flag form (measured: 33-byte warning + wrong pub). Same private
@@ -172,7 +207,8 @@ function selftest() {
   const wif1 = wif37(priv32);
   if (Buffer.from(TX.wifDecode(wif1))[31] !== 1) throw new Error("KAT roundtrip");
   if (P.wifToPubSafe(wif37(priv32)) !== TX.pubkeyFromSeed(priv32)) throw new Error("wif37 vs chain-lib pub mismatch");
-  log({ selftest: "PASS", vectors: 6 });
+  // vector 7 (crypto_box_seal roundtrip) ran via sodiumSealSelftest() before us
+  log({ selftest: "PASS", vectors: 7, sodiumSealRoundtrip: true });
 }
 
 /* ── match: open archives + chain-judge ─────────────────────────────────── */
@@ -265,12 +301,17 @@ async function rotateMode(matchPath, outPath) {
   const matched = JSON.parse(fs.readFileSync(matchPath, "utf8"));
   const GH = process.env.GH_PAT || "";
   const rot = { at: new Date().toISOString(), phase: "A", accounts: [], custody: { puts: [] } };
+  // 2-a custody gate BEFORE any broadcast: sodium proven seal->open working here.
+  // Law: new material must never live only in /tmp — a broken custody path must
+  // abort pre-broadcast, not be discovered after 20 broadcasts.
+  const sodium = await sodiumSealSelftest();
+  log({ sodium: "seal-roundtrip OK (pre-broadcast custody gate)" });
 
   async function custodyPut(acc) {
     if (!GH) { acc.custodyError = "GH_PAT absent — custody skipped (loud)"; log({ custody: "SKIP", account: acc.chain + ":" + acc.account, reason: "no PAT" }); return; }
     const H = { Authorization: "Bearer " + GH, Accept: "application/vnd.github+json" };
-    const sodium = await import("libsodium-wrappers");
-    await sodium.ready;
+    // 2-a: interop-safe loader (closure — rotateMode proved it pre-broadcast)
+    const sodium = await loadSodium();
     // T-68: accumulate ALL rotated material so far (per-account last-wins flaw retired)
     const accumulated = {};
     for (const a of rot.accounts) {
@@ -388,7 +429,7 @@ async function rotateMode(matchPath, outPath) {
 
 /* ── main ───────────────────────────────────────────────────────────────── */
 const argv = process.argv.slice(2);
-if (argv.includes("--selftest")) { selftest(); process.exit(0); }
+if (argv.includes("--selftest")) { await sodiumSealSelftest(); selftest(); process.exit(0); }
 if (argv.includes("--match")) { await matchMode(argv[argv.indexOf("--match") + 1]); process.exit(0); }
 if (argv.includes("--rotate")) { await rotateMode(argv[argv.indexOf("--rotate") + 1], argv[argv.indexOf("--rotate") + 2]); process.exit(0); }
 log("usage: rotate.mjs --selftest | --match OUT | --rotate MATCH OUT");
