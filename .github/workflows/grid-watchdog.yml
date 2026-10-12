@@ -1,0 +1,784 @@
+# grid-watchdog — the network refuses to be quiet about itself.
+#
+# WHY THIS EXISTS: every production surface of the grid can sit parked
+# (custody, social, content, dex, blurt, delegation, scheduling, billing)
+# while every workflow reports success — a silent red wall no human sees.
+# This workflow measures the wall twice an hour and screams in the right
+# places:
+#
+#   1. OBSERVE    cross-repo telemetry: engine heartbeat (steem@saos-cockpit),
+#                 pulse-chain freshness, FleetHQ state-file freshness
+#                 (potential/digest — paths discovered dynamically, never
+#                 hardcoded), office-window schedule health, billing-block
+#                 annotations on recent failed runs. Without GH_PAT,
+#                 cross-repo signals are marked UNAVAILABLE (honest absence,
+#                 never fabricated green).
+#   2. DECIDE     thresholds inline (see THRESHOLDS); red = crossed threshold
+#                 OR unavailable.
+#   3. ALARM      idempotent GRID-ALERT issue upsert: one open issue, body
+#                 patched to the current table, comment only when the
+#                 red-signal SET changes, auto-close with evidence when all
+#                 green. Two green runs never spam comments.
+#   4. STATUS     STATUS.md + state/grid-status.json + state/watchdog-actions.json
+#                 committed EVERY run (green too) = human/machine status
+#                 surface + anti-60-day-disable keepalive commit.
+#   5. SELF-HEAL  max 1 dispatch per signal per 6h (state/watchdog-actions.json):
+#                 stale pulse -> re-dispatch sovereign-runtime; dead
+#                 office-window schedule -> re-dispatch FleetHQ office-window
+#                 (cross-repo, requires GH_PAT).
+#   6. FAIL-LOUD  heartbeat missing/unparseable/>90m => ::error:: + exit 1,
+#                 AFTER alarm + status so the alarm still lands.
+#
+# HONESTY LAWS: verdict strings, counts, booleans and timestamps only —
+# no keys, no account identifiers, no secret material in any committed file
+# or issue body. A signal that cannot be measured is shown as UNAVAILABLE
+# and alarms as red. Additive-only lane: this file manages only its own
+# state (STATUS.md, state/*) and never edits other workflows.
+#
+# Provenance: authored by lane 23-a (2026-10-12).
+
+name: grid-watchdog
+
+on:
+  schedule:
+    - cron: "13,43 * * * *"   # two slots per hour at odd minutes; avoids top-of-hour scheduler congestion
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: grid-watchdog
+  cancel-in-progress: false
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+    steps:
+      - name: Checkout saos-runtime
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Observe
+        run: |
+          if [ -n "${GH_PAT:-}" ]; then TOKEN="$GH_PAT"; CROSS=true; else TOKEN="$GITHUB_TOKEN"; CROSS=false; fi
+          export WF_TOKEN="$TOKEN" WF_CROSS="$CROSS"
+          if [ "$CROSS" = "true" ]; then echo "token source: GH_PAT (cross-repo capable)"; else echo "token source: GITHUB_TOKEN (same-repo only)"; fi
+          python3 - <<'WDOBSERVE'
+          import base64, json, os, subprocess
+          from datetime import datetime, timezone
+
+          API = "https://api.github.com"
+          TOKEN = os.environ.get("WF_TOKEN", "")
+          CROSS = os.environ.get("WF_CROSS", "false") == "true"
+          OWNER = "roshpinacare-sys"
+
+          def _curl(url, out):
+              p = subprocess.run(
+                  ["curl", "-sS", "-m", "25", "-w", "%{http_code}", "-o", out,
+                   "-H", "Authorization: token " + TOKEN,
+                   "-H", "Accept: application/vnd.github+json", url],
+                  capture_output=True, text=True)
+              return (p.stdout or "").strip() or "ERR"
+
+          def jget(path, tag, cross=False):
+              """GET {API}{path}. Returns (obj|None, code); code is an HTTP code, SKIP, ERR or PARSE."""
+              if cross and not CROSS:
+                  return None, "SKIP"
+              out = "/tmp/wd-%s.json" % tag
+              code = _curl(API + path, out)
+              if code != "200":
+                  return None, code
+              try:
+                  with open(out) as f:
+                      return json.load(f), code
+              except Exception:
+                  return None, "PARSE"
+
+          def age_s(iso):
+              if not isinstance(iso, str) or not iso:
+                  return None
+              try:
+                  s = iso.strip()
+                  if s.endswith("Z"):
+                      s = s[:-1] + "+00:00"
+                  return max(0.0, (datetime.now(timezone.utc) - datetime.fromisoformat(s)).total_seconds())
+              except Exception:
+                  return None
+
+          def fmt_age(sec):
+              if sec is None:
+                  return "unavailable"
+              if sec < 90:
+                  return "%ds" % int(sec)
+              if sec < 5400:
+                  return "%dm" % round(sec / 60)
+              return "%.1fh" % (sec / 3600)
+
+          def now_iso():
+              return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          signals = {}
+          facts = {}
+
+          # ---- a) heartbeat (cross-repo: steem @ saos-cockpit) ----
+          hb_wrap, hb_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hb", cross=True)
+          hb = None
+          if isinstance(hb_wrap, dict) and hb_wrap.get("encoding") == "base64":
+              try:
+                  hb = json.loads(base64.b64decode(hb_wrap.get("content", "")).decode("utf-8"))
+              except Exception:
+                  hb = None
+          hb_ok = isinstance(hb, dict)
+          hb_at = hb.get("at") if hb_ok else None
+          hb_age = age_s(hb_at)
+          steps = hb.get("report", {}).get("steps", {}) if hb_ok else {}
+
+          signals["heartbeat.fresh"] = {
+              "measured": "age=%s http=%s" % (fmt_age(hb_age), hb_code),
+              "threshold": "age<=2400s (40m); missing/unparseable is red",
+              "red": (hb_age is None or hb_age > 2400),
+              "since": hb_at,
+          }
+          facts["heartbeatAt"], facts["heartbeatAgeS"], facts["heartbeatHttp"] = hb_at, hb_age, hb_code
+
+          # custody
+          cust = steps.get("custody", {}) if hb_ok else {}
+          verified, total = cust.get("verified"), cust.get("total")
+          if verified is None and hb_ok and isinstance(hb.get("custody"), str) and "/" in hb["custody"]:
+              try:
+                  a, b = hb["custody"].split("/")
+                  verified, total = int(a), int(b)
+              except Exception:
+                  pass
+          signals["custody.coverage"] = {
+              "measured": "verified=%s/total=%s" % (verified, total),
+              "threshold": "verified>=14",
+              "red": (not isinstance(verified, int)) or verified < 14,
+              "since": hb_at,
+          }
+          facts["custodyVerified"], facts["custodyTotal"] = verified, total
+
+          # verdict signals (verdict strings + counts only; never account names or identifiers)
+          GREEN = {
+              "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY"],
+              "content": ["OK", "GREEN", "PUBLISHED", "DRAFTS-QUEUED", "IDLE", "QUEUED", "READY"],
+              "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY"],
+              "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY"],
+          }
+          sv = hb.get("social") if hb_ok else None
+          so = steps.get("social", {}) if hb_ok else {}
+          signals["social.verdict"] = {
+              "measured": "verdict=%s executed=%s refused=%s" % (sv, so.get("executed"), so.get("refused")),
+              "threshold": "verdict in green set (anything else red)",
+              "red": (sv not in GREEN["social"]),
+              "since": hb_at,
+          }
+          facts["socialExecuted"], facts["socialRefused"] = so.get("executed"), so.get("refused")
+
+          cv = hb.get("content") if hb_ok else None
+          co = steps.get("content", {}) if hb_ok else {}
+          signals["content.verdict"] = {
+              "measured": "verdict=%s draftsQueued=%s" % (cv, co.get("draftsQueued")),
+              "threshold": "verdict in green set (anything else red)",
+              "red": (cv not in GREEN["content"]),
+              "since": hb_at,
+          }
+
+          dxv = hb.get("dex") if hb_ok else None
+          dx = steps.get("dex", {}) if hb_ok else {}
+          anchor = dx.get("anchorAgeMs")
+          anchor_ok = isinstance(anchor, (int, float)) and not isinstance(anchor, bool)
+          signals["dex.anchor"] = {
+              "measured": "verdict=%s anchorAgeMs=%s" % (dxv, int(anchor) if anchor_ok else "unavailable"),
+              "threshold": "anchorAgeMs<=86400000 (24h)",
+              "red": ((not anchor_ok) or anchor > 86400000),
+              "since": hb_at,
+          }
+          facts["dexAnchorAgeMs"] = int(anchor) if anchor_ok else None
+
+          bv = hb.get("blurt") if hb_ok else None
+          bl = steps.get("blurt", {}) if hb_ok else {}
+          live, btot = bl.get("live"), bl.get("total")
+          signals["blurt.live"] = {
+              "measured": "verdict=%s live=%s/%s" % (bv, live, btot),
+              "threshold": "live>=1",
+              "red": (not (isinstance(live, int) and not isinstance(live, bool) and live >= 1)),
+              "since": hb_at,
+          }
+          facts["blurtLive"], facts["blurtTotal"] = live, btot
+
+          dgv = hb.get("digest") if hb_ok else None
+          dg = steps.get("digest", {}) if hb_ok else {}
+          signals["digest.verdict"] = {
+              "measured": "verdict=%s slot=%s" % (dgv, dg.get("slot")),
+              "threshold": "verdict in green set (COOLDOWN is normal pacing)",
+              "red": (dgv not in GREEN["digest"]),
+              "since": hb_at,
+          }
+
+          dlv = hb.get("delegation") if hb_ok else None
+          dl = steps.get("delegation", {}) if hb_ok else {}
+          signals["delegation.verdict"] = {
+              "measured": "verdict=%s ops=%s" % (dlv, dl.get("ops")),
+              "threshold": "verdict in green set (anything else red)",
+              "red": (dlv not in GREEN["delegation"]),
+              "since": hb_at,
+          }
+          facts["delegationOps"] = dl.get("ops")
+
+          # ---- b) last saos-runtime sovereign-runtime run ----
+          pr, pr_code = jget("/repos/%s/saos-runtime/actions/workflows/sovereign-runtime.yml/runs?per_page=3" % OWNER, "pulse")
+          pick = None
+          if isinstance(pr, dict) and pr.get("workflow_runs"):
+              cand = [r for r in pr["workflow_runs"] if r.get("conclusion") != "cancelled"]
+              pick = cand[0] if cand else pr["workflow_runs"][0]
+          if pr_code == "200" and pick:
+              p_age, p_concl = age_s(pick.get("created_at")), pick.get("conclusion")
+              p_disp = p_concl if p_concl is not None else "status=%s" % pick.get("status")
+              signals["pulse.fresh"] = {
+                  "measured": "age=%s conclusion=%s run=%s" % (fmt_age(p_age), p_disp, pick.get("id")),
+                  "threshold": "age<=2400s (40m) and conclusion=success",
+                  "red": (p_age is None or p_age > 2400 or (p_concl is not None and p_concl != "success")),
+                  "since": pick.get("created_at"),
+              }
+              facts["pulseRunAt"], facts["pulseAgeS"] = pick.get("created_at"), p_age
+              facts["pulseRunId"], facts["pulseConclusion"] = pick.get("id"), p_concl
+          else:
+              signals["pulse.fresh"] = {
+                  "measured": "unavailable: sovereign-runtime runs not readable (http=%s)" % pr_code,
+                  "threshold": "age<=2400s (40m) and conclusion=success",
+                  "red": True,
+                  "since": None,
+              }
+
+          # ---- c) FleetHQ state (cross-repo; paths discovered dynamically, never hardcoded) ----
+          fhq_repo, fhq_repo_code = jget("/repos/%s/FleetHQ" % OWNER, "fhqrepo", cross=True)
+          fhq_default = fhq_repo.get("default_branch", "main") if isinstance(fhq_repo, dict) else "main"
+          facts["fhqDefaultBranch"], facts["fhqRepoHttp"] = fhq_default, fhq_repo_code
+          br_obj, br_code = jget("/repos/%s/FleetHQ/branches?per_page=100" % OWNER, "fhqbranches", cross=True)
+          branch_names = []
+          if isinstance(br_obj, list):
+              branch_names = [b.get("name") for b in br_obj if isinstance(b, dict) and b.get("name")]
+          if fhq_default in branch_names:
+              branch_names.remove(fhq_default)
+          branch_names = ([fhq_default] + branch_names)[:3]
+
+          found, tree_codes = {}, []
+          for br in branch_names:
+              tree, tcode = jget("/repos/%s/FleetHQ/git/trees/%s?recursive=1" % (OWNER, br), "tree-%s" % br, cross=True)
+              tree_codes.append("%s:%s" % (br, tcode))
+              if not isinstance(tree, dict):
+                  continue
+              for e in tree.get("tree", []):
+                  p = e.get("path", "")
+                  base = p.rsplit("/", 1)[-1]
+                  if base in ("potential.json", "digest.json") and base not in found:
+                      found[base] = (br, p)
+
+          for fname, key in (("potential.json", "potential"), ("digest.json", "fleetdigest")):
+              if fname in found:
+                  br, p = found[fname]
+                  cs, ccode = jget("/repos/%s/FleetHQ/commits?sha=%s&path=%s&per_page=1" % (OWNER, br, p), "commits-%s" % key, cross=True)
+                  cdate = None
+                  if isinstance(cs, list) and cs:
+                      c = cs[0].get("commit", {})
+                      cdate = (c.get("committer") or {}).get("date") or (c.get("author") or {}).get("date")
+                  c_age = age_s(cdate)
+                  signals["%s.fresh" % key] = {
+                      "measured": "age=%s path=%s:%s" % (fmt_age(c_age), br, p),
+                      "threshold": "age<=93600s (26h)",
+                      "red": (c_age is None or c_age > 93600),
+                      "since": cdate,
+                  }
+                  facts["fleetDigestCommitAt" if key == "fleetdigest" else "potentialCommitAt"] = cdate
+                  facts["fleetDigestAgeS" if key == "fleetdigest" else "potentialAgeS"] = c_age
+              else:
+                  signals["%s.fresh" % key] = {
+                      "measured": "unavailable: %s not found (branches searched: %s; tree codes: %s)" % (fname, ",".join(branch_names), ",".join(tree_codes)),
+                      "threshold": "age<=93600s (26h)",
+                      "red": True,
+                      "since": None,
+                  }
+
+          ow, ow_code = jget("/repos/%s/FleetHQ/actions/workflows/office-window.yml/runs?per_page=20" % OWNER, "office", cross=True)
+          sched = []
+          if isinstance(ow, dict):
+              sched = [r for r in ow.get("workflow_runs", []) if r.get("event") == "schedule"]
+          if ow_code != "200":
+              signals["office.schedule"] = {
+                  "measured": "unavailable: office-window.yml runs not readable (http=%s)" % ow_code,
+                  "threshold": "newest schedule run age<=93600s (26h)",
+                  "red": True,
+                  "since": None,
+              }
+          elif not sched:
+              signals["office.schedule"] = {
+                  "measured": "unavailable: no schedule-event run in the last 20 runs (scheduling dead)",
+                  "threshold": "newest schedule run age<=93600s (26h)",
+                  "red": True,
+                  "since": None,
+              }
+          else:
+              newest = sched[0]
+              o_age = age_s(newest.get("created_at"))
+              signals["office.schedule"] = {
+                  "measured": "age=%s conclusion=%s" % (fmt_age(o_age), newest.get("conclusion")),
+                  "threshold": "newest schedule run age<=93600s (26h)",
+                  "red": (o_age is None or o_age > 93600),
+                  "since": newest.get("created_at"),
+              }
+              facts["officeScheduleAt"], facts["officeScheduleAgeS"] = newest.get("created_at"), o_age
+
+          # ---- d) billing-block detection on recent failed runs ----
+          runs15, r15_code = jget("/repos/%s/saos-runtime/actions/runs?per_page=15" % OWNER, "runs15")
+          failed = []
+          if isinstance(runs15, dict):
+              failed = [r for r in runs15.get("workflow_runs", []) if r.get("conclusion") in ("failure", "startup_failure")]
+          billing_red, bill_since, bill_hit, examined = False, None, "", 0
+          for r in failed[:2]:
+              examined += 1
+              cr, _ = jget("/repos/%s/saos-runtime/commits/%s/check-runs?per_page=100" % (OWNER, r.get("head_sha")), "cr-%s" % r.get("id"))
+              if not isinstance(cr, dict):
+                  continue
+              for c in cr.get("check_runs", []):
+                  if c.get("conclusion") not in ("failure", "startup_failure"):
+                      continue
+                  if c.get("output", {}).get("annotations_count", 0) <= 0:
+                      continue
+                  ann, _ = jget(c["output"]["annotations_url"][len(API):], "ann-%s" % c.get("id"))
+                  if isinstance(ann, list):
+                      for a in ann:
+                          m = (a.get("message") or "").lower()
+                          if "payments have failed" in m or "spending limit" in m:
+                              billing_red, bill_since = True, r.get("created_at")
+                              bill_hit = "run %s check '%s'" % (r.get("id"), c.get("name"))
+                              break
+                  if billing_red:
+                      break
+              if billing_red:
+                  break
+          if r15_code != "200":
+              billing_red = True
+          signals["billing.block"] = {
+              "measured": ("billing-block annotation found (%s)" % bill_hit) if billing_red and r15_code == "200"
+                  else ("no billing-block annotation (%d failed run(s) of %d in last 15)" % (examined, len(failed)) if r15_code == "200" else "unavailable: recent runs not readable (http=%s)" % r15_code),
+              "threshold": "no 'payments have failed'/'spending limit' annotations on recent failed runs",
+              "red": billing_red,
+              "since": bill_since,
+          }
+          facts["billingBlock"] = billing_red
+
+          # ---- open grid-alert issue snapshot (consumed by the Alarm step) ----
+          iss, iss_code = jget("/repos/%s/saos-runtime/issues?labels=grid-alert&state=open&per_page=10" % OWNER, "issues")
+          open_alerts = []
+          if isinstance(iss, list):
+              open_alerts = [i for i in iss if isinstance(i, dict) and not i.get("pull_request")]
+          with open("/tmp/wd-issues.json", "w") as fh:
+              json.dump({"http": iss_code, "issues": [
+                  {"number": i["number"], "title": i.get("title", ""), "body": i.get("body") or ""}
+                  for i in open_alerts]}, fh)
+
+          out = {"generatedAt": now_iso(), "crossRepo": CROSS, "signals": signals, "facts": facts}
+          with open("/tmp/observe.json", "w") as fh:
+              json.dump(out, fh, indent=1, sort_keys=True)
+          red_list = ", ".join(k for k, s in sorted(signals.items()) if s["red"]) or "none"
+          print("observe: %d signals, red: %s" % (len(signals), red_list))
+          WDOBSERVE
+
+      - name: Decide
+        run: |
+          python3 - <<'WDDECIDE'
+          import json, os, re
+          from datetime import datetime, timezone
+
+          # Thresholds — single inline source of truth for the watchdog (kept in sync with Observe).
+          THRESHOLDS = {
+              "heartbeat.fresh.maxAgeS": 2400,
+              "heartbeat.dead.maxAgeS": 5400,
+              "pulse.fresh.maxAgeS": 2400,
+              "custody.verified.min": 14,
+              "blurt.live.min": 1,
+              "dex.anchor.maxAgeMs": 86400000,
+              "state.fresh.maxAgeS": 93600,
+              "office.schedule.maxAgeS": 93600,
+              "dispatch.cooldownS": 21600,
+              "verdict.green": {
+                  "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY"],
+                  "content": ["OK", "GREEN", "PUBLISHED", "DRAFTS-QUEUED", "IDLE", "QUEUED", "READY"],
+                  "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY"],
+                  "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY"]
+              }
+          }
+
+          obs = json.load(open("/tmp/observe.json"))
+          reds = [{"key": k, "measured": s["measured"], "threshold": s["threshold"], "since": s["since"]}
+                  for k, s in sorted(obs["signals"].items()) if s.get("red")]
+          with open("/tmp/reds.json", "w") as fh:
+              json.dump(reds, fh, indent=1)
+
+          utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          n = len(reds)
+
+          def table(rs):
+              rows = ["| Signal | Measured | Threshold | Since |", "|---|---|---|---|"]
+              for r in rs:
+                  rows.append("| %s | %s | %s | %s |" % (r["key"], str(r["measured"]).replace("|", "/"), r["threshold"], r["since"] or "unavailable"))
+              return "\n".join(rows)
+
+          red_keys = sorted(r["key"] for r in reds)
+          marker = "<!-- grid-watchdog:reds=%s -->" % "|".join(red_keys)
+          body = ("GRID-ALERT — %d red signals @ %s\n\n%s\n\n%s\n\n"
+                  "Auto-managed by grid-watchdog; auto-closes when green. "
+                  "Contains telemetry only — no keys, no account identifiers.") % (n, utc, table(reds), marker)
+          title = "GRID-ALERT — %d red signals @ %s" % (n, utc)
+
+          try:
+              issues_doc = json.load(open("/tmp/wd-issues.json"))
+          except Exception:
+              issues_doc = {"http": "SKIP", "issues": []}
+          open_alert = issues_doc["issues"][0] if issues_doc.get("issues") else None
+
+          for p in ("/tmp/alarm-create.json", "/tmp/alarm-patch.json", "/tmp/alarm-comment.json",
+                    "/tmp/alarm-close.json", "/tmp/alarm-close-patch.json"):
+              if os.path.exists(p):
+                  os.remove(p)
+
+          if n > 0:
+              if open_alert is None:
+                  with open("/tmp/alarm-create.json", "w") as fh:
+                      json.dump({"title": title, "body": body, "labels": ["grid-alert", "automated"]}, fh)
+              else:
+                  old_set = set()
+                  m = re.search(r"<!--\s*grid-watchdog:reds=([^\s>]*)\s*-->", open_alert.get("body") or "")
+                  if m and m.group(1):
+                      old_set = set(x for x in m.group(1).split("|") if x)
+                  new_set = set(red_keys)
+                  with open("/tmp/alarm-patch.json", "w") as fh:
+                      json.dump({"title": title, "body": body}, fh)
+                  if new_set != old_set:
+                      added = sorted(new_set - old_set)
+                      removed = sorted(old_set - new_set)
+                      cbody = "Red-signal set changed @ %s.\n\nCurrent reds (%d): %s" % (utc, len(new_set), ", ".join(sorted(new_set)) or "none")
+                      if added:
+                          cbody += "\n\nNew red signals (%d): %s" % (len(added), ", ".join(added))
+                      if removed:
+                          cbody += "\n\nResolved signals (%d): %s" % (len(removed), ", ".join(removed))
+                      with open("/tmp/alarm-comment.json", "w") as fh:
+                          json.dump({"body": cbody}, fh)
+          else:
+              if open_alert is not None:
+                  f = obs.get("facts", {})
+
+                  def fmt(sec):
+                      if sec is None:
+                          return "unavailable"
+                      if sec < 90:
+                          return "%ds" % int(sec)
+                      if sec < 5400:
+                          return "%dm" % round(sec / 60)
+                      return "%.1fh" % (sec / 3600)
+
+                  cbody = "All green @ %s (evidence: heartbeat age %s, pulse age %s). Auto-closing." % (
+                      utc, fmt(f.get("heartbeatAgeS")), fmt(f.get("pulseAgeS")))
+                  with open("/tmp/alarm-close.json", "w") as fh:
+                      json.dump({"body": cbody}, fh)
+                  with open("/tmp/alarm-close-patch.json", "w") as fh:
+                      json.dump({"state": "closed"}, fh)
+
+          hb_age = obs.get("facts", {}).get("heartbeatAgeS")
+          hb_healthy = 1 if (hb_age is not None and hb_age <= THRESHOLDS["heartbeat.dead.maxAgeS"]) else 0
+          envp = os.environ.get("GITHUB_ENV")
+          if envp:
+              with open(envp, "a") as fh:
+                  fh.write("REDS_COUNT=%d\n" % n)
+                  fh.write("REDS_KEYS=%s\n" % ",".join(red_keys))
+                  fh.write("HB_HEALTHY=%d\n" % hb_healthy)
+                  fh.write("HB_AGE_S=%s\n" % ("" if hb_age is None else str(int(hb_age))))
+                  p_age = obs.get("facts", {}).get("pulseAgeS")
+                  fh.write("PULSE_AGE_S=%s\n" % ("" if p_age is None else str(int(p_age))))
+                  fh.write("CROSS_REPO=%s\n" % ("true" if obs.get("crossRepo") else "false"))
+          print("decide: %d red signal(s): %s" % (n, ", ".join(red_keys) or "none"))
+          WDDECIDE
+
+      - name: Alarm — GRID-ALERT issue upsert
+        run: |
+          if [ -n "${GH_PAT:-}" ]; then TOKEN="$GH_PAT"; else TOKEN="$GITHUB_TOKEN"; fi
+          H="Authorization: token $TOKEN"
+          A="Accept: application/vnd.github+json"
+          BASE="https://api.github.com/repos/roshpinacare-sys/saos-runtime"
+          cat > /tmp/wd-refresh.py <<'WDALARMREFRESH'
+          import json
+          try:
+              d = json.load(open("/tmp/wd-issues-refetch.json"))
+              if isinstance(d, list):
+                  out = {"http": "200", "issues": [
+                      {"number": i["number"], "title": i.get("title", ""), "body": i.get("body") or ""}
+                      for i in d if isinstance(i, dict) and not i.get("pull_request")]}
+                  open("/tmp/wd-issues.json", "w").write(json.dumps(out))
+          except Exception:
+              pass
+          WDALARMREFRESH
+          # refresh the open-alert snapshot if Observe could not fetch it
+          if ! python3 -c "import json,sys; d=json.load(open('/tmp/wd-issues.json')); sys.exit(0 if d.get('http')=='200' else 1)" 2>/dev/null; then
+            curl -sS -m 25 -H "$H" -H "$A" "$BASE/issues?labels=grid-alert&state=open&per_page=10" -o /tmp/wd-issues-refetch.json || true
+            python3 /tmp/wd-refresh.py
+          fi
+          NUM=$(python3 -c "import json; d=json.load(open('/tmp/wd-issues.json')); print(d['issues'][0]['number'] if d.get('issues') else '')" 2>/dev/null || echo "")
+          if [ "${REDS_COUNT:-0}" -gt 0 ]; then
+            if [ -z "$NUM" ]; then
+              for L in grid-alert automated; do
+                LC=$(curl -sS -m 25 -o /tmp/wd-label.out -w '%{http_code}' -X POST -H "$H" -H "$A" "$BASE/labels" -d "{\"name\":\"$L\"}") || LC=ERR
+                echo "ensure label '$L' -> $LC (201 created / 422 exists — both fine)"
+              done
+              RC=$(curl -sS -m 25 -o /tmp/wd-issue-create.out -w '%{http_code}' -X POST -H "$H" -H "$A" "$BASE/issues" -d @/tmp/alarm-create.json)
+              echo "GRID-ALERT issue create -> $RC"
+              NUM=$(python3 -c "import json;print(json.load(open('/tmp/wd-issue-create.out')).get('number',''))" 2>/dev/null || echo "")
+            else
+              PC=$(curl -sS -m 25 -o /tmp/wd-issue-patch.out -w '%{http_code}' -X PATCH -H "$H" -H "$A" "$BASE/issues/$NUM" -d @/tmp/alarm-patch.json)
+              echo "GRID-ALERT issue #$NUM body patch -> $PC"
+              if [ -s /tmp/alarm-comment.json ]; then
+                CC=$(curl -sS -m 25 -o /tmp/wd-issue-comment.out -w '%{http_code}' -X POST -H "$H" -H "$A" "$BASE/issues/$NUM/comments" -d @/tmp/alarm-comment.json)
+                echo "red-signal set changed — comment -> $CC"
+              fi
+            fi
+            echo "alarm active: issue ${NUM:-CREATION-FAILED} reds=${REDS_KEYS:-unknown}"
+          else
+            if [ -n "$NUM" ]; then
+              CC=$(curl -sS -m 25 -o /tmp/wd-close-comment.out -w '%{http_code}' -X POST -H "$H" -H "$A" "$BASE/issues/$NUM/comments" -d @/tmp/alarm-close.json)
+              PC=$(curl -sS -m 25 -o /tmp/wd-close-patch.out -w '%{http_code}' -X PATCH -H "$H" -H "$A" "$BASE/issues/$NUM" -d @/tmp/alarm-close-patch.json)
+              echo "all green — closed GRID-ALERT #$NUM (comment -> $CC, close -> $PC)"
+            else
+              echo "all green — no open GRID-ALERT issue (idempotent no-op)"
+            fi
+          fi
+
+      - name: Status + keepalive commit
+        run: |
+          if [ -n "${GH_PAT:-}" ]; then TOKEN="$GH_PAT"; CROSS=true; else TOKEN="$GITHUB_TOKEN"; CROSS=false; fi
+          export WF_TOKEN="$TOKEN" WF_CROSS="$CROSS"
+          python3 - <<'WDSTATUS'
+          import json, os
+          from datetime import datetime, timezone
+
+          COOLDOWN_S = 21600.0  # max 1 self-heal dispatch per signal per 6h
+          REPO_DIR = os.environ.get("WD_REPO_DIR", ".")
+
+          obs = json.load(open("/tmp/observe.json"))
+          reds = json.load(open("/tmp/reds.json"))
+          red_keys = sorted(r["key"] for r in reds)
+          f = obs.get("facts", {})
+          utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          cross = bool(obs.get("crossRepo"))
+
+          # ---- state/watchdog-actions.json: due self-heal dispatches (max 1 per signal per 6h) ----
+          last = {}
+          wd_path = os.path.join(REPO_DIR, "state", "watchdog-actions.json")
+          try:
+              with open(wd_path) as fh:
+                  loaded = json.load(fh)
+              if isinstance(loaded, dict):
+                  last = loaded
+          except Exception:
+              last = {}
+
+          def due(key):
+              v = last.get(key)
+              if not isinstance(v, str):
+                  return True
+              try:
+                  s = v[:-1] + "+00:00" if v.endswith("Z") else v
+                  return (datetime.now(timezone.utc) - datetime.fromisoformat(s)).total_seconds() >= COOLDOWN_S
+              except Exception:
+                  return True
+
+          plan = []
+          if "pulse.fresh" in red_keys and due("pulse"):
+              plan.append("pulse")
+              last["pulse"] = utc
+          if "office.schedule" in red_keys:
+              if cross and due("officeWindow"):
+                  plan.append("office-window")
+                  last["officeWindow"] = utc
+              elif not cross:
+                  print("self-heal: office-window dispatch skipped (crossRepo=false — honest absence)")
+          last = {k: v for k, v in sorted(last.items()) if isinstance(v, str)}
+          os.makedirs(os.path.dirname(wd_path), exist_ok=True)
+          with open(wd_path, "w") as fh:
+              json.dump(last, fh, indent=1, sort_keys=True)
+              fh.write("\n")
+
+          # ---- state/grid-status.json (machine: counts/booleans/timestamps only) ----
+          def num(x):
+              if isinstance(x, bool):
+                  return x
+              if isinstance(x, int):
+                  return x
+              if isinstance(x, float):
+                  return int(round(x))
+              return None
+
+          status = {
+              "generatedAt": utc,
+              "crossRepo": cross,
+              "redCount": len(red_keys),
+              "reds": red_keys,
+              "signals": {
+                  "heartbeatAt": f.get("heartbeatAt"),
+                  "heartbeatAgeS": num(f.get("heartbeatAgeS")),
+                  "custodyVerified": num(f.get("custodyVerified")),
+                  "custodyTotal": num(f.get("custodyTotal")),
+                  "socialExecuted": num(f.get("socialExecuted")),
+                  "socialRefused": num(f.get("socialRefused")),
+                  "dexAnchorAgeMs": num(f.get("dexAnchorAgeMs")),
+                  "blurtLive": num(f.get("blurtLive")),
+                  "blurtTotal": num(f.get("blurtTotal")),
+                  "pulseRunAt": f.get("pulseRunAt"),
+                  "pulseRunId": num(f.get("pulseRunId")),
+                  "pulseAgeS": num(f.get("pulseAgeS")),
+                  "potentialCommitAt": f.get("potentialCommitAt"),
+                  "potentialAgeS": num(f.get("potentialAgeS")),
+                  "fleetDigestCommitAt": f.get("fleetDigestCommitAt"),
+                  "fleetDigestAgeS": num(f.get("fleetDigestAgeS")),
+                  "officeScheduleAt": f.get("officeScheduleAt"),
+                  "officeScheduleAgeS": num(f.get("officeScheduleAgeS")),
+                  "billingBlock": bool(f.get("billingBlock")),
+              },
+          }
+          os.makedirs(os.path.join(REPO_DIR, "state"), exist_ok=True)
+          with open(os.path.join(REPO_DIR, "state", "grid-status.json"), "w") as fh:
+              json.dump(status, fh, indent=1, sort_keys=True)
+              fh.write("\n")
+
+          # ---- STATUS.md (human: one table + 3-line legend; no emoji, no chat phrases) ----
+          sig = obs.get("signals", {})
+          order = ["heartbeat.fresh", "custody.coverage", "social.verdict", "content.verdict",
+                   "dex.anchor", "blurt.live", "delegation.verdict", "digest.verdict",
+                   "pulse.fresh", "potential.fresh", "fleetdigest.fresh", "office.schedule", "billing.block"]
+
+          def status_word(s):
+              if s["red"] and "unavailable" in str(s["measured"]).lower():
+                  return "UNAVAILABLE"
+              return "RED" if s["red"] else "GREEN"
+
+          lines = []
+          lines.append("# Grid status")
+          lines.append("")
+          lines.append("Generated %s by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: %s."
+                       % (utc, "yes" if cross else "no — steem/FleetHQ signals marked unavailable"))
+          lines.append("")
+          lines.append("| Signal | Measured | Threshold | Status | Since |")
+          lines.append("|---|---|---|---|---|")
+          for k in order:
+              s = sig.get(k)
+              if not s:
+                  continue
+              lines.append("| %s | %s | %s | %s | %s |" % (
+                  k, str(s["measured"]).replace("|", "/"), s["threshold"], status_word(s), s["since"] or "unavailable"))
+          lines.append("")
+          lines.append("Legend:")
+          lines.append("- RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.")
+          lines.append("- GREEN: within threshold. UNAVAILABLE: the signal could not be measured and is treated as RED until proven otherwise.")
+          lines.append("- Auto-managed by grid-watchdog; machine state in state/grid-status.json. Telemetry only — no keys, no account identifiers.")
+          with open(os.path.join(REPO_DIR, "STATUS.md"), "w") as fh:
+              fh.write("\n".join(lines) + "\n")
+
+          msg = "watchdog: %s @ %s" % ("green" if not red_keys else "%d reds" % len(red_keys), utc)
+          with open("/tmp/status-commit-msg.txt", "w") as fh:
+              fh.write(msg)
+
+          envp = os.environ.get("GITHUB_ENV")
+          if envp:
+              with open(envp, "a") as fh:
+                  fh.write("DISPATCH_PLAN=%s\n" % (",".join(plan) if plan else "none"))
+                  fh.write("FHQ_REF=%s\n" % (f.get("fhqDefaultBranch") or "main"))
+          print("status: %s | self-heal plan: %s" % (msg, ",".join(plan) or "none"))
+          WDSTATUS
+          git config user.name "grid-watchdog"
+          git config user.email "grid-watchdog@users.noreply.github.com"
+          git config credential.helper '!f() { echo "username=x-access-token"; echo "password=${WF_TOKEN}"; }; f'
+          MSG=$(cat /tmp/status-commit-msg.txt)
+          git add STATUS.md state/grid-status.json state/watchdog-actions.json
+          if git diff --cached --quiet; then
+            echo "status unchanged — keepalive commit skipped"
+          else
+            git commit -m "$MSG"
+          fi
+          PUSHED=0
+          for i in 1 2 3; do
+            if git push origin HEAD:main 2>/tmp/wd-push.err; then PUSHED=1; break; fi
+            echo "push attempt $i failed — rebase and retry"
+            git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; git pull --no-rebase origin main || true; }
+          done
+          if [ "$PUSHED" != "1" ]; then
+            echo "::error::keepalive push failed after 3 attempts"
+            cat /tmp/wd-push.err || true
+            exit 1
+          fi
+          echo "keepalive commit: $(git rev-parse HEAD) ($MSG)"
+
+      - name: Self-heal dispatches
+        run: |
+          if [ -n "${GH_PAT:-}" ]; then TOKEN="$GH_PAT"; CROSS=true; else TOKEN="$GITHUB_TOKEN"; CROSS=false; fi
+          export WF_TOKEN="$TOKEN"
+          H="Authorization: token $TOKEN"
+          A="Accept: application/vnd.github+json"
+          PLAN="${DISPATCH_PLAN:-none}"
+          echo "self-heal plan: $PLAN"
+          FAILED=""
+          if [ "$PLAN" != "none" ]; then
+            for K in $(echo "$PLAN" | tr ',' ' '); do
+              case "$K" in
+                pulse)
+                  C=$(curl -sS -m 25 -o /tmp/wd-disp-pulse.out -w '%{http_code}' -X POST -H "$H" -H "$A" "https://api.github.com/repos/roshpinacare-sys/saos-runtime/actions/workflows/sovereign-runtime.yml/dispatches" -d '{"ref":"main"}') || C=ERR
+                  ;;
+                office-window)
+                  if [ "$CROSS" = "true" ]; then
+                    C=$(curl -sS -m 25 -o /tmp/wd-disp-office.out -w '%{http_code}' -X POST -H "$H" -H "$A" "https://api.github.com/repos/roshpinacare-sys/FleetHQ/actions/workflows/office-window.yml/dispatches" -d "{\"ref\":\"${FHQ_REF:-main}\"}") || C=ERR
+                  else
+                    C=SKIP
+                    echo "office-window dispatch skipped: crossRepo=false (honest absence)"
+                  fi
+                  ;;
+                *) C=UNKNOWN ;;
+              esac
+              echo "self-heal dispatch $K -> $C (204 expected)"
+              if [ "$C" != "204" ] && [ "$C" != "SKIP" ]; then FAILED="$FAILED $K"; fi
+            done
+          fi
+          if [ -n "$FAILED" ]; then
+            echo "::warning::self-heal dispatch failed for:$FAILED — clearing recorded timestamps so the next cycle retries"
+            python3 - "$FAILED" <<'WDREVERT'
+          import json, sys
+          try:
+              d = json.load(open("state/watchdog-actions.json"))
+          except Exception:
+              d = {}
+          for k in sys.argv[1].split():
+              d.pop("pulse" if k == "pulse" else "officeWindow", None)
+          with open("state/watchdog-actions.json", "w") as fh:
+              json.dump(d, fh, indent=1, sort_keys=True)
+              fh.write("\n")
+          WDREVERT
+            git config user.name "grid-watchdog"
+            git config user.email "grid-watchdog@users.noreply.github.com"
+            git config credential.helper '!f() { echo "username=x-access-token"; echo "password=${WF_TOKEN}"; }; f'
+            git add state/watchdog-actions.json
+            git commit -m "watchdog: self-heal dispatch failed for:$FAILED (retry next cycle)" || true
+            git push origin HEAD:main || echo "::warning::timestamp-revert push failed — alarm issue still records the failure"
+          fi
+          echo "self-heal step complete"
+
+      - name: Fail-loud on dead heartbeat
+        run: |
+          if [ "${HB_HEALTHY:-0}" != "1" ]; then
+            echo "::error::heartbeat unparseable or >90m (age=${HB_AGE_S:-unavailable}s crossRepo=${CROSS_REPO:-unknown})"
+            exit 1
+          fi
+          echo "fail-loud gate passed: heartbeat age ${HB_AGE_S:-unavailable}s (limit 5400s)"
