@@ -884,6 +884,36 @@ jobs:
           relay "saos-runtime" "fee-engine.yml" 245
           relay "saos-runtime" "sovereign-evolution.yml" 1500
 
+      - name: Watchdog tick — dispatch grid-watchdog when due
+        if: always()
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          WD_GH_TOKEN: ${{ github.token }}
+        run: |
+          DUE=$(curl -s -m 15 -H "Authorization: token ${WD_GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/roshpinacare-sys/saos-runtime/contents/state/grid-status.json?ref=main" | python3 -c '
+          import sys, json, base64
+          from datetime import datetime, timezone
+          try:
+              d = json.load(sys.stdin)
+              st = json.loads(base64.b64decode(d["content"]).decode())
+              gen = datetime.strptime(st.get("generatedAt", ""), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+              age = (datetime.now(timezone.utc) - gen).total_seconds()
+              reds = st.get("reds", [])
+              n = len(reds) if isinstance(reds, list) else 0
+              full = 1800 if (n > 0 or age > 7200) else 7200
+              print("DUE" if age >= full else "NOTDUE")
+          except Exception:
+              print("DUE")
+          ') || DUE=DUE
+          if [ "$DUE" != "DUE" ]; then echo "watchdog tick: grid-watchdog not due — skip (fail-soft)"; exit 0; fi
+          code=$(curl -s -m 15 -o /tmp/wdtick.out -w "%{http_code}" -X POST \
+            -H "Authorization: token ${GH_PAT}" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/roshpinacare-sys/saos-runtime/actions/workflows/grid-watchdog.yml/dispatches" \
+            -d '{"ref":"main"}') || code=000
+          echo "watchdog tick: dispatch grid-watchdog http:${code} (fail-soft — never slows the beat)"
+          [ "$code" = "204" ] || echo "watchdog dispatch skipped (non-fatal)"
+
       - name: Deterministic pulse — self-reschedule the next heartbeat
         if: always()
         env:
