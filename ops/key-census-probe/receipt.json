@@ -1,0 +1,275 @@
+{
+ "protocol": "SAOS-KEY-CENSUS-PROBE/1",
+ "at": "2026-10-12T01:56:11.699Z",
+ "mode": "verify-only (no broadcast, no secret writes, no authority changes)",
+ "roster": [
+  "headcorner",
+  "cashmachine",
+  "haran",
+  "israelnews",
+  "lsa",
+  "macrame",
+  "siq",
+  "tov",
+  "wic",
+  "wog",
+  "woq",
+  "hcsoldier4",
+  "hcsoldier5",
+  "hcsoldier6"
+ ],
+ "livePubs": {
+  "headcorner": {
+   "active": "STM5jRfQH9DAF2474UQF1GVarShJZhpSPEYZFiZVr8MHV8cNSXDQf",
+   "posting": "STM7RqZtbL1GQMJz7Lt59qeCkiCgkyRqVSpW59UXX3aTNGjh7QjY3",
+   "owner": "STM5Ao2voWBnv8Nwfd5hMA4zwjBQZE8a8J8RkLUd8HpuFWhrSQFJ7"
+  },
+  "cashmachine": {
+   "active": "STM8JV3DQLKRHYotkdAZmcJPrNSjNBDgwayMwWZcj84o2c2G5KhZ9",
+   "posting": "STM6EML1FKrnTGHMkkudANMxvLejGfzi3qCkZZUrtfxggLafF6ZwW",
+   "owner": "STM7Rp6auWyWPWRVaafT5CCtoUrHXnYQHesebPnskH3HwyAu8nh8N"
+  },
+  "haran": {
+   "active": "STM6nxdp2zQFjwGdHmdqV4PikxvWhoERYh2coRPg7TgHR9vKtN7Zi",
+   "posting": "STM5ULLGRnaFPCAwrU7WH4PHamtNpjA76tc9mNRuao1QkuGESr24U",
+   "owner": "STM7LK2d2oHw1Bk63fqcpqgVyNUQxbnY3xuT7L554yVKCcY6mywxV"
+  },
+  "israelnews": {
+   "active": "STM6smVd5vHp73Z5qDkiQFPzUBBBnjdxm85ReiJFJqDgifKRtq6aj",
+   "posting": "STM5Y57MBMC1ViYZ48nTFsX5Ycwg33WWbisu4dVRkinnECrxzT8ok",
+   "owner": "STM7t1VE72QDKW6e7xZDGxgBY6FCruVyA7rbhBmrN6ojK5Q6dwNqT"
+  },
+  "lsa": {
+   "active": "STM5gbp3w8F1oDoWeZvtb1LkW1oXqyXMFhGSfYHHYGZYqMZ6spFV4",
+   "posting": "STM5vLjvNjvMt7dRVDYY9Xuww887yvrS9Sy7osHpVXy3AKS2tCUCm",
+   "owner": "STM7M5QQmSXbEh3PxfTUnG9yUFTsnbGvtsMGoEkAwG77i1hychzQ9"
+  },
+  "macrame": {
+   "active": "STM4yEe1tt7xTmzPjyM6Czvt7ULR2noXbvcLUANQ8zN5zjqm44et8",
+   "posting": "STM58LJ5v7NgtRTFZ8LRtecL1P5UTh4BbSwaJeUy4eR8LsGiuy4yr",
+   "owner": "STM6ebPT6RWvHXuzq56gw8SxRjEjVNe9JfBf6wPqfvJ6PvvRvxkmL"
+  },
+  "siq": {
+   "active": "STM5wBqKg31oj2FF4kp7cg2KXAedT3WdAVkXLLxzQ33RgpkwJdWh3",
+   "posting": "STM6a6NgoWdJVdbMkdaD1QwQ8AsfcYjKdRWMm99BRR5b2M23ho2yL",
+   "owner": "STM69NZih1wNYpMRSfbg8mJgMG1xfoakyfaqRPvyfzbzEfsFJCdUT"
+  },
+  "tov": {
+   "active": "STM6uZsi19EPhmcTCtrmbu7qqZPwoBQcdd1RBM5PbXAKbwnTb61x4",
+   "posting": "STM6Dx3bEgwX6KpWgd7iXciNS8LivU4evRCqwkeJVcDoTEZxjAoxo",
+   "owner": "STM8FFj1oU3dHHGvJiE5moGJJk7wtjDamrdVeNmYSZQyCP84rmaqd"
+  },
+  "wic": {
+   "active": "STM5MgbfjdBEhRTREsChF8DaBU9Q2zvZZC1nMD2bdZGDJhYEJFp4F",
+   "posting": "STM54F5sbwshggfPAeHURo9NuxPpoc4Ku6fiYNXJsK9fqJmGfKjtn",
+   "owner": "STM5XScMFug2xXfqTSSqjpdUjJFB7zpTXBKSHvDcCNefTr2ZNGF8t"
+  },
+  "wog": {
+   "active": "STM8mUCFqX9E27yWKwhNNENhYqYy6SAbyBVVzFyKruKgcG9iEwuq9",
+   "posting": "STM8U3yKr9uBUPubhc5bVknfKjRWytoonHzcGtqrVbCEKdxvJ4m95",
+   "owner": "STM7RXg2o2PZk1tqospN11EHNaXVwq7nEPomtZNqkT9YK9c4pmTif"
+  },
+  "woq": {
+   "active": "STM7XzPtWbsWLHMdQ4KCrywsCeeGXqmqGmGGFMwQcKUamAuDLYXa1",
+   "posting": "STM6HEQvmHPnA43gcfRq5PwF8RsihBXXVdeWh2rBc8NiQ3aAgiy37",
+   "owner": "STM6jcx7BrzawVR5E1AhmCBKBPDWTq3qDkBDsqY47VGAQxJEAXcyc"
+  },
+  "hcsoldier4": {
+   "active": "STM59DR18EpsjTxqmTnH4SayD6dJkXpWyRtqKQJdqFFpYJfesMnDk",
+   "posting": "STM7GGJVxP5LcZT6SbDWot5AK8yYJ14yMjNVMCVevDuRYXRao9y4L",
+   "owner": "STM86KbSx7mGNv5EZhs9To6zgNTnR9MbjRxCnoCY4E6cVRSuX2qSp"
+  },
+  "hcsoldier5": {
+   "active": "STM7SrhnUPT92A6GBysRiPfDWVZk5LyKKJ6LQrECMkuZ7MNPcbaK8",
+   "posting": "STM6m1u6xZgyPYCMJZQmMUjhX5k93YCjSXtjoncDiTt7Zni96Rmj7",
+   "owner": "STM79Cu5oMMgp1JnWpRL6iRfnmyBgfw28C5kiAZ1u5cLteLNHQnXe"
+  },
+  "hcsoldier6": {
+   "active": "STM57AX4ZeTpG4HUZqipvsJaiV7UTN1rtiU9mPA419RYg1xiFq7sq",
+   "posting": "STM7jJXnJYqJJUci7cPAeFg2FTVvFVcpKLFkLi8Zxv34d1Ed8PrVp",
+   "owner": "STM62HQwpzVVRFvEZ6Ko1wPmysKh74s1c41KD6XRASEhLNEcFAKYY"
+  }
+ },
+ "decrypt": {
+  "attempts": [
+   {
+    "zip": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc",
+    "passName": "bundle.gen2.keysZipUnlock"
+   }
+  ],
+  "zipFile": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc",
+  "innerSha256": "46f1feaa4d22c5c133528fa968082e318eda16932d3253b75764f11787d31072",
+  "shaOk": true
+ },
+ "scanned": {
+  "files": 1,
+  "wifCandidates": 27
+ },
+ "matches": [
+  {
+   "account": "cashmachine",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[0].keys.steem.posting.wif",
+   "derivedPub": "STM6EML1FKrnTGHMkkudANMxvLejGfzi3qCkZZUrtfxggLafF6ZwW"
+  },
+  {
+   "account": "cashmachine",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[0].keys.steem.active.wif",
+   "derivedPub": "STM8JV3DQLKRHYotkdAZmcJPrNSjNBDgwayMwWZcj84o2c2G5KhZ9"
+  },
+  {
+   "account": "haran",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[1].keys.steem.posting.wif",
+   "derivedPub": "STM5ULLGRnaFPCAwrU7WH4PHamtNpjA76tc9mNRuao1QkuGESr24U"
+  },
+  {
+   "account": "haran",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[1].keys.steem.active.wif",
+   "derivedPub": "STM6nxdp2zQFjwGdHmdqV4PikxvWhoERYh2coRPg7TgHR9vKtN7Zi"
+  },
+  {
+   "account": "israelnews",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[2].keys.steem.posting.wif",
+   "derivedPub": "STM5Y57MBMC1ViYZ48nTFsX5Ycwg33WWbisu4dVRkinnECrxzT8ok"
+  },
+  {
+   "account": "israelnews",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[2].keys.steem.active.wif",
+   "derivedPub": "STM6smVd5vHp73Z5qDkiQFPzUBBBnjdxm85ReiJFJqDgifKRtq6aj"
+  },
+  {
+   "account": "lsa",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[3].keys.steem.posting.wif",
+   "derivedPub": "STM5vLjvNjvMt7dRVDYY9Xuww887yvrS9Sy7osHpVXy3AKS2tCUCm"
+  },
+  {
+   "account": "lsa",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[3].keys.steem.active.wif",
+   "derivedPub": "STM5gbp3w8F1oDoWeZvtb1LkW1oXqyXMFhGSfYHHYGZYqMZ6spFV4"
+  },
+  {
+   "account": "macrame",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[4].keys.steem.posting.wif",
+   "derivedPub": "STM58LJ5v7NgtRTFZ8LRtecL1P5UTh4BbSwaJeUy4eR8LsGiuy4yr"
+  },
+  {
+   "account": "macrame",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[4].keys.steem.active.wif",
+   "derivedPub": "STM4yEe1tt7xTmzPjyM6Czvt7ULR2noXbvcLUANQ8zN5zjqm44et8"
+  },
+  {
+   "account": "siq",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[5].keys.steem.posting.wif",
+   "derivedPub": "STM6a6NgoWdJVdbMkdaD1QwQ8AsfcYjKdRWMm99BRR5b2M23ho2yL"
+  },
+  {
+   "account": "siq",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[5].keys.steem.active.wif",
+   "derivedPub": "STM5wBqKg31oj2FF4kp7cg2KXAedT3WdAVkXLLxzQ33RgpkwJdWh3"
+  },
+  {
+   "account": "tov",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[6].keys.steem.posting.wif",
+   "derivedPub": "STM6Dx3bEgwX6KpWgd7iXciNS8LivU4evRCqwkeJVcDoTEZxjAoxo"
+  },
+  {
+   "account": "tov",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[6].keys.steem.active.wif",
+   "derivedPub": "STM6uZsi19EPhmcTCtrmbu7qqZPwoBQcdd1RBM5PbXAKbwnTb61x4"
+  },
+  {
+   "account": "wic",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[7].keys.steem.posting.wif",
+   "derivedPub": "STM54F5sbwshggfPAeHURo9NuxPpoc4Ku6fiYNXJsK9fqJmGfKjtn"
+  },
+  {
+   "account": "wic",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[7].keys.steem.active.wif",
+   "derivedPub": "STM5MgbfjdBEhRTREsChF8DaBU9Q2zvZZC1nMD2bdZGDJhYEJFp4F"
+  },
+  {
+   "account": "wog",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[8].keys.steem.posting.wif",
+   "derivedPub": "STM8U3yKr9uBUPubhc5bVknfKjRWytoonHzcGtqrVbCEKdxvJ4m95"
+  },
+  {
+   "account": "wog",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[8].keys.steem.active.wif",
+   "derivedPub": "STM8mUCFqX9E27yWKwhNNENhYqYy6SAbyBVVzFyKruKgcG9iEwuq9"
+  },
+  {
+   "account": "woq",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[9].keys.steem.posting.wif",
+   "derivedPub": "STM6HEQvmHPnA43gcfRq5PwF8RsihBXXVdeWh2rBc8NiQ3aAgiy37"
+  },
+  {
+   "account": "woq",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[9].keys.steem.active.wif",
+   "derivedPub": "STM7XzPtWbsWLHMdQ4KCrywsCeeGXqmqGmGGFMwQcKUamAuDLYXa1"
+  },
+  {
+   "account": "hcsoldier4",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[10].keys.steem.posting.wif",
+   "derivedPub": "STM7GGJVxP5LcZT6SbDWot5AK8yYJ14yMjNVMCVevDuRYXRao9y4L"
+  },
+  {
+   "account": "hcsoldier4",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[10].keys.steem.active.wif",
+   "derivedPub": "STM59DR18EpsjTxqmTnH4SayD6dJkXpWyRtqKQJdqFFpYJfesMnDk"
+  },
+  {
+   "account": "hcsoldier5",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[11].keys.steem.posting.wif",
+   "derivedPub": "STM6m1u6xZgyPYCMJZQmMUjhX5k93YCjSXtjoncDiTt7Zni96Rmj7"
+  },
+  {
+   "account": "hcsoldier5",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[11].keys.steem.active.wif",
+   "derivedPub": "STM7SrhnUPT92A6GBysRiPfDWVZk5LyKKJ6LQrECMkuZ7MNPcbaK8"
+  },
+  {
+   "account": "hcsoldier6",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[12].keys.steem.posting.wif",
+   "derivedPub": "STM7jJXnJYqJJUci7cPAeFg2FTVvFVcpKLFkLi8Zxv34d1Ed8PrVp"
+  },
+  {
+   "account": "hcsoldier6",
+   "role": "active",
+   "sourceTag": "agent/keys/vault.json.accounts.[12].keys.steem.active.wif",
+   "derivedPub": "STM57AX4ZeTpG4HUZqipvsJaiV7UTN1rtiU9mPA419RYg1xiFq7sq"
+  },
+  {
+   "account": "headcorner",
+   "role": "posting",
+   "sourceTag": "agent/keys/vault.json.accounts.[13].keys.steem.posting.wif",
+   "derivedPub": "STM7RqZtbL1GQMJz7Lt59qeCkiCgkyRqVSpW59UXX3aTNGjh7QjY3"
+  }
+ ],
+ "derivedNoMatch": 0,
+ "verdict": "MATCH-OTHER",
+ "honesty": "אפס חומר-פרטי בקבלה: מפתחות-ציבוריים-נגזרים בלבד (מידע-ציבורי על-השרשרת ממילא). סיסמאות env-only, WIF-ים אף-פעם לא בלוג/דיסק-מחוץ-/tmp."
+}
