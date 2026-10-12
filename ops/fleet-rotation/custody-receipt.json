@@ -1,22 +1,22 @@
 {
  "protocol": "SAOS-CUSTODY-RECOVER/1",
- "at": "2026-10-12T21:05:30.921Z",
+ "at": "2026-10-12T21:38:26.986Z",
  "source": {
   "receiptOfRecord": "ops/fleet-rotation/receipt-A.json",
   "steemCustodyBranch": "main",
   "archive": "agent/vault/KEYS-ROT2-2026-10-12.zip.enc",
   "rot2Id": "ROT2-PHASE-A-2026-10-12",
-  "rot2SealedAt": "2026-10-12T20:44:34.763Z",
+  "rot2SealedAt": "2026-10-12T21:34:03.771Z",
   "openedWith": "gen2.keysZipUnlock",
-  "innerSha16": "9a9f76ec56abaf69",
+  "innerSha16": "d68e786aae27bdf4",
   "integrity": "pinned-MATCH",
   "metaSkew": false,
-  "accountsInArchive": 19,
+  "accountsInArchive": 18,
   "historyDug": []
  },
  "holes": {
-  "total": 19,
-  "covered": 19,
+  "total": 18,
+  "covered": 18,
   "absent": [],
   "details": [
    {
@@ -27,15 +27,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM7sqdFFjSm"
+      "pubFp": "STM4ynahfZyB"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM6ubGy4nKV"
+      "pubFp": "STM52Wu9d2Bv"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM5NRKU77vt"
+      "pubFp": "STM5VTkaht9y"
      }
     }
    },
@@ -47,15 +47,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM5UmasUNya"
+      "pubFp": "STM8aV5L4SnF"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM4tfzy9kMy"
+      "pubFp": "STM5X6uygqSp"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM6LV6WQKvc"
+      "pubFp": "STM8N85cS8QS"
      }
     }
    },
@@ -67,15 +67,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM65BZo2fBL"
+      "pubFp": "STM8m7zxsMuS"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM7pT5MNrhS"
+      "pubFp": "STM8V9xEthRZ"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM75Tm8HXAH"
+      "pubFp": "STM6qgcGY6WT"
      }
     }
    },
@@ -87,15 +87,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM8DHNwN38Z"
+      "pubFp": "STM6g3KEoQ9U"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM6ZqSuxZiP"
+      "pubFp": "STM5Yh8zvwao"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM7mZVK2DzY"
+      "pubFp": "STM6pAqaSH7V"
      }
     }
    },
@@ -107,15 +107,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM7NJQ6fYcF"
+      "pubFp": "STM5MCZ4Xqgi"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM6gqrDruGh"
+      "pubFp": "STM7xSr5u4Q6"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM6cv6nSiKM"
+      "pubFp": "STM6tD4Xgk1B"
      }
     }
    },
@@ -127,15 +127,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM83yDuwfpq"
+      "pubFp": "STM7a8BwYdcn"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM52aQ4HspA"
+      "pubFp": "STM6ucW9GYSy"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM8CCc1rvZD"
+      "pubFp": "STM8MCDXUvRU"
      }
     }
    },
@@ -147,15 +147,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM5FtMCJQ4t"
+      "pubFp": "STM76TVXSqob"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM6oU7oiAEp"
+      "pubFp": "STM7CiF3C9fC"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM8PbYMQFwj"
+      "pubFp": "STM6XfDrxBLa"
      }
     }
    },
@@ -167,15 +167,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM6pPqsrQEj"
+      "pubFp": "STM5PGFCS8Zv"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM6sKcXdWWD"
+      "pubFp": "STM5taPxn71t"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM6m5DWD74E"
+      "pubFp": "STM73vNfBgjZ"
      }
     }
    },
@@ -187,15 +187,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM5o22XwqzN"
+      "pubFp": "STM7kLZKHUeS"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM5XQbmsR8z"
+      "pubFp": "STM5TDXPX8L8"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM4w5T1DBad"
+      "pubFp": "STM7YLavFTz7"
      }
     }
    },
@@ -207,15 +207,15 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM4wyHT3knj"
+      "pubFp": "STM7DfyTX3w2"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM8H6YPK7ap"
+      "pubFp": "STM7NcbFSz4Q"
      },
      "memo": {
       "status": "MATCH",
-      "pubFp": "STM7qkov447T"
+      "pubFp": "STM5mSEUm66K"
      }
     }
    },
@@ -227,11 +227,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM8U9e91aSs"
+      "pubFp": "STM638X2KZuQ"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM54TH4BFbn"
+      "pubFp": "STM8FhsKpiod"
      }
     }
    },
@@ -243,11 +243,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM6JjaTNNms"
+      "pubFp": "STM62bwR9QXQ"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM5Z42acmKJ"
+      "pubFp": "STM5Ap9xCw7G"
      }
     }
    },
@@ -259,11 +259,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM879JeRTu2"
+      "pubFp": "STM6UHunRLJv"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM7BJVNeTpY"
+      "pubFp": "STM6QfAEJaEe"
      }
     }
    },
@@ -275,11 +275,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM55U9uVZNF"
+      "pubFp": "STM65EVV26bb"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM7qXua7s3b"
+      "pubFp": "STM5SS4FArsC"
      }
     }
    },
@@ -291,11 +291,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM6JVwtVHXK"
+      "pubFp": "STM6TMpNdnUG"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM6mVptroiu"
+      "pubFp": "STM6eA7v7xrN"
      }
     }
    },
@@ -307,27 +307,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM7zYhjghgv"
+      "pubFp": "STM7k6gvYBK1"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM5v23xWQmT"
-     }
-    }
-   },
-   {
-    "chain": "hive",
-    "account": "wic",
-    "inArchive": true,
-    "verifiedBy": "receipt-newPubFp",
-    "roles": {
-     "active": {
-      "status": "MATCH",
-      "pubFp": "STM7E6JZkYjP"
-     },
-     "posting": {
-      "status": "MATCH",
-      "pubFp": "STM5vZoWhm4m"
+      "pubFp": "STM5zCxJhCeZ"
      }
     }
    },
@@ -339,11 +323,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM5ajNDZogw"
+      "pubFp": "STM6kYxgwpFk"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM53optTu3U"
+      "pubFp": "STM7nyMkhQcn"
      }
     }
    },
@@ -355,11 +339,11 @@
     "roles": {
      "active": {
       "status": "MATCH",
-      "pubFp": "STM56KFYYRMd"
+      "pubFp": "STM7K9H8MsXM"
      },
      "posting": {
       "status": "MATCH",
-      "pubFp": "STM7f3cxVyn8"
+      "pubFp": "STM7GzN8BJAN"
      }
     }
    }
@@ -372,19 +356,19 @@
     "repo": "steem",
     "put": "OK",
     "verified": true,
-    "accountsInPayload": 19
+    "accountsInPayload": 18
    },
    {
     "repo": "saos-runtime",
     "put": "OK",
     "verified": true,
-    "accountsInPayload": 19
+    "accountsInPayload": 18
    },
    {
     "repo": "Domain",
     "put": "OK",
     "verified": true,
-    "accountsInPayload": 19
+    "accountsInPayload": 18
    }
   ],
   "design": "whole recoverable map in one sealed PUT per repo (T-68 design; per-account last-wins flaw retired); absent holes stay documented here, never silently dropped"
