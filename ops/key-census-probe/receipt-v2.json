@@ -1,0 +1,318 @@
+{
+  "protocol": "SAOS-FLEET-KEY-CENSUS-V2/1",
+  "at": "2026-10-12T02:50:00.884Z",
+  "mode": "verify-only (no broadcast, no secret writes, no authority changes)",
+  "roster": [
+    "headcorner",
+    "cashmachine",
+    "haran",
+    "israelnews",
+    "lsa",
+    "macrame",
+    "siq",
+    "tov",
+    "wic",
+    "wog",
+    "woq",
+    "hcsoldier4",
+    "hcsoldier5",
+    "hcsoldier6",
+    "cornerstone"
+  ],
+  "archives": [
+    {
+      "file": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc",
+      "opened": true,
+      "openedBy": "gen2.keysZipUnlock",
+      "innerShaOk": true,
+      "files": 1,
+      "wifs": 54,
+      "seeds": 17
+    },
+    {
+      "file": "agent/vault/KEYS-BACKUP-GEN2-2026-10-12.tar.enc",
+      "opened": true,
+      "openedBy": "gen2.keysBackupUnlock",
+      "extracted": false,
+      "why": "Command failed: unzip -o -q /tmp/kcensus-v2-ROETn8/dec.bin -d /tmp/kcensus-v2-RO"
+    },
+    {
+      "file": "agent/vault/KEYS-SEED-2026-10-04.zip.enc",
+      "opened": false,
+      "why": "no-known-pass-yields"
+    },
+    {
+      "file": "agent/vault/KEYS-ZIP-2026-09-10.zip.enc",
+      "opened": false,
+      "why": "no-known-pass-yields"
+    },
+    {
+      "file": "agent/vault/KEYS-ZIP-2026-09-29.zip.enc",
+      "opened": false,
+      "why": "no-known-pass-yields"
+    },
+    {
+      "file": "agent/vault/KEYS-ZIP-2026-10-07.zip.enc",
+      "opened": false,
+      "why": "no-known-pass-yields"
+    }
+  ],
+  "scanned": {
+    "archivesOpened": 1,
+    "wifCandidates": 27,
+    "seedCandidates": 17,
+    "derives": 27,
+    "derivesBudget": 260000
+  },
+  "matches": [
+    {
+      "key": "cashmachine",
+      "chain": "steem",
+      "account": "cashmachine",
+      "role": "posting",
+      "derivedPub": "STM6EML1FKrnTGHMkkudANMxvLejGfzi3qCkZZUrtfxggLafF6ZwW",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[0].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "cashmachine",
+      "chain": "steem",
+      "account": "cashmachine",
+      "role": "active",
+      "derivedPub": "STM8JV3DQLKRHYotkdAZmcJPrNSjNBDgwayMwWZcj84o2c2G5KhZ9",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[0].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "haran",
+      "chain": "steem",
+      "account": "haran",
+      "role": "posting",
+      "derivedPub": "STM5ULLGRnaFPCAwrU7WH4PHamtNpjA76tc9mNRuao1QkuGESr24U",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[1].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "haran",
+      "chain": "steem",
+      "account": "haran",
+      "role": "active",
+      "derivedPub": "STM6nxdp2zQFjwGdHmdqV4PikxvWhoERYh2coRPg7TgHR9vKtN7Zi",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[1].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "israelnews",
+      "chain": "steem",
+      "account": "israelnews",
+      "role": "posting",
+      "derivedPub": "STM5Y57MBMC1ViYZ48nTFsX5Ycwg33WWbisu4dVRkinnECrxzT8ok",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[2].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "israelnews",
+      "chain": "steem",
+      "account": "israelnews",
+      "role": "active",
+      "derivedPub": "STM6smVd5vHp73Z5qDkiQFPzUBBBnjdxm85ReiJFJqDgifKRtq6aj",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[2].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "lsa",
+      "chain": "steem",
+      "account": "lsa",
+      "role": "posting",
+      "derivedPub": "STM5vLjvNjvMt7dRVDYY9Xuww887yvrS9Sy7osHpVXy3AKS2tCUCm",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[3].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "lsa",
+      "chain": "steem",
+      "account": "lsa",
+      "role": "active",
+      "derivedPub": "STM5gbp3w8F1oDoWeZvtb1LkW1oXqyXMFhGSfYHHYGZYqMZ6spFV4",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[3].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "macrame",
+      "chain": "steem",
+      "account": "macrame",
+      "role": "posting",
+      "derivedPub": "STM58LJ5v7NgtRTFZ8LRtecL1P5UTh4BbSwaJeUy4eR8LsGiuy4yr",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[4].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "macrame",
+      "chain": "steem",
+      "account": "macrame",
+      "role": "active",
+      "derivedPub": "STM4yEe1tt7xTmzPjyM6Czvt7ULR2noXbvcLUANQ8zN5zjqm44et8",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[4].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "siq",
+      "chain": "steem",
+      "account": "siq",
+      "role": "posting",
+      "derivedPub": "STM6a6NgoWdJVdbMkdaD1QwQ8AsfcYjKdRWMm99BRR5b2M23ho2yL",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[5].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "siq",
+      "chain": "steem",
+      "account": "siq",
+      "role": "active",
+      "derivedPub": "STM5wBqKg31oj2FF4kp7cg2KXAedT3WdAVkXLLxzQ33RgpkwJdWh3",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[5].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "tov",
+      "chain": "steem",
+      "account": "tov",
+      "role": "posting",
+      "derivedPub": "STM6Dx3bEgwX6KpWgd7iXciNS8LivU4evRCqwkeJVcDoTEZxjAoxo",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[6].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "tov",
+      "chain": "steem",
+      "account": "tov",
+      "role": "active",
+      "derivedPub": "STM6uZsi19EPhmcTCtrmbu7qqZPwoBQcdd1RBM5PbXAKbwnTb61x4",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[6].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "wic",
+      "chain": "steem",
+      "account": "wic",
+      "role": "posting",
+      "derivedPub": "STM54F5sbwshggfPAeHURo9NuxPpoc4Ku6fiYNXJsK9fqJmGfKjtn",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[7].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "wic",
+      "chain": "steem",
+      "account": "wic",
+      "role": "active",
+      "derivedPub": "STM5MgbfjdBEhRTREsChF8DaBU9Q2zvZZC1nMD2bdZGDJhYEJFp4F",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[7].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "wog",
+      "chain": "steem",
+      "account": "wog",
+      "role": "posting",
+      "derivedPub": "STM8U3yKr9uBUPubhc5bVknfKjRWytoonHzcGtqrVbCEKdxvJ4m95",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[8].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "wog",
+      "chain": "steem",
+      "account": "wog",
+      "role": "active",
+      "derivedPub": "STM8mUCFqX9E27yWKwhNNENhYqYy6SAbyBVVzFyKruKgcG9iEwuq9",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[8].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "woq",
+      "chain": "steem",
+      "account": "woq",
+      "role": "posting",
+      "derivedPub": "STM6HEQvmHPnA43gcfRq5PwF8RsihBXXVdeWh2rBc8NiQ3aAgiy37",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[9].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "woq",
+      "chain": "steem",
+      "account": "woq",
+      "role": "active",
+      "derivedPub": "STM7XzPtWbsWLHMdQ4KCrywsCeeGXqmqGmGGFMwQcKUamAuDLYXa1",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[9].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "hcsoldier4",
+      "chain": "steem",
+      "account": "hcsoldier4",
+      "role": "posting",
+      "derivedPub": "STM7GGJVxP5LcZT6SbDWot5AK8yYJ14yMjNVMCVevDuRYXRao9y4L",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[10].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "hcsoldier4",
+      "chain": "steem",
+      "account": "hcsoldier4",
+      "role": "active",
+      "derivedPub": "STM59DR18EpsjTxqmTnH4SayD6dJkXpWyRtqKQJdqFFpYJfesMnDk",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[10].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "hcsoldier5",
+      "chain": "steem",
+      "account": "hcsoldier5",
+      "role": "posting",
+      "derivedPub": "STM6m1u6xZgyPYCMJZQmMUjhX5k93YCjSXtjoncDiTt7Zni96Rmj7",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[11].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "hcsoldier5",
+      "chain": "steem",
+      "account": "hcsoldier5",
+      "role": "active",
+      "derivedPub": "STM7SrhnUPT92A6GBysRiPfDWVZk5LyKKJ6LQrECMkuZ7MNPcbaK8",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[11].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "hcsoldier6",
+      "chain": "steem",
+      "account": "hcsoldier6",
+      "role": "posting",
+      "derivedPub": "STM7jJXnJYqJJUci7cPAeFg2FTVvFVcpKLFkLi8Zxv34d1Ed8PrVp",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[12].keys.steem.posting.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "hcsoldier6",
+      "chain": "steem",
+      "account": "hcsoldier6",
+      "role": "active",
+      "derivedPub": "STM57AX4ZeTpG4HUZqipvsJaiV7UTN1rtiU9mPA419RYg1xiFq7sq",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[12].keys.steem.active.wif",
+      "how": "wif-direct"
+    },
+    {
+      "key": "headcorner",
+      "chain": "steem",
+      "account": "headcorner",
+      "role": "posting",
+      "derivedPub": "STM7RqZtbL1GQMJz7Lt59qeCkiCgkyRqVSpW59UXX3aTNGjh7QjY3",
+      "sourceTag": "agent/vault/KEYS-ZIP-GEN2-2026-10-12.zip.enc::agent/keys/vault.json.accounts.[13].keys.steem.posting.wif",
+      "how": "wif-direct"
+    }
+  ],
+  "verdict": "MATCH-ACTIVE-OTHER",
+  "honesty": "אפס חומר-פרטי בקבלה: מפתחות-ציבוריים-נגזרים בלבד. סיסמאות/זרעים env-only, WIF-ים אף-פעם לא נדפסים. verify-only מוחלט. חקירה: 1 ארכיונים נפתחו מתוך 6 מועמדים; 27 גזירות בוצעו (תקציב 260000).",
+  "authorityCensus": {
+    "steemAccounts": 14,
+    "hiveAccounts": 12
+  }
+}
