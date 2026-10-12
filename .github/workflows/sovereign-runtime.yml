@@ -264,6 +264,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 18
     steps:
+      - name: Fleet relay — guarded dispatch to FleetHQ closer + decider (T-64, fail-soft)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          relay() {
+            local repo="$1" wf="$2" last age code
+            last=$(curl -s -H "Authorization: token ${GH_PAT}" "https://api.github.com/repos/roshpinacare-sys/${repo}/actions/workflows/${wf}/runs?per_page=1" | jq -r '.workflow_runs[0].created_at // empty')
+            if [ -n "$last" ]; then
+              age=$(( ($(date +%s) - $(date -d "$last" +%s)) / 60 ))
+              if [ "$age" -lt 15 ]; then echo "RELAY[${repo}/${wf}]: SKIPPED (ran ${age}min ago — no-noise)"; return; fi
+            fi
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H "Authorization: token ${GH_PAT}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/roshpinacare-sys/${repo}/actions/workflows/${wf}/dispatches" -d '{"ref":"main"}')
+            echo "RELAY[${repo}/${wf}]: dispatch http:${code} (fail-soft — the pulse chain never depends on the relay)"
+          }
+          relay "FleetHQ" "opens-closer.yml"
+          relay "FleetHQ" "sovereign-decider.yml"
+
       - name: Deterministic pulse — self-reschedule the next heartbeat
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
