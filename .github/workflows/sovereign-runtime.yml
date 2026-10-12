@@ -223,9 +223,10 @@ jobs:
           const H = { "Authorization": `token ${process.env.GH_PAT}`, "Accept": "application/vnd.github+json" };
           (async () => {
             try {
-              const q = await fetch("https://api.github.com/search/issues?q=" + encodeURIComponent(`repo:roshpinacare-sys/steem in:title "${title}"`), { headers: H });
+              const q = await fetch("https://api.github.com/repos/roshpinacare-sys/steem/issues?state=all&per_page=100", { headers: H });
               const s = await q.json();
-              if ((s.total_count ?? 0) > 0) { console.log("digest already issued for", day); return; }
+              const alreadyIssued = Array.isArray(s) && s.some((it) => it && typeof it.title === "string" && it.title === title && !it.pull_request);
+              if (alreadyIssued) { console.log("digest already issued for", day); return; }
               let hb = {};
               try { hb = JSON.parse(fs.readFileSync("state/ci-last-heartbeat.json", "utf8")); } catch {}
               const lines = [
