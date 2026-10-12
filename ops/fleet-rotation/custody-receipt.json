@@ -1,0 +1,400 @@
+{
+ "protocol": "SAOS-CUSTODY-RECOVER/1",
+ "at": "2026-10-12T21:05:30.921Z",
+ "source": {
+  "receiptOfRecord": "ops/fleet-rotation/receipt-A.json",
+  "steemCustodyBranch": "main",
+  "archive": "agent/vault/KEYS-ROT2-2026-10-12.zip.enc",
+  "rot2Id": "ROT2-PHASE-A-2026-10-12",
+  "rot2SealedAt": "2026-10-12T20:44:34.763Z",
+  "openedWith": "gen2.keysZipUnlock",
+  "innerSha16": "9a9f76ec56abaf69",
+  "integrity": "pinned-MATCH",
+  "metaSkew": false,
+  "accountsInArchive": 19,
+  "historyDug": []
+ },
+ "holes": {
+  "total": 19,
+  "covered": 19,
+  "absent": [],
+  "details": [
+   {
+    "chain": "steem",
+    "account": "cashmachine",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM7sqdFFjSm"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM6ubGy4nKV"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM5NRKU77vt"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "haran",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM5UmasUNya"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM4tfzy9kMy"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM6LV6WQKvc"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "israelnews",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM65BZo2fBL"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM7pT5MNrhS"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM75Tm8HXAH"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "lsa",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM8DHNwN38Z"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM6ZqSuxZiP"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM7mZVK2DzY"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "macrame",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM7NJQ6fYcF"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM6gqrDruGh"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM6cv6nSiKM"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "siq",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM83yDuwfpq"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM52aQ4HspA"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM8CCc1rvZD"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "tov",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM5FtMCJQ4t"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM6oU7oiAEp"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM8PbYMQFwj"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "wic",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM6pPqsrQEj"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM6sKcXdWWD"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM6m5DWD74E"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "wog",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM5o22XwqzN"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM5XQbmsR8z"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM4w5T1DBad"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "woq",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM4wyHT3knj"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM8H6YPK7ap"
+     },
+     "memo": {
+      "status": "MATCH",
+      "pubFp": "STM7qkov447T"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "hcsoldier4",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM8U9e91aSs"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM54TH4BFbn"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "hcsoldier5",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM6JjaTNNms"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM5Z42acmKJ"
+     }
+    }
+   },
+   {
+    "chain": "steem",
+    "account": "hcsoldier6",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM879JeRTu2"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM7BJVNeTpY"
+     }
+    }
+   },
+   {
+    "chain": "hive",
+    "account": "israelnews",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM55U9uVZNF"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM7qXua7s3b"
+     }
+    }
+   },
+   {
+    "chain": "hive",
+    "account": "lsa",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM6JVwtVHXK"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM6mVptroiu"
+     }
+    }
+   },
+   {
+    "chain": "hive",
+    "account": "siq",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM7zYhjghgv"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM5v23xWQmT"
+     }
+    }
+   },
+   {
+    "chain": "hive",
+    "account": "wic",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM7E6JZkYjP"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM5vZoWhm4m"
+     }
+    }
+   },
+   {
+    "chain": "hive",
+    "account": "wog",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM5ajNDZogw"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM53optTu3U"
+     }
+    }
+   },
+   {
+    "chain": "hive",
+    "account": "woq",
+    "inArchive": true,
+    "verifiedBy": "receipt-newPubFp",
+    "roles": {
+     "active": {
+      "status": "MATCH",
+      "pubFp": "STM56KFYYRMd"
+     },
+     "posting": {
+      "status": "MATCH",
+      "pubFp": "STM7f3cxVyn8"
+     }
+    }
+   }
+  ]
+ },
+ "custody": {
+  "secret": "ROT2_FLEET_KEYS",
+  "repos": [
+   {
+    "repo": "steem",
+    "put": "OK",
+    "verified": true,
+    "accountsInPayload": 19
+   },
+   {
+    "repo": "saos-runtime",
+    "put": "OK",
+    "verified": true,
+    "accountsInPayload": 19
+   },
+   {
+    "repo": "Domain",
+    "put": "OK",
+    "verified": true,
+    "accountsInPayload": 19
+   }
+  ],
+  "design": "whole recoverable map in one sealed PUT per repo (T-68 design; per-account last-wins flaw retired); absent holes stay documented here, never silently dropped"
+ },
+ "verdict": "PASS",
+ "laws": [
+  "zero key material in receipt/logs — pub fingerprints (12-char) + sha prefixes only",
+  "pass values env-only + masked, never logged",
+  "plaintext confined to 0700 /tmp, shredded after use",
+  "HEAD-archive material verified vs receipt newPubFp; history-dug material verified vs LIVE chain authorities",
+  "custody PUT carries the recoverable set; absent holes keep the verdict red (FAIL-LOST) with the owner-authority reset path documented"
+ ]
+}
