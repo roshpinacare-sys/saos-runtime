@@ -63,7 +63,7 @@ jobs:
           node-version: 20
 
       - name: Install deps (pinned pattern from fleet-rotation-a)
-        run: npm i --no-save --silent libsodium-wrappers
+        run: npm i --no-save --silent libsodium-wrappers steem
 
       - name: Preflight (secrets present, syntax, offline selftest incl. seal roundtrip)
         run: |
