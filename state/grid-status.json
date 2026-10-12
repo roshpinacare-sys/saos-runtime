@@ -1,11 +1,13 @@
 {
  "crossRepo": true,
- "generatedAt": "2026-10-12T20:12:26Z",
- "redCount": 4,
+ "generatedAt": "2026-10-12T21:10:45Z",
+ "redCount": 6,
  "reds": [
   "blurt.live",
+  "content.verdict",
   "custody.coverage",
   "delegation.verdict",
+  "heartbeat.fresh",
   "social.verdict"
  ],
  "signals": {
@@ -14,18 +16,18 @@
   "blurtTotal": 12,
   "custodyTotal": 14,
   "custodyVerified": 1,
-  "dexAnchorAgeMs": 945926,
-  "fleetDigestAgeS": 11,
+  "dexAnchorAgeMs": 2024225,
+  "fleetDigestAgeS": 3509,
   "fleetDigestCommitAt": "2026-10-12T20:12:12Z",
-  "heartbeatAgeS": 480,
-  "heartbeatAt": "2026-10-12T20:04:20.533Z",
-  "officeScheduleAgeS": 17185,
+  "heartbeatAgeS": 2901,
+  "heartbeatAt": "2026-10-12T20:22:17.390Z",
+  "officeScheduleAgeS": 20683,
   "officeScheduleAt": "2026-10-12T15:25:59Z",
-  "potentialAgeS": 16549,
+  "potentialAgeS": 20047,
   "potentialCommitAt": "2026-10-12T15:36:34Z",
-  "pulseAgeS": 501,
-  "pulseRunAt": "2026-10-12T20:04:00Z",
-  "pulseRunId": 38301775264,
+  "pulseAgeS": 1843,
+  "pulseRunAt": "2026-10-12T20:39:56Z",
+  "pulseRunId": 38305685622,
   "socialExecuted": 0,
   "socialRefused": 13
  }
