@@ -678,6 +678,7 @@ jobs:
           if [ -n "$JSON" ]; then
             printf '%s' "$JSON" > state/ci-last-heartbeat.json
             echo "engine-tree state/ci-last-heartbeat.json updated from CI-HEARTBEAT verdict"
+            echo "23-h: capture pwd=$(pwd) -> state/ci-last-heartbeat.json (in-tree mini-services/saos-engine/state/ci-last-heartbeat.json == 23-f rescue read path)"
           else
             echo "no CI-HEARTBEAT line on stdout — heartbeat state left untouched (honest)"
           fi
@@ -786,12 +787,13 @@ jobs:
               h40 = re.compile(rb"[0-9a-fA-F]{40}")
               for path in [p.strip() for p in os.environ.get("CANDS", "").splitlines() if p.strip()]:
                   try:
-                      g = subprocess.run(["git", "show", "HEAD:" + path], capture_output=True, timeout=20)
+                      ref = os.environ.get("BEAT_SHA") or "HEAD"  # 23-h: read the beat's own commit - during a stopped rebase HEAD is the custodian tip (stale)
+                      g = subprocess.run(["git", "show", ref + ":" + path], capture_output=True, timeout=20)
                       raw = g.stdout
                   except Exception:
                       raw = b""
                   if not raw:
-                      print("API last-mile failed for %s (honest: unreadable from HEAD)" % path); continue
+                      print("API last-mile failed for %s (honest: unreadable from %s)" % (path, ref)); continue
                   if len(raw) > 100 * 1024:
                       print("API last-mile skipped %s (honest: %d bytes > 100KB cap)" % (path, len(raw))); continue
                   if b58.search(raw) or h40.search(raw) or b"ghp_" in raw or b"github_pat_" in raw:
@@ -830,7 +832,7 @@ jobs:
               } | sort -u
             )
             if [ -n "$cands" ]; then
-              CANDS="$cands" python3 /tmp/api-last-mile-23f.py || true
+              CANDS="$cands" BEAT_SHA="${BEAT_SHA:-}" python3 /tmp/api-last-mile-23f.py || true
             else
               echo "API last-mile: no verdict candidates in this commit"
             fi
@@ -839,6 +841,7 @@ jobs:
             echo "no state changes this heartbeat"
           else
             git commit -m "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]"
+            BEAT_SHA=$(git rev-parse HEAD)  # 23-h: pin rescue read to this commit - during a stopped rebase HEAD is the custodian tip (stale)
             ok=0; yielded=0
             for i in 1 2 3 4 5; do
               if git push origin saos-cockpit; then ok=1; break; fi
