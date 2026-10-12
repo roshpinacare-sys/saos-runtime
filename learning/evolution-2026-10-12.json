@@ -1,5 +1,5 @@
 {
- "at": "2026-10-12T02:29:22.791Z",
+ "at": "2026-10-12T16:05:51.897Z",
  "window": {
   "from": "2026-10-11",
   "to": "2026-10-12"
@@ -7,41 +7,36 @@
  "sections": {
   "runs": {
    "Domain": {
-    "count": 434,
+    "count": 617,
     "sampled": 100,
     "hist": {
-     "success": 78,
-     "cancelled": 19,
-     "failure": 3
+     "success": 74,
+     "cancelled": 13,
+     "failure": 13
     }
    },
    "Console": {
-    "count": 130,
+    "count": 186,
     "sampled": 100,
     "hist": {
-     "success": 83,
+     "success": 80,
+     "in_progress": 1,
      "failure": 4,
-     "cancelled": 13
+     "cancelled": 15
     }
    },
    "Sandbox": {
-    "count": 884,
-    "sampled": 100,
-    "hist": {
-     "success": 67,
-     "in_progress": 3,
-     "cancelled": 29,
-     "failure": 1
-    }
+    "error": "Error: 404 https://api.github.com/repos/roshpinacare-sys/Sandbox/actions/runs?pe"
    },
    "saos-runtime": {
-    "count": 123,
+    "count": 207,
     "sampled": 100,
     "hist": {
-     "in_progress": 4,
-     "success": 65,
-     "failure": 20,
-     "cancelled": 11
+     "in_progress": 2,
+     "pending": 1,
+     "failure": 31,
+     "success": 57,
+     "cancelled": 9
     }
    }
   },
@@ -103,19 +98,19 @@
    "id": "T1",
    "name": "Domain daily runs >= 30",
    "ok": true,
-   "detail": "runs=434"
+   "detail": "runs=617"
   },
   {
    "id": "T1",
    "name": "Console daily runs >= 10",
    "ok": true,
-   "detail": "runs=130"
+   "detail": "runs=186"
   },
   {
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=123"
+   "detail": "runs=207"
   }
  ],
  "verdict": "ALL-SLO-OK"
