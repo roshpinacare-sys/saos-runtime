@@ -72,7 +72,7 @@ jobs:
             const p = [u32(a.weight_threshold), varint(a.account_auths.length)];
             for (const [acc, w] of a.account_auths) p.push(str(acc), u16(w));
             p.push(varint(a.key_auths.length));
-            for (const [k, w] of a.key_auths) { const raw = b58dec(k.slice(3)); if (raw.length !== 37) throw new Error('pub-len'); p.push(raw, u16(w)); }
+            for (const [k, w] of a.key_auths) { const raw = b58dec(k.slice(3)).subarray(0, 33); p.push(raw, u16(w)); }
             return Buffer.concat(p);
           };
           const NODES = ['https://api.justyy.com', 'https://api.steemit.com'];
