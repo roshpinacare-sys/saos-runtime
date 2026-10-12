@@ -308,6 +308,7 @@ async function rotateMode(matchPath, outPath) {
   log({ sodium: "seal-roundtrip OK (pre-broadcast custody gate)" });
 
   async function custodyPut(acc) {
+    if (!acc.custody) acc.custody = []; // T-69: entries are built without this field — undefined.includes was a false-negative custody killer (PUT itself succeeded, bookkeeping threw)
     if (!GH) { acc.custodyError = "GH_PAT absent — custody skipped (loud)"; log({ custody: "SKIP", account: acc.chain + ":" + acc.account, reason: "no PAT" }); return; }
     const H = { Authorization: "Bearer " + GH, Accept: "application/vnd.github+json" };
     // 2-a: interop-safe loader (closure — rotateMode proved it pre-broadcast)
@@ -405,6 +406,7 @@ async function rotateMode(matchPath, outPath) {
     entry.material = {};
     for (const role of Object.keys(newKeys)) entry.material[role] = { wif: newKeys[role].wif, pub: newKeys[role].pub };
     entry.at = new Date().toISOString();
+    entry.custody = []; // T-69: bookkeeping field — pre-initialized (undefined.includes false-negative class)
     rot.accounts.push(entry);
     // incremental custody BEFORE next account
     await custodyPut(entry);
