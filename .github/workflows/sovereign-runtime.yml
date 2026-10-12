@@ -552,9 +552,18 @@ jobs:
                * incomplete revival (the engine would re-pull and fall back) — refuse
                * honestly instead of writing a partial cache. */
               const roster = P.ROSTER;
-              const missing = roster.filter((name) => !(byAccount.get(name) || {}).wif);
+              /* custody roles (engine law): headcorner = master via ACTIVE key (the
+                * probe arms --arm-role active; the engine counts headcorner via
+                * active), the other 13 = ARMY via posting. Demanding posting for
+                * headcorner aborted run 38279425315 at 16:44:05Z on the live MASTER
+                * re-seal ("roster incomplete — missing posting for: headcorner") —
+                * a false red: the live bundle has no headcorner posting by design. */
+              const missing = roster.filter((name) => {
+                const e = byAccount.get(name) || {};
+                return name === "headcorner" ? !e.activeWif : !e.wif;
+              });
               if (missing.length) {
-                console.error(`army-cache-resolve: roster incomplete — missing posting for: ${missing.join(", ")} — honest abort (fail-closed)`);
+                console.error(`army-cache-resolve: roster incomplete — missing ${missing.join(", ")} — honest abort (fail-closed)`);
                 process.exit(1);
               }
 
@@ -562,7 +571,7 @@ jobs:
                * one GEN-2 generation entry per account, gens carry wif/pub/activeWif/activePub. */
               const accounts = roster.slice().sort().map((name) => {
                 const e = byAccount.get(name);
-                return { name, gens: [{ gen: "GEN-2", wif: e.wif, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }] };
+                return { name, gens: [{ gen: "GEN-2", wif: e.wif ?? null, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }] };
               });
               const cache = {
                 extractedAt: new Date().toISOString(),
