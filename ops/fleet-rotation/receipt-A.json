@@ -1,12 +1,12 @@
 {
   "protocol": "SAOS-FLEET-ROTATION-A/1",
-  "at": "2026-10-12T20:17:22.715Z",
+  "at": "2026-10-12T20:44:34.763Z",
   "phase": "A",
   "summary": {
-    "rotatedVerified": 20,
+    "rotatedVerified": 19,
     "verifyPending": 0,
-    "skipped": 0,
-    "failed": 2,
+    "skipped": 2,
+    "failed": 1,
     "total": 22
   },
   "custodySecrets": [
@@ -18,18 +18,18 @@
       "account": "cashmachine",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "ced2926caabcfe8310",
-      "digestFp": "35de4073038e1748",
+      "txid": "6aa7962a1f643a8fbc",
+      "digestFp": "aa089bae11b65a38",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM69FaFcqvk",
-        "posting": "STM5KbAxqY7M",
-        "memo": "STM6pVH8a6oN"
-      },
-      "newPubFp": {
         "active": "STM6sFHvJM8s",
         "posting": "STM4z1nPW51m",
         "memo": "STM8ek4N6RV9"
+      },
+      "newPubFp": {
+        "active": "STM7sqdFFjSm",
+        "posting": "STM6ubGy4nKV",
+        "memo": "STM5NRKU77vt"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -38,18 +38,18 @@
       "account": "haran",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "bc0bffa7ace6a2b46f",
-      "digestFp": "f41d3ef56073c196",
+      "txid": "10ee9116b07ca9df8c",
+      "digestFp": "5d9db245abb6ff4c",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7JD8fvhkk",
-        "posting": "STM89dgugjvB",
-        "memo": "STM5ffU9rvJ4"
-      },
-      "newPubFp": {
         "active": "STM6Rh6N53bB",
         "posting": "STM7fozp9kLT",
         "memo": "STM6byJfWU6S"
+      },
+      "newPubFp": {
+        "active": "STM5UmasUNya",
+        "posting": "STM4tfzy9kMy",
+        "memo": "STM6LV6WQKvc"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -58,18 +58,18 @@
       "account": "israelnews",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "ab2f2b6fa025b59f98",
-      "digestFp": "4b93fe65c8c93a66",
+      "txid": "3f4e88f43f3a56d192",
+      "digestFp": "f4513222a35913cc",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5FpYirBcW",
-        "posting": "STM6JBXHRcV4",
-        "memo": "STM5yNTkgKyM"
-      },
-      "newPubFp": {
         "active": "STM5sbPHGRKG",
         "posting": "STM5WREcqUfp",
         "memo": "STM53ooy2QY4"
+      },
+      "newPubFp": {
+        "active": "STM65BZo2fBL",
+        "posting": "STM7pT5MNrhS",
+        "memo": "STM75Tm8HXAH"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -78,18 +78,18 @@
       "account": "lsa",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "b18c7e83922179a0c1",
-      "digestFp": "3253b0582e7196ea",
+      "txid": "328731f5b9b6de912a",
+      "digestFp": "4a711cb9135114de",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6cXYkXGqT",
-        "posting": "STM5VhuZCu4Q",
-        "memo": "STM5ipQEDcaY"
-      },
-      "newPubFp": {
         "active": "STM6KcTKXUgV",
         "posting": "STM8eYdheKWE",
         "memo": "STM86PxjQRmT"
+      },
+      "newPubFp": {
+        "active": "STM8DHNwN38Z",
+        "posting": "STM6ZqSuxZiP",
+        "memo": "STM7mZVK2DzY"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -98,18 +98,18 @@
       "account": "macrame",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "20060ec3f1c0e5cd90",
-      "digestFp": "092a5e0ff7d2a8b2",
+      "txid": "af04024583dee5d6ae",
+      "digestFp": "8fb02b34ffca1cd7",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8RPDKxeKh",
-        "posting": "STM51ssqJxXq",
-        "memo": "STM8HJsJsHnH"
-      },
-      "newPubFp": {
         "active": "STM76xGFFo73",
         "posting": "STM7TFKTWe9d",
         "memo": "STM7wR6XS5yC"
+      },
+      "newPubFp": {
+        "active": "STM7NJQ6fYcF",
+        "posting": "STM6gqrDruGh",
+        "memo": "STM6cv6nSiKM"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -118,18 +118,18 @@
       "account": "siq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "7f3a46b2d1e4bebbd4",
-      "digestFp": "7b37c81411c3239c",
+      "txid": "75cd13b4af39ce10c3",
+      "digestFp": "ca65dfe85326bb4f",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7xa4HmQ1W",
-        "posting": "STM7BA3ewULw",
-        "memo": "STM8Ja9EKoBi"
-      },
-      "newPubFp": {
         "active": "STM8hYQGnK4M",
         "posting": "STM8AxsGakd8",
         "memo": "STM68FyFYtuR"
+      },
+      "newPubFp": {
+        "active": "STM83yDuwfpq",
+        "posting": "STM52aQ4HspA",
+        "memo": "STM8CCc1rvZD"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -138,18 +138,18 @@
       "account": "tov",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "6dd83267073e218220",
-      "digestFp": "dce6b9d962b15ac4",
+      "txid": "464ef9302e519b980d",
+      "digestFp": "a75632feaa776e98",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM82yhm3sWi",
-        "posting": "STM7jqKwNq53",
-        "memo": "STM7rbUdM4UQ"
-      },
-      "newPubFp": {
         "active": "STM6RVTCmHwM",
         "posting": "STM7ertKsqKW",
         "memo": "STM6rbUqboHb"
+      },
+      "newPubFp": {
+        "active": "STM5FtMCJQ4t",
+        "posting": "STM6oU7oiAEp",
+        "memo": "STM8PbYMQFwj"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -158,18 +158,18 @@
       "account": "wic",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "2eaa5ce7edf4e9d022",
-      "digestFp": "311dcc744bb03a1c",
+      "txid": "2575e3bbb495464a25",
+      "digestFp": "841ac726ffdceb97",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5oK5jeC9P",
-        "posting": "STM6PF6jQDQC",
-        "memo": "STM5YmHca5pE"
-      },
-      "newPubFp": {
         "active": "STM81Hg2Vi3X",
         "posting": "STM59dhVbNmG",
         "memo": "STM6yKPqDikj"
+      },
+      "newPubFp": {
+        "active": "STM6pPqsrQEj",
+        "posting": "STM6sKcXdWWD",
+        "memo": "STM6m5DWD74E"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -178,18 +178,18 @@
       "account": "wog",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "2dcc8c1ae772ad2a71",
-      "digestFp": "6c67b4382feec8be",
+      "txid": "893786d3c03623c8bb",
+      "digestFp": "9176a847c97f2131",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM4y5FXeJP6",
-        "posting": "STM65KVktKfJ",
-        "memo": "STM6a2B3NPpW"
-      },
-      "newPubFp": {
         "active": "STM6ciCTX9bu",
         "posting": "STM8dDcmZLo6",
         "memo": "STM84Qd9xu9C"
+      },
+      "newPubFp": {
+        "active": "STM5o22XwqzN",
+        "posting": "STM5XQbmsR8z",
+        "memo": "STM4w5T1DBad"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -198,18 +198,18 @@
       "account": "woq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "71001ea0274d599cdc",
-      "digestFp": "d7c97bb911a833c1",
+      "txid": "d89c6ba19238581c5f",
+      "digestFp": "af0a64efffe1c872",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM835qJhkgu",
-        "posting": "STM6CNQ2ceBw",
-        "memo": "STM6eZoaS6aK"
-      },
-      "newPubFp": {
         "active": "STM6ooN7LASV",
         "posting": "STM8iKjzDXd2",
         "memo": "STM7YyfyLayr"
+      },
+      "newPubFp": {
+        "active": "STM4wyHT3knj",
+        "posting": "STM8H6YPK7ap",
+        "memo": "STM7qkov447T"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -218,17 +218,17 @@
       "account": "hcsoldier4",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "2a05458741f248413a",
-      "digestFp": "0e7f37b647f66f02",
+      "txid": "d17cd92f30b8a68732",
+      "digestFp": "497e4dfb005ecd24",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5P6Um1UsZ",
-        "posting": "STM8FzM5YF5p",
+        "active": "STM8YzKfp2MZ",
+        "posting": "STM7XDF4JDPT",
         "memo": "STM8T4ndfFuE"
       },
       "newPubFp": {
-        "active": "STM8YzKfp2MZ",
-        "posting": "STM7XDF4JDPT"
+        "active": "STM8U9e91aSs",
+        "posting": "STM54TH4BFbn"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -237,17 +237,17 @@
       "account": "hcsoldier5",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "3ae5eec060f596e993",
-      "digestFp": "62c2cfbac80c9dd1",
+      "txid": "9064628e1af409e587",
+      "digestFp": "b4e7ee2ea471ed1f",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5qsD2EcyM",
-        "posting": "STM5cJfhdP4g",
+        "active": "STM7hQRuoVZF",
+        "posting": "STM5ZApTRx1v",
         "memo": "STM7wEE2KefA"
       },
       "newPubFp": {
-        "active": "STM7hQRuoVZF",
-        "posting": "STM5ZApTRx1v"
+        "active": "STM6JjaTNNms",
+        "posting": "STM5Z42acmKJ"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -256,67 +256,53 @@
       "account": "hcsoldier6",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "d65e57afba8875f6c6",
-      "digestFp": "33c3f33e2c792a3f",
+      "txid": "db23c367cdd57674d6",
+      "digestFp": "b07a26cf62e6e3a3",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5WStGACQZ",
-        "posting": "STM7CPzmWrkd",
+        "active": "STM794x6Kgii",
+        "posting": "STM68mShpV4F",
         "memo": "STM4zUMqzDjr"
       },
       "newPubFp": {
-        "active": "STM794x6Kgii",
-        "posting": "STM68mShpV4F"
+        "active": "STM879JeRTu2",
+        "posting": "STM7BJVNeTpY"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
     {
       "chain": "hive",
       "account": "cashmachine",
-      "verdict": "FAIL-BROADCAST",
-      "signerRole": "active",
-      "oldPubFp": {
-        "active": "STM6scpMYNJh",
-        "posting": "STM4wV3LNCxa",
-        "memo": "STM58G9GqCBU"
-      },
-      "error": "fetch failed"
+      "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
       "account": "haran",
-      "verdict": "ROTATED-VERIFIED",
+      "verdict": "FAIL-BROADCAST",
       "signerRole": "active",
-      "txid": "c9a31d84d84af8fe31",
-      "digestFp": "1d00e4034e574618",
-      "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5kc85yED5",
-        "posting": "STM7jWm8CT67",
+        "active": "STM8iFM1GZvo",
+        "posting": "STM4zHsUCWiB",
         "memo": "STM7b51qcvqo"
       },
-      "newPubFp": {
-        "active": "STM8iFM1GZvo",
-        "posting": "STM4zHsUCWiB"
-      },
-      "custodyError": "sodium.crypto_box_seal is not a function"
+      "error": "fetch failed"
     },
     {
       "chain": "hive",
       "account": "israelnews",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "75cb4f3f0408742c22",
-      "digestFp": "c54649279c0da1f0",
+      "txid": "b6a98c99343116af71",
+      "digestFp": "f68e18d62bf5fac4",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5g7qbepCF",
-        "posting": "STM5JSQKTSKU",
+        "active": "STM86N4tSnF6",
+        "posting": "STM8h8SsxV5S",
         "memo": "STM7qiznscic"
       },
       "newPubFp": {
-        "active": "STM86N4tSnF6",
-        "posting": "STM8h8SsxV5S"
+        "active": "STM55U9uVZNF",
+        "posting": "STM7qXua7s3b"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -325,48 +311,41 @@
       "account": "lsa",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "e021a3caa879ecf36c",
-      "digestFp": "7cbfbe6bfdcdbe93",
+      "txid": "52943963d4ddf50aaf",
+      "digestFp": "2ee52d1a278a089b",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM4y91SbKMw",
-        "posting": "STM8BDzuh9VG",
+        "active": "STM7HZppCEhE",
+        "posting": "STM7ntibbSg9",
         "memo": "STM5Ctguov5Q"
       },
       "newPubFp": {
-        "active": "STM7HZppCEhE",
-        "posting": "STM7ntibbSg9"
+        "active": "STM6JVwtVHXK",
+        "posting": "STM6mVptroiu"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
     {
       "chain": "hive",
       "account": "macrame",
-      "verdict": "FAIL-BROADCAST",
-      "signerRole": "active",
-      "oldPubFp": {
-        "active": "STM54zPNNozY",
-        "posting": "STM6LBRqTtdz",
-        "memo": "STM599wdMN9m"
-      },
-      "error": "fetch failed"
+      "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
       "account": "siq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "b3c510027c40c55045",
-      "digestFp": "ec7bd30ff4133942",
+      "txid": "4bf04f52522226679b",
+      "digestFp": "8643efaf72b47511",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6J2KujKbk",
-        "posting": "STM7wCzq7Do6",
+        "active": "STM7kvB6g9LD",
+        "posting": "STM5Z54binae",
         "memo": "STM4xe3pLfnQ"
       },
       "newPubFp": {
-        "active": "STM7kvB6g9LD",
-        "posting": "STM5Z54binae"
+        "active": "STM7zYhjghgv",
+        "posting": "STM5v23xWQmT"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -375,17 +354,17 @@
       "account": "wic",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "0ac49c790b0b9db009",
-      "digestFp": "05aac4c1e4d88163",
+      "txid": "1b004af2aa9a64601f",
+      "digestFp": "5ec3ad07d4823edf",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM4yj9Xsxsm",
-        "posting": "STM8XTNmt9E1",
+        "active": "STM5ecrBTrC3",
+        "posting": "STM6fQh8WCj8",
         "memo": "STM55CjMnwks"
       },
       "newPubFp": {
-        "active": "STM5ecrBTrC3",
-        "posting": "STM6fQh8WCj8"
+        "active": "STM7E6JZkYjP",
+        "posting": "STM5vZoWhm4m"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -394,17 +373,17 @@
       "account": "wog",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "64bd8fe317382dc7be",
-      "digestFp": "8c6f86a29e1bb3b2",
+      "txid": "716fcce5d00f2dbf92",
+      "digestFp": "8fafc3d90917c10d",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8iqMxxXio",
-        "posting": "STM596HWXKhd",
+        "active": "STM6jiz4MiWR",
+        "posting": "STM8SYgSzzky",
         "memo": "STM6H6U3Aywi"
       },
       "newPubFp": {
-        "active": "STM6jiz4MiWR",
-        "posting": "STM8SYgSzzky"
+        "active": "STM5ajNDZogw",
+        "posting": "STM53optTu3U"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     },
@@ -413,17 +392,17 @@
       "account": "woq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "9ed5ffd69060a618c5",
-      "digestFp": "1ad5384ce28a27d8",
+      "txid": "5424ee0e4997eb7388",
+      "digestFp": "9b7f76296f3d2d53",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6ABMLPFiW",
-        "posting": "STM5vejvpKTW",
+        "active": "STM6JTGF8nvG",
+        "posting": "STM8jWqzu4Wv",
         "memo": "STM5pXs2rBEj"
       },
       "newPubFp": {
-        "active": "STM6JTGF8nvG",
-        "posting": "STM8jWqzu4Wv"
+        "active": "STM56KFYYRMd",
+        "posting": "STM7f3cxVyn8"
       },
       "custodyError": "sodium.crypto_box_seal is not a function"
     }
