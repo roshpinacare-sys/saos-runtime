@@ -1,0 +1,110 @@
+# owner-key-adopt.yml — adopts the owner's posting key onto the live account authorities.
+# Law: fail-closed. The secret active WIF is derived -> compared against the LIVE
+# active authority BEFORE any broadcast. No match = refuse, nothing leaves.
+# The key is never logged, never printed, never written to disk.
+name: owner-key-adopt
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: 'account to update'
+        default: 'headcorner'
+      new_posting_pub:
+        description: 'posting pubkey to ADD (weight 1, existing keys preserved)'
+        default: 'STM8StTG4aesGfmAUgBpMU9LKvoz98E5uz9eCCtEUvYM8Ywnicnoh'
+      dry_run:
+        description: 'true = validate only (no broadcast)'
+        default: 'true'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: owner-key-adopt
+  cancel-in-progress: false
+
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate + adopt (fail-closed, key never logged)
+        env:
+          IN_ACCOUNT: ${{ github.event.inputs.account }}
+          IN_PUB: ${{ github.event.inputs.new_posting_pub }}
+          IN_DRY: ${{ github.event.inputs.dry_run }}
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/steemjs/node_modules node - "$IN_ACCOUNT" "$IN_PUB" "$IN_DRY" << 'EOS'
+          const steem = require('steem');
+          const ACCOUNT = process.argv[1] || 'headcorner';
+          const NEWPUB = process.argv[2] || 'STM8StTG4aesGfmAUgBpMU9LKvoz98E5uz9eCCtEUvYM8Ywnicnoh';
+          const DRY = String(process.argv[3] ?? 'true') === 'true';
+          const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();
+          const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 400) })); process.exit(1); };
+          if (!WIF) fail('NO-SECRET', 'STEEM_ACTIVE_WIF missing in repo secrets');
+          if (!/^STM[1-9A-HJ-NP-Za-km-z]{50,52}$/.test(NEWPUB)) fail('BAD-PUB', 'new posting pub malformed');
+          let derived;
+          try { derived = steem.auth.wifToPublic(WIF); } catch (e) { fail('BAD-WIF', e.message); }
+          steem.api.getAccounts([ACCOUNT], (err, accs) => {
+            if (err || !accs || !accs[0]) return fail('ACCOUNT-LOOKUP-FAIL', (err && err.message) || 'no account');
+            const a = accs[0];
+            const liveActive = (a.active && a.active.key_auths ? a.active.key_auths : []).map((x) => x[0]);
+            const livePosting = (a.posting && a.posting.key_auths ? a.posting.key_auths : []).map((x) => x[0]);
+            const thr = (a.posting && a.posting.weight_threshold) != null ? a.posting.weight_threshold : 1;
+            if (!liveActive.includes(derived)) {
+              return fail('ACTIVE-AUTHORITY-MISMATCH', 'derived key ' + derived.slice(0, 14) + '... is NOT the live active authority (' + liveActive.length + ' auths) - broadcast refused, nothing left the runner');
+            }
+            if (livePosting.includes(NEWPUB)) {
+              console.log(JSON.stringify({ verdict: 'ALREADY-REGISTERED', posting: livePosting }));
+              process.exit(0);
+            }
+            const newPosting = {
+              weight_threshold: thr,
+              account_auths: (a.posting && a.posting.account_auths) || [],
+              key_auths: [...livePosting.map((k) => [k, 1]), [NEWPUB, 1]],
+            };
+            if (DRY) {
+              console.log(JSON.stringify({ verdict: 'DRY-RUN-OK', derived: derived.slice(0, 14) + '...', would_set_posting: newPosting }));
+              process.exit(0);
+            }
+            const done = (berr, res) => {
+              if (berr) return fail('BROADCAST-FAIL', berr.message);
+              setTimeout(() => {
+                steem.api.getAccounts([ACCOUNT], (verr, accs2) => {
+                  if (verr || !accs2 || !accs2[0]) return fail('VERIFY-LOOKUP-FAIL', (verr && verr.message) || 'no account');
+                  const p2 = (accs2[0].posting && accs2[0].posting.key_auths ? accs2[0].posting.key_auths : []).map((x) => x[0]);
+                  const ok = p2.includes(NEWPUB) && livePosting.every((k) => p2.includes(k));
+                  console.log(JSON.stringify({ verdict: ok ? 'ADOPTED-AND-VERIFIED' : 'VERIFY-FAILED', tx: (res && res.id) || null, posting_now: p2 }));
+                  process.exit(ok ? 0 : 1);
+                });
+              }, 4000);
+            };
+            const op2 = ['account_update2', { account: ACCOUNT, owner: null, active: null, posting: newPosting, memo_key: null, json_metadata: '' }];
+            steem.broadcast.send({ extensions: [], operations: [op2] }, { active: WIF }, (berr, res) => {
+              if (!berr) return done(null, res);
+              const msg = String(berr.message || '');
+              if (!/account_update2|unknown operation|Invalid operation/i.test(msg)) return done(berr, res);
+              // fallback: legacy account_update with verbatim live authorities
+              const opLegacy = ['account_update', {
+                account: ACCOUNT,
+                owner: a.owner || { weight_threshold: 1, account_auths: [], key_auths: [] },
+                active: a.active || { weight_threshold: 1, account_auths: [], key_auths: [] },
+                posting: newPosting,
+                memo_key: a.memo_key || NEWPUB,
+                json_metadata: a.json_metadata || '',
+              }];
+              steem.broadcast.send({ extensions: [], operations: [opLegacy] }, { active: WIF }, done);
+            });
+          });
+          EOS
+      - name: Always-report
+        if: always()
+        run: echo "owner-key-adopt finished"
