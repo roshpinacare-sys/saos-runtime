@@ -65,6 +65,15 @@ jobs:
       # Absent = honest UNLOCK-FAIL verdicts in state (never a crash).
       STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
     steps:
+      # exec-20 measured: the heartbeat never checked out its OWN repo, so
+      # ops/ resolvers (army-cache-resolve.cjs + the census probe it wraps)
+      # were absent from the runner — the ignition step died "Cannot find
+      # module .../ops/army-cache-resolve.cjs" (run 38197095126, 02:46Z).
+      # The checkout is additive: the engine clone below is unchanged.
+      - name: Checkout the public host (ops resolvers + workflow live here)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Clone the private engine tree (vault on main, engine on saos-cockpit)
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
