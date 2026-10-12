@@ -195,10 +195,9 @@ async function matchMode(outPath) {
     const dec = path.join(work, f.replace(/\.enc$/, ""));
     let hit = null;
     for (const pr of passRefs) {
-      try {
-        P.decryptTry(src, dec, pr.pass, pr.ref);
-        hit = pr.ref; break;
-      } catch (e) { /* try next */ }
+      // T-68 fix: decryptTry RETURNS false on failure (does not throw) — honor the return value,
+      // else a non-openable archive crashes the whole match (measured ENOENT 15:49Z) instead of skipping honestly.
+      if (P.decryptTry(src, dec, pr.pass, pr.ref)) { hit = pr.ref; break; }
     }
     if (!hit) { log({ archive: f, opened: false }); continue; }
     opened.push(f);
