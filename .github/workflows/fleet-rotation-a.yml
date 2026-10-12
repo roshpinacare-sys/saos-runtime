@@ -37,11 +37,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout steem (private home - bundles + house signer)
+      - name: Checkout steem main (custody branch — vault of record) + engine overlay (saos-cockpit)
         run: |
           set -Eeuo pipefail
           if [ -z "${GH_PAT:-}" ]; then echo "ABORT: GH_PAT absent"; exit 1; fi
           git clone --depth 1 --branch main "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" steem-engine
+          cd steem-engine
+          echo "steem main @ $(git rev-parse --short HEAD)"
+          # T-68: the house serialization law (steemtx.mjs) lives on the saos-cockpit branch — overlay it onto main
+          git fetch --depth 1 origin saos-cockpit
+          git checkout FETCH_HEAD -- mini-services/saos-engine/steemtx.mjs
+          node --check mini-services/saos-engine/steemtx.mjs
+          echo "engine overlay ok: steemtx.mjs from saos-cockpit @ $(git rev-parse --short FETCH_HEAD)"
 
       - uses: actions/setup-node@v4
         with:
@@ -82,7 +89,7 @@ jobs:
           git commit -m "custody(T-67): ROT2 phase-A seal - exposed army credentials rotated (owner untouched), re-sealed under gen2-era pass, meta v4 inner-sha pinned"
           PUSHED=0
           for i in 1 2 3; do
-            if git pull --rebase origin main && git push origin HEAD:main; then PUSHED=1; break; fi
+            if git -c rebase.autoStash=true pull --rebase origin main && git push origin HEAD:main; then PUSHED=1; break; fi
             sleep 5
           done
           [ "$PUSHED" = "1" ] || { echo "PUSH-FAIL: steem ROT2 seal push exhausted — failing honestly (false-OK law)"; exit 1; }
