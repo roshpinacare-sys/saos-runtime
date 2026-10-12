@@ -187,6 +187,40 @@ jobs:
         env:
           CI_EXEC_ARMED: ${{ secrets.CI_EXEC_ARMED }}
 
+      # Z-20-e (exec-20 · owner=active): THE HIVE BEAT — the user's standing order
+      # "תמצא פתרון להזרים את הhive" closed at the WORKFLOW layer (the engine's own
+      # hive modules are untouched — T-65 territory): hiveCustody unlocks the vault
+      # via vault-custody (STEEM_VAULT_PASSES is on the job env) and chain-judges
+      # every WIF against the LIVE hive authorities; only then do the lanes run,
+      # under the modules' OWN laws (caps, anti-herd, persona floor, RC floors,
+      # fleet-pause veto). Fail-soft by law: any failure is an honest log line and
+      # the beat carries on; state rides the existing state commit.
+      - name: Hive beat (custody → rail + community loop · module laws internal)
+        working-directory: engine/mini-services/saos-engine
+        run: |
+          node --input-type=module -e '
+          const now = () => new Date().toISOString();
+          try {
+            const hive = await import("./hive.mjs");
+            const c = await hive.hiveCustody({ now: now() });
+            console.log("hive-custody:", c.verdict, "verified", c.verified ?? 0, "of", c.total ?? "?");
+            if ((c.verified ?? 0) > 0) {
+              try {
+                const rail = await hive.runHiveRail({ now: now() });
+                console.log("hive-rail:", rail && rail.verdict ? rail.verdict : "done");
+              } catch (e) { console.log("hive-rail failed (honest):", String(e && e.message || e).slice(0, 140)); }
+              try {
+                const hs = await import("./hive-social.mjs");
+                const s = await hs.runHiveSocial({ now: now() });
+                console.log("hive-social:", s && s.verdict ? s.verdict : "done");
+              } catch (e) { console.log("hive-social failed (honest):", String(e && e.message || e).slice(0, 140)); }
+            } else {
+              console.log("hive lanes skipped — no chain-verified hive custody (fail-closed, honest)");
+            }
+          } catch (e) {
+            console.log("hive beat failed (honest, fail-soft):", String(e && e.message || e).slice(0, 160));
+          }
+          '
       - name: Commit state back (FF-only, no force, ever · honest yield to the alive custodian — T-58 fix)
         working-directory: engine
         run: |
