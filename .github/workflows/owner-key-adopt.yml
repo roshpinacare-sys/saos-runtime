@@ -42,11 +42,11 @@ jobs:
         run: |
           set -Eeuo pipefail
           npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
-          NODE_PATH=/tmp/steemjs/node_modules node - "$IN_ACCOUNT" "$IN_PUB" "$IN_DRY" << 'EOS'
+          NODE_PATH=/tmp/steemjs/node_modules node - << 'EOS'
           const steem = require('steem');
-          const ACCOUNT = process.argv[1] || 'headcorner';
-          const NEWPUB = process.argv[2] || 'STM8StTG4aesGfmAUgBpMU9LKvoz98E5uz9eCCtEUvYM8Ywnicnoh';
-          const DRY = String(process.argv[3] ?? 'true') === 'true';
+          const ACCOUNT = (process.env.IN_ACCOUNT || 'headcorner').trim();
+          const NEWPUB = (process.env.IN_PUB || 'STM8StTG4aesGfmAUgBpMU9LKvoz98E5uz9eCCtEUvYM8Ywnicnoh').trim();
+          const DRY = String(process.env.IN_DRY ?? 'true') === 'true';
           const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();
           const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 400) })); process.exit(1); };
           if (!WIF) fail('NO-SECRET', 'STEEM_ACTIVE_WIF missing in repo secrets');
