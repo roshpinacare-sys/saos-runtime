@@ -997,13 +997,6 @@ jobs:
           if canon_at and at <= canon_at:
               log("canonical already at=%s (verdict at=%s) — nothing newer to publish (honest)" % (canon_at, at))
               raise SystemExit(0)
-          except urllib.error.HTTPError as ge:
-              if ge.code != 404:
-                  warn("canonical GET failed (http=%d) — fail-soft skip" % ge.code)
-                  raise SystemExit(0)
-          except Exception as e:
-              warn("canonical GET failed: %s — fail-soft skip" % str(e)[:120])
-              raise SystemExit(0)
           body = {"message": "beat verdict: canonical home (custodian-free) %s" % at,
                   "content": base64.b64encode(raw).decode(), "branch": "main"}
           if sha:
