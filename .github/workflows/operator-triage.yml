@@ -1,0 +1,41 @@
+# OPERATOR-TRIAGE — ניתוב-טענות-המפעיל לאוטונומיה (R324 · «הריבונות היא המפעיל,
+# טענות-למפעיל צריכות-להיות מנותבות לאוטונומיה»).
+#
+# issue-נפתח → תשובה-אוטונומית: פסק-המפה החיה + הזרמת-הזרימות הבטוחות (canary-gated)
+# לפי מילות-מפתח. כל-יום 09:04 → סריקת-אדומים → issue «תור-תיקון אוטונומי» אחד חי
+# (פתיחה/עדכון/סגירה-כנה). המפעיל לא צריך לרדוף אחרי-המערכת — המערכת רודפת-אחרי-הסדר.
+# fail-soft: הנתב לעולם לא אדום — הוא לעולם לא יוצר מיילים.
+name: operator-triage
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch: {}
+  schedule:
+    # daily sweep — off-peak minute, after the map has had a full night of cycles
+    - cron: "4 9 * * *"
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+concurrency:
+  group: operator-triage
+  cancel-in-progress: false
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Route operator claims to the autonomy (fail-soft, never red)
+        run: node ops/operator-triage/triage.mjs
