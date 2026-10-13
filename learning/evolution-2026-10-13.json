@@ -1,0 +1,118 @@
+{
+ "at": "2026-10-13T14:34:22.683Z",
+ "window": {
+  "from": "2026-10-12",
+  "to": "2026-10-13"
+ },
+ "sections": {
+  "runs": {
+   "Domain": {
+    "count": 2207,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 4,
+     "pending": 1,
+     "cancelled": 26,
+     "success": 66,
+     "failure": 3
+    }
+   },
+   "Console": {
+    "count": 287,
+    "sampled": 100,
+    "hist": {
+     "queued": 1,
+     "success": 84,
+     "cancelled": 10,
+     "failure": 5
+    }
+   },
+   "Sandbox": {
+    "error": "Error: 404 https://api.github.com/repos/roshpinacare-sys/Sandbox/actions/runs?pe"
+   },
+   "saos-runtime": {
+    "count": 262,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 2,
+     "success": 77,
+     "cancelled": 10,
+     "failure": 11
+    }
+   }
+  },
+  "econ": {
+   "pnlBook": {
+    "realized": null,
+    "edge": null,
+    "verdict": null,
+    "fields": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11"
+    ]
+   },
+   "pulse": {
+    "realizedUsd": null
+   },
+   "honestEcon": {
+    "realChainMarkedUsd": 0.7103,
+    "saosExternalBid": false
+   }
+  },
+  "exposure": {
+   "regressions": [],
+   "probes": {
+    "Domain/agent/inspections/INS-R66-001.json": "clean",
+    "Domain/receipts/key-check.json": "clean",
+    "Domain/about/team.json": "clean",
+    "TruthRail/receipts/sovereign-bootstrap-20261008-190743.json": "clean",
+    "TruthRail/receipts/blurt-gen2-rotation-2026-10-08.json": "clean",
+    "FleetHQ/vault/ssh-keys.tar.enc": "clean",
+    "FleetHQ/vault/keys.env.enc": "clean",
+    "sovereign-lighthouse/state.json": "redacted-ok",
+    "sovereign-beacon/state.json": "redacted-ok"
+   }
+  },
+  "content": {
+   "report": "found",
+   "highSimPairs": null
+  }
+ },
+ "slos": [
+  {
+   "id": "P0-1",
+   "name": "no exposure regressions",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "id": "T1",
+   "name": "Domain daily runs >= 30",
+   "ok": true,
+   "detail": "runs=2207"
+  },
+  {
+   "id": "T1",
+   "name": "Console daily runs >= 10",
+   "ok": true,
+   "detail": "runs=287"
+  },
+  {
+   "id": "T1",
+   "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
+   "ok": true,
+   "detail": "runs=262"
+  }
+ ],
+ "verdict": "ALL-SLO-OK"
+}
