@@ -38,4 +38,4 @@ jobs:
         with: { node-version: 20 }
 
       - name: Route operator claims to the autonomy (fail-soft, never red)
-        run: node ops/operator-triage/triage.mjs
+        run: node ops/operator-triage/triage.cjs

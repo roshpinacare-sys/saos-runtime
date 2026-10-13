@@ -33,4 +33,4 @@ jobs:
         with: { node-version: 20 }
 
       - name: Build the living map (honest verdicts, evidence = commit)
-        run: node ops/system-map/system-map.mjs
+        run: node ops/system-map/system-map.cjs
