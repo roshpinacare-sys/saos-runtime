@@ -456,6 +456,23 @@ jobs:
           }
           facts["billingBlock"] = billing_red
 
+          # ---- anchor-probe verdict (sovereign-runtime beat; cross-repo private mirror) ----
+          # The beat records the probe verdict (state/anchor-probe.json) instead of dying
+          # on it — the watchdog mirrors it here so an off-lineage anchor stays LOUD RED
+          # without killing the heartbeat (measured cascade 2026-10-13 11:58→12:15).
+          ap, ap_code = _read_hb("/repos/%s/steem/contents/mini-services/saos-engine/state/anchor-probe.json?ref=saos-cockpit" % OWNER, "anchorprobe", True)
+          ap_v = ap.get("verdict") if isinstance(ap, dict) else None
+          ap_age = age_s(ap.get("at")) if isinstance(ap, dict) else None
+          ap_fresh = isinstance(ap_age, (int, float)) and ap_age <= 86400
+          ap_red = (ap_v != "OK") or (not ap_fresh)
+          signals["anchor.probe"] = {
+              "measured": "verdict=%s age=%s src=steem@saos-cockpit:state/anchor-probe.json" % (ap_v or "unavailable", fmt_age(ap_age) if ap_age is not None else "unavailable"),
+              "threshold": "verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here)",
+              "red": ap_red,
+              "since": ap.get("at") if isinstance(ap, dict) else None,
+          }
+          facts["anchorProbeVerdict"] = ap_v
+
           # ---- open grid-alert issue snapshot (consumed by the Alarm step) ----
           iss, iss_code = jget("/repos/%s/saos-runtime/issues?labels=grid-alert&state=open&per_page=10" % OWNER, "issues")
           open_alerts = []
@@ -740,7 +757,7 @@ jobs:
 
           # ---- STATUS.md (human: one table + 3-line legend; no emoji, no chat phrases) ----
           sig = obs.get("signals", {})
-          order = ["heartbeat.fresh", "custody.coverage", "social.verdict", "content.verdict",
+          order = ["heartbeat.fresh", "anchor.probe", "custody.coverage", "social.verdict", "content.verdict",
                    "dex.anchor", "blurt.live", "delegation.verdict", "digest.verdict",
                    "pulse.fresh", "potential.fresh", "fleetdigest.fresh", "office.schedule", "billing.block"]
 

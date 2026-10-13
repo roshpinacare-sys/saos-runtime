@@ -649,11 +649,26 @@ jobs:
       - name: Chain anchor probe (on-chain custody anchor must sit in HEAD lineage)
         working-directory: engine
         run: |
-          node scripts/chain-anchor-probe.mjs || {
+          # ANCHOR-PROBE DECUPLE (2026-10-13, measured cascade): a probe failure used
+          # to kill the job BEFORE the beat wrote ci-last-heartbeat.json — one honest
+          # red measurement starved the heartbeat that 13 watchdog signals feed on
+          # (measured 11:58/12:14 probe reds → 12:15 watchdog fail-loud → dispatch storm).
+          # Law (R316-Z, same file): measure the OUTCOME, not the machine. The verdict
+          # is RECORDED (state/anchor-probe.json, committed with the beat state) and the
+          # watchdog mirrors it as a loud RED signal — the truth stays up, the heartbeat
+          # always lands, no machine-death cascade.
+          mkdir -p mini-services/saos-engine/state
+          V="OK"; NOTE="anchor in HEAD lineage"
+          if ! node scripts/chain-anchor-probe.mjs; then
             echo "first probe failed — one retry (public nodes wobble)"
             sleep 10
-            node scripts/chain-anchor-probe.mjs
-          }
+            if ! node scripts/chain-anchor-probe.mjs; then
+              V="FAILED"; NOTE="anchor NOT in HEAD lineage after retry (probe verdict recorded; heartbeat still lands)"
+              echo "::warning::chain anchor probe FAILED after retry — verdict recorded to state/anchor-probe.json, watchdog mirrors it red; the beat continues"
+            fi
+          fi
+          printf '{"verdict": "%s", "at": "%s", "note": "%s"}\n' "$V" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$NOTE" > mini-services/saos-engine/state/anchor-probe.json
+          echo "anchor-probe verdict: $V"
 
       # R315 FIX (2026-10-11, measured root cause of LIVE-REFUSED-NOT-ARMED
       # forever): the armed file MUST exist BEFORE the beat runs — the old step
