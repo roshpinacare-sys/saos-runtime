@@ -1,0 +1,21 @@
+{
+  "protocol": "SAOS-SYSTEM-MAP/1",
+  "builtAt": "2026-10-13T22:22:02.552Z",
+  "repo": "roshpinacare-sys/saos-runtime",
+  "flows": [],
+  "heartbeat": {
+    "repo": "roshpinacare-sys/steem",
+    "branch": "saos-cockpit",
+    "verdict": "UNREACHABLE"
+  },
+  "summary": {
+    "alive": 0,
+    "red": 0,
+    "stale": 0,
+    "gated": 0,
+    "cancelled": 0,
+    "neverRun": 0,
+    "review": 0,
+    "heartbeat": "UNREACHABLE"
+  }
+}
