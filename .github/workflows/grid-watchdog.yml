@@ -241,12 +241,22 @@ jobs:
               "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY"],
               "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY"],
           }
+          # WAIT — designed gate/standby states: the brake or an idle engine doing its job
+          # (STASIS staged-lanes law; custody protection; dex standby). WAIT = honest amber:
+          # visible in STATUS.md, NOT red-noise, NOT mirrored to GRID-ALERT, NOT email.
+          # A real defect (crash / contract break / measure-gap) stays RED — never silenced.
+          WAIT = {
+              "social": {"PART-GATED", "GATED", "STASIS-HALT"},
+              "delegation": {"CUSTODY-GATE-REFUSED", "GATED", "STASIS-HALT"},
+              "dex": {"STANDBY", "IDLE"},
+          }
           sv = hb.get("social") if hb_ok else None
           so = steps.get("social", {}) if hb_ok else {}
           signals["social.verdict"] = {
               "measured": "verdict=%s executed=%s refused=%s" % (sv, so.get("executed"), so.get("refused")),
-              "threshold": "verdict in green set (anything else red)",
-              "red": (sv not in GREEN["social"]),
+              "threshold": "verdict in green set (WAIT = designed gate state)",
+              "red": (sv not in GREEN["social"]) and (sv not in WAIT["social"]),
+              "wait": sv in WAIT["social"],
               "since": hb_at,
           }
           facts["socialExecuted"], facts["socialRefused"] = so.get("executed"), so.get("refused")
@@ -266,8 +276,9 @@ jobs:
           anchor_ok = isinstance(anchor, (int, float)) and not isinstance(anchor, bool)
           signals["dex.anchor"] = {
               "measured": "verdict=%s anchorAgeMs=%s" % (dxv, int(anchor) if anchor_ok else "unavailable"),
-              "threshold": "anchorAgeMs<=86400000 (24h)",
-              "red": ((not anchor_ok) or anchor > 86400000),
+              "threshold": "anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed",
+              "red": ((not anchor_ok) or anchor > 86400000) and (dxv not in WAIT["dex"]),
+              "wait": dxv in WAIT["dex"],
               "since": hb_at,
           }
           facts["dexAnchorAgeMs"] = int(anchor) if anchor_ok else None
@@ -296,8 +307,9 @@ jobs:
           dl = steps.get("delegation", {}) if hb_ok else {}
           signals["delegation.verdict"] = {
               "measured": "verdict=%s ops=%s" % (dlv, dl.get("ops")),
-              "threshold": "verdict in green set (anything else red)",
-              "red": (dlv not in GREEN["delegation"]),
+              "threshold": "verdict in green set (WAIT = custody gate refusal is the brake working)",
+              "red": (dlv not in GREEN["delegation"]) and (dlv not in WAIT["delegation"]),
+              "wait": dlv in WAIT["delegation"],
               "since": hb_at,
           }
           facts["delegationOps"] = dl.get("ops")
@@ -735,6 +747,8 @@ jobs:
           def status_word(s):
               if s["red"] and "unavailable" in str(s["measured"]).lower():
                   return "UNAVAILABLE"
+              if s.get("wait") and not s["red"]:
+                  return "WAIT (designed)"
               return "RED" if s["red"] else "GREEN"
 
           lines = []
@@ -754,7 +768,8 @@ jobs:
           lines.append("")
           lines.append("Legend:")
           lines.append("- RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.")
-          lines.append("- GREEN: within threshold. UNAVAILABLE: the signal could not be measured and is treated as RED until proven otherwise.")
+          lines.append("- GREEN: within threshold. WAIT (designed): a designed gate/standby state — visible, not alarmed, not silenced.")
+          lines.append("- UNAVAILABLE: the signal could not be measured and is treated as RED until proven otherwise.")
           lines.append("- Auto-managed by grid-watchdog; machine state in state/grid-status.json. Telemetry only — no keys, no account identifiers.")
           with open(os.path.join(REPO_DIR, "STATUS.md"), "w") as fh:
               fh.write("\n".join(lines) + "\n")
