@@ -83,7 +83,11 @@ function verdictFor(flow) {
   if (r.conclusion !== "success") return "REVIEW";
   const ageMin = (Date.now() - new Date(r.created_at).getTime()) / 60000;
   const window = Math.max(60, (flow.gapMinutes || 60) * 3);
-  return ageMin <= window ? "ALIVE" : "STALE";
+  // R324 precision: dispatch-only flows are EVENT-DRIVEN, not dead — older than
+  // the freshness window they are IDLE (waiting for their trigger), not STALE.
+  // STALE is reserved for SCHEDULED flows that missed their own clock.
+  if (ageMin > window) return flow.crons.length ? "STALE" : "IDLE";
+  return "ALIVE";
 }
 
 async function main() {
@@ -127,7 +131,7 @@ async function main() {
 
   const cnt = (v) => map.flows.filter((f) => f.verdict === v).length;
   map.summary = { alive: cnt("ALIVE"), red: cnt("RED"), stale: cnt("STALE"), gated: cnt("GATED"),
-    cancelled: cnt("CANCELLED"), neverRun: cnt("NEVER-RUN"), review: cnt("REVIEW"),
+    cancelled: cnt("CANCELLED"), neverRun: cnt("NEVER-RUN"), review: cnt("REVIEW"), idle: cnt("IDLE"),
     heartbeat: map.heartbeat.verdict };
 
   // 3) SYSTEM-MAP.md — מפת-המשרד החיה, שפת-המפעיל
@@ -141,7 +145,7 @@ async function main() {
       : `כל ${f.gapMinutes} דק`
     : "dispatch-בלבד");
   const lastOf = (f) => (f.lastRun ? `${f.lastRun.created_at} · ${f.lastRun.event} · ${f.lastRun.conclusion || f.lastRun.status}` : "—");
-  const badge = { ALIVE: "🟢", RED: "🔴", STALE: "🟡", GATED: "⚪", CANCELLED: "🟠", "NEVER-RUN": "⚫", REVIEW: "🟠" };
+  const badge = { ALIVE: "🟢", RED: "🔴", STALE: "🟡", GATED: "⚪", CANCELLED: "🟠", "NEVER-RUN": "⚫", REVIEW: "🟠", IDLE: "🔵" };
   const reds = flowsSorted.filter((f) => f.verdict === "RED" || f.verdict === "CANCELLED" || f.verdict === "STALE");
   const md = `# מפת-המשרד החיה — הרשת רואה את עצמה
 
@@ -150,7 +154,7 @@ async function main() {
 ## פסק-על
 - **דופק-הצאצא** (state push-back ל-${SIBLING}@${SIBLING_BRANCH}): ${map.heartbeat.ageMinutes != null ? `**לפני ${map.heartbeat.ageMinutes} דק** — ${map.heartbeat.verdict}` : map.heartbeat.verdict}
   - «${map.heartbeat.subject || "—"}»
-- **איברים**: 🟢 חיים ${map.summary.alive} · 🔴 אדומים ${map.summary.red} · 🟡 נעדרי-דופק ${map.summary.stale} · 🟠 בוטלים ${map.summary.cancelled} · ⚪ שער ${map.summary.gated} · ⚫ לא-רצו-מעולם ${map.summary.neverRun}
+- **איברים**: 🟢 חיים ${map.summary.alive} · 🔴 אדומים ${map.summary.red} · 🟡 נעדרי-דופק ${map.summary.stale} · 🟠 בוטלים ${map.summary.cancelled} · 🔵 צופים-לטריגר ${map.summary.idle} · ⚪ שער ${map.summary.gated} · ⚫ לא-רצו-מעולם ${map.summary.neverRun}
 - **פסק המשרד**: ${reds.length === 0 && map.heartbeat.verdict === "ALIVE" ? "🟢 עומד ומתפקד — כל-האיברים בתוקף" : `🟠/🔴 ${reds.length} איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)`}
 
 ## טבלת-החיים

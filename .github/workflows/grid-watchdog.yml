@@ -53,7 +53,10 @@ permissions:
   actions: write
 
 concurrency:
-  group: grid-watchdog
+  # R324 pulse-hardening (same law as sovereign-runtime): the schedule slots own
+  # a separate group so they queue/cancel against themselves only — never
+  # against the self-dispatch pulse chain. Two independent revivers each.
+  group: ${{ github.event_name == 'schedule' && 'grid-watchdog-backstop' || 'grid-watchdog' }}
   cancel-in-progress: false
 
 jobs:

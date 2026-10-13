@@ -42,7 +42,19 @@ function api(method, p, body) {
 }
 
 async function readMap() {
-  // מפה מקומית שהקומיט-האחרון של system-map השאיר (עדיף — מהיר וזול); נפילה-רכה לסריקה-חיה
+  // R324 anti-race: the checkout snapshot may predate this cycle's map commit —
+  // fetch the LATEST committed map from origin main first; fall back to the
+  // local copy; last resort null (honest "map not ready").
+  const latest = await new Promise((resolve) => {
+    const req = https.request(
+      { host: "raw.githubusercontent.com", path: `/roshpinacare-sys/saos-runtime/main/state/system-map/system-map.json`,
+        method: "GET", headers: { "User-Agent": "saos-operator-triage", ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}) }, timeout: 20000 },
+      (res) => { let d = ""; res.on("data", (c) => (d += c)); res.on("end", () => resolve(res.statusCode === 200 ? d : "")); });
+    req.on("error", () => resolve(""));
+    req.on("timeout", () => { req.destroy(); resolve(""); });
+    req.end();
+  });
+  try { const j = JSON.parse(latest); if (j && j.summary) return j; } catch {}
   try {
     const j = JSON.parse(fs.readFileSync("state/system-map/system-map.json", "utf8"));
     if (j && j.summary) return j;
