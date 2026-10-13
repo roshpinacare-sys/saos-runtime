@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-13T22:25:48.595Z",
+  "builtAt": "2026-10-13T22:29:12.959Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -42,7 +42,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-10-12T03:22:33Z"
       },
-      "verdict": "STALE"
+      "verdict": "IDLE"
     },
     {
       "name": "fee-engine",
@@ -70,7 +70,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-10-13T00:01:51Z"
       },
-      "verdict": "STALE"
+      "verdict": "IDLE"
     },
     {
       "name": "gen2-rotation",
@@ -83,7 +83,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-10-12T15:41:03Z"
       },
-      "verdict": "STALE"
+      "verdict": "IDLE"
     },
     {
       "name": "grid-watchdog",
@@ -111,7 +111,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:25:39Z"
+        "created_at": "2026-10-13T22:29:03Z"
       },
       "verdict": "ALIVE"
     },
@@ -126,7 +126,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-10-12T16:48:45Z"
       },
-      "verdict": "STALE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -139,7 +139,7 @@
         "event": "schedule",
         "created_at": "2026-10-13T14:34:14Z"
       },
-      "verdict": "STALE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -167,7 +167,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:25:37Z"
+        "created_at": "2026-10-13T22:29:02Z"
       },
       "verdict": "ALIVE"
     },
@@ -191,18 +191,19 @@
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
     "at": "2026-10-13T22:16:23Z",
-    "ageMinutes": 10,
+    "ageMinutes": 13,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
     "alive": 6,
     "red": 1,
-    "stale": 5,
+    "stale": 0,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
+    "idle": 5,
     "heartbeat": "ALIVE"
   }
 }
