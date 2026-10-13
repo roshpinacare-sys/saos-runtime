@@ -1,0 +1,36 @@
+# SYSTEM-MAP — הרשת רואה את עצמה (R324 · פקודת-המפעיל: «הרשת לא מודעת לעצמה, לא
+# בודקת את-עצמה»). כל-30 דק: כל-זרימה נבדקת מול-ה-API → פסק כנה (ALIVE/RED/STALE)
+# + דופק-הצאצא (steem@saos-cockpit) → SYSTEM-MAP.md + system-map.json נכתבים בגיט.
+# זו שכבת-ההכרה-העצמית: המשרד מדווח-על-עצמו — המפעיל לא נדרש לגלות קריסות במייל.
+# אפס-סודות: מטא-דאטה בלבד. העדה = קומיט.
+name: system-map
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # twice an hour, off-peak minutes — same degraded-cron tolerance as the map's own law
+    - cron: "17,47 * * * *"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: system-map
+  cancel-in-progress: false
+
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Build the living map (honest verdicts, evidence = commit)
+        run: node ops/system-map/system-map.mjs
