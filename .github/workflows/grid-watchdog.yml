@@ -819,7 +819,7 @@ jobs:
           for i in 1 2 3; do
             if git push origin HEAD:main 2>/tmp/wd-push.err; then PUSHED=1; break; fi
             echo "push attempt $i failed — rebase and retry"
-            git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; git pull --no-rebase origin main || true; }
+            git pull --rebase -X theirs --autostash origin main || { git rebase --abort 2>/dev/null || true; git pull --no-rebase origin main || true; }
           done
           if [ "$PUSHED" != "1" ]; then
             echo "::error::keepalive push failed after 3 attempts"

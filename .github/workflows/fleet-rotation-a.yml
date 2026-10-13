@@ -112,7 +112,7 @@ jobs:
           git add ops/fleet-rotation/receipt-A.json
           git commit -m "fleet-rotation-a: phase A receipt $(date -u +%FT%TZ) [skip ci]" || echo "no receipt delta"
           for i in 1 2 3; do
-            git pull --rebase origin main && git push origin HEAD:main && break || sleep $((i*5))
+            git pull --rebase -X theirs --autostash origin main && git push origin HEAD:main && break || sleep $((i*5))
           done
           sleep 2
           git fetch -q origin main

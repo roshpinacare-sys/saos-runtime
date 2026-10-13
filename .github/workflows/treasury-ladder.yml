@@ -98,6 +98,6 @@ jobs:
             # the selftest's npm install dirties package-lock.json — clean it so the rebase-yield is free
             git checkout -- . 2>/dev/null || true
             for i in 1 2 3; do
-              git pull --rebase origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; git checkout -- . 2>/dev/null || true; }
+              git pull --rebase -X theirs --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; git checkout -- . 2>/dev/null || true; }
             done
           fi

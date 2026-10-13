@@ -240,7 +240,7 @@ jobs:
             git commit -m "custody(T-68 repair): GEN-2 custody convergence - meta-driven source (follows MASTER-DERIVE custody-of-record), re-sealed under bundle gen2 era (roundtrip verified, inner sha pinned), recovery-meta v3 + GEN-2-ERA-META"
             PUSHED=0
             for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then PUSHED=1; break; fi
+              if git pull --rebase -X theirs --autostash origin main && git push origin main; then PUSHED=1; break; fi
               echo "retry $i"; sleep 5
             done
             [ "$PUSHED" = "1" ] || { echo "PUSH-FAIL: 3 attempts exhausted — failing honestly (false-OK law)"; exit 1; }

@@ -94,6 +94,6 @@ jobs:
           else
             git commit -m "escrow-payroll: canary cycle receipt $(date -u +%FT%TZ) [skip ci]"
             for i in 1 2 3; do
-              git pull --rebase --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; }  # --autostash (exec-20 measured: npm residuals refused the rebase 3x, receipts stranded)
+              git pull --rebase -X theirs --autostash --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; }  # --autostash (exec-20 measured: npm residuals refused the rebase 3x, receipts stranded)
             done
           fi
