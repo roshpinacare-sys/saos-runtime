@@ -33,6 +33,10 @@ jobs:
     env:
       STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
       GH_PAT: ${{ secrets.GH_PAT }}
+      # R324 wiring-fix: same class-bug as treasury-ladder — resolve-keys.cjs
+      # needs the census roster via env (T-68 law). Without it: get_accounts([])
+      # → 0 accounts → honest abort → red run on every dispatch. Wire restored.
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }

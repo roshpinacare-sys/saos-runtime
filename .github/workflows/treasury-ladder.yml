@@ -32,6 +32,12 @@ jobs:
     env:
       STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
       GH_PAT: ${{ secrets.GH_PAT }}
+      # R324 wiring-fix: resolve-keys.cjs reads the census roster from ROT_ROSTER
+      # (T-68 intel-by-law). The missing wire made get_accounts([]) return 0
+      # accounts → "matched 0 live keys across 0 accounts" → honest abort →
+      # a red run + operator email on every scheduled cycle. The secret exists
+      # on this repo; the wire was simply absent. One line, root-cause closed.
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
