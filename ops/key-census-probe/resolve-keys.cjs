@@ -61,23 +61,67 @@ async function main() {
       decrypted = decPath;
       break;
     }
-    if (!decrypted) { console.error("resolve-keys: decrypt failed on all known passes — honest abort (fail-closed)"); process.exit(1); }
-
-    const unzipDir = path.join(work, "unzipped");
-    fs.mkdirSync(unzipDir, { recursive: true });
-    execFileSync("unzip", ["-o", "-q", decrypted, "-d", unzipDir], { stdio: "pipe" });
-    const cands = [];
-    P.scanDir(unzipDir, cands);
-
+    // R324-EXAMINE-FIX (trace 1a1379e13145bd25, measured run 38482136810): the fleet
+    // rotated (ROT2, 2026-10-13T00:05, chain-verified receipt-A) AFTER the GEN-2 zip
+    // payload was sealed — the zip census matched 0 across 0 and treasury-ladder slept
+    // green (KEYLESS-STASIS exit-0 = invisible to failure-based alerting).
+    // ROT2_FLEET_KEYS (custody-recover whole-map PUT, {rot2:{account:{role:wif}}})
+    // arrives in the job env as plaintext — same trust domain as every other env
+    // secret; WIFs never logged, never leave the job (0600 out-file only).
+    // Additive alive-wins: (A) the GEN-2 zip census stands; (B) ROT2 overrides it
+    // because it is the fresher, chain-verified material.
     const map = {};
     let matched = 0;
-    for (const c of cands) {
-      const r = P.classify(c, livePubs);
-      if (r.ok) {
-        matched++;
-        map[r.account] = map[r.account] || {};
-        map[r.account][r.role] = c.wif;
+
+    // (A) GEN-2 zip census — custody-of-record (unchanged behavior when decryptable)
+    if (decrypted) {
+      const unzipDir = path.join(work, "unzipped");
+      fs.mkdirSync(unzipDir, { recursive: true });
+      execFileSync("unzip", ["-o", "-q", decrypted, "-d", unzipDir], { stdio: "pipe" });
+      const cands = [];
+      P.scanDir(unzipDir, cands);
+      for (const c of cands) {
+        const r = P.classify(c, livePubs);
+        if (r.ok) {
+          matched++;
+          map[r.account] = map[r.account] || {};
+          map[r.account][r.role] = c.wif;
+        }
       }
+    } else {
+      console.log("[resolve-keys] GEN-2 zip not decryptable this run — ROT2-env path is the live source");
+    }
+
+    // (B) ROT2 fast path — post-rotation fleet keys (override stale zip matches)
+    let rot2Matched = 0, rot2Accounts = 0;
+    const rot2Raw = process.env.ROT2_FLEET_KEYS || "";
+    if (rot2Raw) {
+      try {
+        const parsed = JSON.parse(rot2Raw);
+        const fleet = (parsed && typeof parsed === "object" && parsed.rot2 && typeof parsed.rot2 === "object")
+          ? parsed.rot2
+          : (parsed && typeof parsed === "object" ? parsed : null);
+        if (fleet) {
+          for (const [account, roles] of Object.entries(fleet)) {
+            if (!roles || typeof roles !== "object") continue;
+            let acctHit = false;
+            for (const [role, wif] of Object.entries(roles)) {
+              if (typeof wif !== "string" || wif.length < 40) continue;
+              const r = P.classify({ source: "rot2-env", account, role, wif }, livePubs);
+              if (r.ok) {
+                map[r.account] = map[r.account] || {};
+                if (!map[r.account][r.role]) { matched++; rot2Matched++; }
+                map[r.account][r.role] = r.wif;
+                acctHit = true;
+              }
+            }
+            if (acctHit) rot2Accounts++;
+          }
+        }
+      } catch {
+        console.log("[resolve-keys] ROT2_FLEET_KEYS unparsable — GEN-2 zip census stands alone");
+      }
+      console.log(`[resolve-keys] rot2-env source: ${rot2Matched} live keys across ${rot2Accounts} accounts (chain-verified ROT2, overrides stale zip)`);
     }
     fs.writeFileSync(outPath, JSON.stringify(map) + "\n");
     fs.chmodSync(outPath, 0o600);

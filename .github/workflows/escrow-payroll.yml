@@ -37,6 +37,10 @@ jobs:
       # needs the census roster via env (T-68 law). Without it: get_accounts([])
       # → 0 accounts → honest abort → red run on every dispatch. Wire restored.
       ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
+      # R324-EXAMINE-FIX: post-rotation fleet keys (ROT2, 00:05, chain-verified) — the
+      # fresh source for resolve-keys. Without it the GEN-2 zip (pre-ROT2 payload) matched
+      # 0 across 0 → KEYLESS-STASIS green-sleep. One line, additive, alive-wins.
+      ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
