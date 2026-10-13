@@ -1,21 +1,21 @@
 # Grid status
 
-Generated 2026-10-13T09:52:59Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-13T10:29:39Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | age=3m http=200 | age<=2400s (40m); missing/unparseable is red | GREEN | 2026-10-13T09:49:55.839Z |
-| custody.coverage | verified=1/total=14 | verified>=14 | RED | 2026-10-13T09:49:55.839Z |
-| social.verdict | verdict=PART-GATED executed=None refused=None | verdict in green set (anything else red) | RED | 2026-10-13T09:49:55.839Z |
-| content.verdict | verdict=BRIDGE-DOWN draftsQueued=None | verdict in green set (anything else red) | RED | 2026-10-13T09:49:55.839Z |
-| dex.anchor | verdict=STANDBY anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h) | UNAVAILABLE | 2026-10-13T09:49:55.839Z |
-| blurt.live | verdict=BLURT-BODIES-LIVE live=None/None | live>=1 | RED | 2026-10-13T09:49:55.839Z |
-| delegation.verdict | verdict=CUSTODY-GATE-REFUSED ops=None | verdict in green set (anything else red) | RED | 2026-10-13T09:49:55.839Z |
-| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-13T09:49:55.839Z |
-| pulse.fresh | age=3m conclusion=status=in_progress run=38379086793 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-13T09:49:37Z |
-| potential.fresh | age=7.3h path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-13T02:37:48Z |
-| fleetdigest.fresh | age=7.3h path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-13T02:37:48Z |
-| office.schedule | age=7.3h conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-13T02:37:28Z |
+| heartbeat.fresh | age=3m http=200 | age<=2400s (40m); missing/unparseable is red | GREEN | 2026-10-13T10:26:33.858Z |
+| custody.coverage | verified=1/total=14 | verified>=14 | RED | 2026-10-13T10:26:33.858Z |
+| social.verdict | verdict=PART-GATED executed=None refused=None | verdict in green set (anything else red) | RED | 2026-10-13T10:26:33.858Z |
+| content.verdict | verdict=BRIDGE-DOWN draftsQueued=None | verdict in green set (anything else red) | RED | 2026-10-13T10:26:33.858Z |
+| dex.anchor | verdict=STANDBY anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h) | UNAVAILABLE | 2026-10-13T10:26:33.858Z |
+| blurt.live | verdict=BLURT-BODIES-LIVE live=None/None | live>=1 | RED | 2026-10-13T10:26:33.858Z |
+| delegation.verdict | verdict=CUSTODY-GATE-REFUSED ops=None | verdict in green set (anything else red) | RED | 2026-10-13T10:26:33.858Z |
+| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-13T10:26:33.858Z |
+| pulse.fresh | age=3m conclusion=status=in_progress run=38383330054 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-13T10:26:09Z |
+| potential.fresh | age=7.9h path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-13T02:37:48Z |
+| fleetdigest.fresh | age=7.9h path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-13T02:37:48Z |
+| office.schedule | age=7.9h conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-13T02:37:28Z |
 | billing.block | no billing-block annotation (0 failed run(s) of 0 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
 
 Legend:
