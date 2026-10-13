@@ -167,7 +167,11 @@ jobs:
           facts = {}
 
           # ---- a) heartbeat (cross-repo: steem @ saos-cockpit) ----
-          hb_wrap, hb_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hb", cross=True)
+          # 24-d: CI-owned canonical path first (state/beat/ - the custodian never syncs it)
+          hb_wrap, hb_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/beat/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hbeat", cross=True)
+          if hb_code != "200":
+              print("beat-path verdict absent (expected before first beat lands) — legacy path used")
+              hb_wrap, hb_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hb", cross=True)
           hb = None
           if isinstance(hb_wrap, dict) and hb_wrap.get("encoding") == "base64":
               try:
