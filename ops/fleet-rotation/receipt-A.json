@@ -1,12 +1,12 @@
 {
   "protocol": "SAOS-FLEET-ROTATION-A/1",
-  "at": "2026-10-12T21:34:03.771Z",
+  "at": "2026-10-13T00:03:24.783Z",
   "phase": "A",
   "summary": {
-    "rotatedVerified": 18,
+    "rotatedVerified": 16,
     "verifyPending": 0,
-    "skipped": 3,
-    "failed": 1,
+    "skipped": 4,
+    "failed": 2,
     "total": 22
   },
   "custodySecrets": [
@@ -18,257 +18,297 @@
       "account": "cashmachine",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "3f28c403b745e4b60d",
-      "digestFp": "ba9ab7c54ed08f9f",
+      "txid": "2ab1f4e2c426622d6a",
+      "digestFp": "20c649b6368ff2a3",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7sqdFFjSm",
-        "posting": "STM6ubGy4nKV",
-        "memo": "STM5NRKU77vt"
-      },
-      "newPubFp": {
         "active": "STM4ynahfZyB",
         "posting": "STM52Wu9d2Bv",
         "memo": "STM5VTkaht9y"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM6F6g8zE3r",
+        "posting": "STM7RQhCmgHw",
+        "memo": "STM6oDMKW1sm"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "haran",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "c221579d95026e37bd",
-      "digestFp": "9173d2940ae55aa1",
+      "txid": "dc56dab40364c48343",
+      "digestFp": "d47886e3816d3675",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5UmasUNya",
-        "posting": "STM4tfzy9kMy",
-        "memo": "STM6LV6WQKvc"
-      },
-      "newPubFp": {
         "active": "STM8aV5L4SnF",
         "posting": "STM5X6uygqSp",
         "memo": "STM8N85cS8QS"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM6Ais6zXqn",
+        "posting": "STM8S1euaPhL",
+        "memo": "STM7WgxuQSz9"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "israelnews",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "bf5c83c592aa98a9a5",
-      "digestFp": "398fb28dc0037a00",
+      "txid": "d1dd8abcbf559de01a",
+      "digestFp": "047885eb2f2fcb09",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM65BZo2fBL",
-        "posting": "STM7pT5MNrhS",
-        "memo": "STM75Tm8HXAH"
-      },
-      "newPubFp": {
         "active": "STM8m7zxsMuS",
         "posting": "STM8V9xEthRZ",
         "memo": "STM6qgcGY6WT"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM8iPwEEngR",
+        "posting": "STM7qRKLp69W",
+        "memo": "STM7qaGFrH5w"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "lsa",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "24e4aaba20480ebec7",
-      "digestFp": "69d6372d7b42c50a",
+      "txid": "b7f6968d147b073577",
+      "digestFp": "fe5c7bbbea3437e7",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8DHNwN38Z",
-        "posting": "STM6ZqSuxZiP",
-        "memo": "STM7mZVK2DzY"
-      },
-      "newPubFp": {
         "active": "STM6g3KEoQ9U",
         "posting": "STM5Yh8zvwao",
         "memo": "STM6pAqaSH7V"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM7piCGq42D",
+        "posting": "STM6md5hzKRk",
+        "memo": "STM5st2wHbxj"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "macrame",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "bd467374990fd6e496",
-      "digestFp": "283ffc9a2e7de656",
+      "txid": "9785f7ab187508bf8d",
+      "digestFp": "2c53eac3f85cdef5",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7NJQ6fYcF",
-        "posting": "STM6gqrDruGh",
-        "memo": "STM6cv6nSiKM"
-      },
-      "newPubFp": {
         "active": "STM5MCZ4Xqgi",
         "posting": "STM7xSr5u4Q6",
         "memo": "STM6tD4Xgk1B"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM5B7wKP5E6",
+        "posting": "STM8ZEqLQNxz",
+        "memo": "STM5yXN2bCcG"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "siq",
-      "verdict": "ROTATED-VERIFIED",
+      "verdict": "FAIL-BROADCAST",
       "signerRole": "active",
-      "txid": "264a218e17d9cf2084",
-      "digestFp": "caab03fa3f2a7b0f",
-      "chainVerified": true,
       "oldPubFp": {
-        "active": "STM83yDuwfpq",
-        "posting": "STM52aQ4HspA",
-        "memo": "STM8CCc1rvZD"
-      },
-      "newPubFp": {
         "active": "STM7a8BwYdcn",
         "posting": "STM6ucW9GYSy",
         "memo": "STM8MCDXUvRU"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "error": "byte-law FAIL nodeLen=195 myLen=195"
     },
     {
       "chain": "steem",
       "account": "tov",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "ad7e031b6834f711f1",
-      "digestFp": "7144da6b31b3d005",
+      "txid": "6dc62fa1ca97f07ac3",
+      "digestFp": "8396278ae562b65b",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5FtMCJQ4t",
-        "posting": "STM6oU7oiAEp",
-        "memo": "STM8PbYMQFwj"
-      },
-      "newPubFp": {
         "active": "STM76TVXSqob",
         "posting": "STM7CiF3C9fC",
         "memo": "STM6XfDrxBLa"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM5xkXgX5pe",
+        "posting": "STM5WLZFDwYd",
+        "memo": "STM523r2zqmx"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "wic",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "d393f07b761e5fffba",
-      "digestFp": "14bb4c2ada1cffce",
+      "txid": "5e438b3ef641823f4f",
+      "digestFp": "1a04f9401a631898",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6pPqsrQEj",
-        "posting": "STM6sKcXdWWD",
-        "memo": "STM6m5DWD74E"
-      },
-      "newPubFp": {
         "active": "STM5PGFCS8Zv",
         "posting": "STM5taPxn71t",
         "memo": "STM73vNfBgjZ"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM7agCwy1LA",
+        "posting": "STM7H4Z2fdXy",
+        "memo": "STM5yw2nRqeV"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "wog",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "89f9da79dfff57900f",
-      "digestFp": "a256080923c50e25",
+      "txid": "d5d0b111ab0ef0d964",
+      "digestFp": "84d7330ffa1fdb8c",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5o22XwqzN",
-        "posting": "STM5XQbmsR8z",
-        "memo": "STM4w5T1DBad"
-      },
-      "newPubFp": {
         "active": "STM7kLZKHUeS",
         "posting": "STM5TDXPX8L8",
         "memo": "STM7YLavFTz7"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM7yAPMmAsM",
+        "posting": "STM8NMmdASkY",
+        "memo": "STM6uojGX6gt"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "woq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "5e520d00261a20ca1a",
-      "digestFp": "0bc4b56f22ad5318",
+      "txid": "5e2e54967e174a211f",
+      "digestFp": "33ccc11640d1627b",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM4wyHT3knj",
-        "posting": "STM8H6YPK7ap",
-        "memo": "STM7qkov447T"
-      },
-      "newPubFp": {
         "active": "STM7DfyTX3w2",
         "posting": "STM7NcbFSz4Q",
         "memo": "STM5mSEUm66K"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "newPubFp": {
+        "active": "STM6u8gfvFnn",
+        "posting": "STM6gZLJw1uj",
+        "memo": "STM5KJuusCC6"
+      },
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "hcsoldier4",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "8cd86f870bd8a273b0",
-      "digestFp": "e700d72d35d70cea",
+      "txid": "2f69d1daa8db22df57",
+      "digestFp": "4db6a22809d95001",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8U9e91aSs",
-        "posting": "STM54TH4BFbn",
+        "active": "STM638X2KZuQ",
+        "posting": "STM8FhsKpiod",
         "memo": "STM8T4ndfFuE"
       },
       "newPubFp": {
-        "active": "STM638X2KZuQ",
-        "posting": "STM8FhsKpiod"
+        "active": "STM69rYxb37r",
+        "posting": "STM5FgpZ8Qck"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "hcsoldier5",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "dc56d0ef9bc2ff4652",
-      "digestFp": "ab8def29b6c2b844",
+      "txid": "28f9cb70d6659c9c2d",
+      "digestFp": "a8f656f608c25ffd",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6JjaTNNms",
-        "posting": "STM5Z42acmKJ",
+        "active": "STM62bwR9QXQ",
+        "posting": "STM5Ap9xCw7G",
         "memo": "STM7wEE2KefA"
       },
       "newPubFp": {
-        "active": "STM62bwR9QXQ",
-        "posting": "STM5Ap9xCw7G"
+        "active": "STM5AqUXnu96",
+        "posting": "STM5FkFY3QXU"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "steem",
       "account": "hcsoldier6",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "e8488b8dd5fd3ef6c9",
-      "digestFp": "3e36547f4ce59974",
+      "txid": "41a2b119375f0bcc61",
+      "digestFp": "951641aea3132790",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM879JeRTu2",
-        "posting": "STM7BJVNeTpY",
+        "active": "STM6UHunRLJv",
+        "posting": "STM6QfAEJaEe",
         "memo": "STM4zUMqzDjr"
       },
       "newPubFp": {
-        "active": "STM6UHunRLJv",
-        "posting": "STM6QfAEJaEe"
+        "active": "STM6Nb5rjr4r",
+        "posting": "STM5BdP3Rz2S"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "hive",
@@ -285,38 +325,46 @@
       "account": "israelnews",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "634958286a8bb033a9",
-      "digestFp": "f23be31d6b45c967",
+      "txid": "ba5e6332d2756e8d1f",
+      "digestFp": "d853b0e9e51a5fdf",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM55U9uVZNF",
-        "posting": "STM7qXua7s3b",
+        "active": "STM65EVV26bb",
+        "posting": "STM5SS4FArsC",
         "memo": "STM7qiznscic"
       },
       "newPubFp": {
-        "active": "STM65EVV26bb",
-        "posting": "STM5SS4FArsC"
+        "active": "STM6mQVLHkaG",
+        "posting": "STM7s1jH9MEd"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "hive",
       "account": "lsa",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "aa62e331fe5a80f8b6",
-      "digestFp": "7ba63d72125a185f",
+      "txid": "c41c2c521b3e75f065",
+      "digestFp": "15f42735baab8871",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6JVwtVHXK",
-        "posting": "STM6mVptroiu",
+        "active": "STM6TMpNdnUG",
+        "posting": "STM6eA7v7xrN",
         "memo": "STM5Ctguov5Q"
       },
       "newPubFp": {
-        "active": "STM6TMpNdnUG",
-        "posting": "STM6eA7v7xrN"
+        "active": "STM4yeGGqsDe",
+        "posting": "STM6m1BNo8gs"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "hive",
@@ -328,69 +376,63 @@
       "account": "siq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "d02e0132085c00c824",
-      "digestFp": "85cd7f07dab5e8b0",
+      "txid": "3c1523346e03d1831c",
+      "digestFp": "a245d200b7c69374",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7zYhjghgv",
-        "posting": "STM5v23xWQmT",
+        "active": "STM7k6gvYBK1",
+        "posting": "STM5zCxJhCeZ",
         "memo": "STM4xe3pLfnQ"
       },
       "newPubFp": {
-        "active": "STM7k6gvYBK1",
-        "posting": "STM5zCxJhCeZ"
+        "active": "STM7orTqfW9K",
+        "posting": "STM5QZHnFxNK"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     },
     {
       "chain": "hive",
       "account": "wic",
-      "verdict": "FAIL-BROADCAST",
-      "signerRole": "active",
-      "oldPubFp": {
-        "active": "STM7E6JZkYjP",
-        "posting": "STM5vZoWhm4m",
-        "memo": "STM55CjMnwks"
-      },
-      "error": "fetch failed"
+      "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
       "account": "wog",
-      "verdict": "ROTATED-VERIFIED",
+      "verdict": "FAIL-BROADCAST",
       "signerRole": "active",
-      "txid": "73c8c8636f9b4848a0",
-      "digestFp": "394c179d87135902",
-      "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5ajNDZogw",
-        "posting": "STM53optTu3U",
+        "active": "STM6kYxgwpFk",
+        "posting": "STM7nyMkhQcn",
         "memo": "STM6H6U3Aywi"
       },
-      "newPubFp": {
-        "active": "STM6kYxgwpFk",
-        "posting": "STM7nyMkhQcn"
-      },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "error": "fetch failed"
     },
     {
       "chain": "hive",
       "account": "woq",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "6f07a6c909bcc1e9ba",
-      "digestFp": "2276a5fe2982da0d",
+      "txid": "f8ebd3f66166698fd5",
+      "digestFp": "08a6ab79da7e0f31",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM56KFYYRMd",
-        "posting": "STM7f3cxVyn8",
+        "active": "STM7K9H8MsXM",
+        "posting": "STM7GzN8BJAN",
         "memo": "STM5pXs2rBEj"
       },
       "newPubFp": {
-        "active": "STM7K9H8MsXM",
-        "posting": "STM7GzN8BJAN"
+        "active": "STM6rEeXiqKH",
+        "posting": "STM6AduVMK3F"
       },
-      "custodyError": "Cannot read properties of undefined (reading 'includes')"
+      "custodyRepos": [
+        "steem",
+        "saos-runtime",
+        "Domain"
+      ]
     }
   ],
   "laws": [
