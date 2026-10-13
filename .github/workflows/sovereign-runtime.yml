@@ -677,6 +677,10 @@ jobs:
           JSON=$(sed -n 's/^CI-HEARTBEAT //p' /tmp/ci-cycle.out | tail -1)
           if [ -n "$JSON" ]; then
             printf '%s' "$JSON" > state/ci-last-heartbeat.json
+            # 24-d: CI-owned canonical copy the operator-side custodian never syncs
+            mkdir -p state/beat
+            printf '%s' "$JSON" > state/beat/ci-last-heartbeat.json
+            echo "engine-tree state/beat/ci-last-heartbeat.json updated from CI-HEARTBEAT verdict (CI-owned canonical path)"
             echo "engine-tree state/ci-last-heartbeat.json updated from CI-HEARTBEAT verdict"
             echo "23-h: capture pwd=$(pwd) -> state/ci-last-heartbeat.json (in-tree mini-services/saos-engine/state/ci-last-heartbeat.json == 23-f rescue read path)"
           else
@@ -830,7 +834,8 @@ jobs:
           api_last_mile_rescue() {
             local cands
             cands=$(
-              { git cat-file -e HEAD:mini-services/saos-engine/state/ci-last-heartbeat.json 2>/dev/null && echo "mini-services/saos-engine/state/ci-last-heartbeat.json"
+              { git cat-file -e "${BEAT_SHA:-HEAD}":mini-services/saos-engine/state/beat/ci-last-heartbeat.json 2>/dev/null && echo "mini-services/saos-engine/state/beat/ci-last-heartbeat.json"
+                git cat-file -e HEAD:mini-services/saos-engine/state/ci-last-heartbeat.json 2>/dev/null && echo "mini-services/saos-engine/state/ci-last-heartbeat.json"
                 git cat-file -e HEAD:mini-services/saos-engine/state/army-custody.json 2>/dev/null && echo "mini-services/saos-engine/state/army-custody.json"
                 git diff-tree --no-commit-id --name-only -r HEAD -- mini-services/saos-engine/state 2>/dev/null | grep -E '/[^/]*custody[^/]*\.json$' || true
               } | sort -u
