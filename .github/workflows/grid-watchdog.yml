@@ -6,7 +6,10 @@
 # This workflow measures the wall twice an hour and screams in the right
 # places:
 #
-#   1. OBSERVE    cross-repo telemetry: engine heartbeat (steem@saos-cockpit),
+#   1. OBSERVE    cross-repo telemetry: engine heartbeat (canonical home FIRST:
+#                 saos-runtime@main state/beat/ci-last-heartbeat.json — 26-b,
+#                 written by the beat itself in its own custodian-free repo;
+#                 steem@saos-cockpit paths remain as fallback mirrors),
 #                 pulse-chain freshness, FleetHQ state-file freshness
 #                 (potential/digest — paths discovered dynamically, never
 #                 hardcoded), office-window schedule health, billing-block
@@ -166,30 +169,53 @@ jobs:
           signals = {}
           facts = {}
 
-          # ---- a) heartbeat (cross-repo: steem @ saos-cockpit) ----
-          # 24-d: CI-owned canonical path first (state/beat/ - the custodian never syncs it)
-          hb_wrap, hb_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/beat/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hbeat", cross=True)
-          if hb_code != "200":
-              print("beat-path verdict absent (expected before first beat lands) — legacy path used")
-              hb_wrap, hb_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hb", cross=True)
-          hb = None
-          if isinstance(hb_wrap, dict) and hb_wrap.get("encoding") == "base64":
-              try:
-                  hb = json.loads(base64.b64decode(hb_wrap.get("content", "")).decode("utf-8"))
-              except Exception:
-                  hb = None
+          # ---- a) heartbeat (3-source read chain · 26-b) ----
+          # 26-b: canonical home FIRST — the beat itself commits the verdict to
+          # THIS repo (saos-runtime@main state/beat/ci-last-heartbeat.json),
+          # which no custodian ever writes. The steem paths are fallback
+          # mirrors only: a resident operator-side custodian overwrites/rewinds
+          # them (measured: R321 "alive-wins union" b96103e9 11:26:46Z froze
+          # at=10:08:07.706Z over fresher CI verdicts). Fall through only on
+          # non-200/unparseable; legacy path last. Thresholds UNCHANGED.
+          def _read_hb(path, tag, cross):
+              w, c = jget(path, tag, cross=cross)
+              obj = None
+              if isinstance(w, dict) and w.get("encoding") == "base64":
+                  try:
+                      obj = json.loads(base64.b64decode(w.get("content", "")).decode("utf-8"))
+                  except Exception:
+                      obj = None
+              return obj, c
+
+          cano, cano_code = _read_hb("/repos/%s/saos-runtime/contents/state/beat/ci-last-heartbeat.json?ref=main" % OWNER, "hbeat", False)
+          ci, ci_code = _read_hb("/repos/%s/steem/contents/mini-services/saos-engine/state/beat/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hb", True)
+          cano_ok = isinstance(cano, dict)
+          ci_ok = isinstance(ci, dict)
+          if cano_ok:
+              hb, hb_code, hb_src = cano, cano_code, "saos-runtime@main:state/beat/ci-last-heartbeat.json"
+          elif ci_ok:
+              hb, hb_code, hb_src = ci, ci_code, "steem@saos-cockpit:mini-services/saos-engine/state/beat/ci-last-heartbeat.json"
+          else:
+              hb, hb_code, hb_src = _read_hb("/repos/%s/steem/contents/mini-services/saos-engine/state/ci-last-heartbeat.json?ref=saos-cockpit" % OWNER, "hblegacy", True) + ("steem@saos-cockpit:mini-services/saos-engine/state/ci-last-heartbeat.json",)
+          if not cano_ok:
+              print("heartbeat: canonical source miss (http=%s parse=%s) — steem mirror chain decides" % (cano_code, "ok" if cano_ok else "fail"))
+          # 26-b rewind alarm: steem CI path OLDER than canonical = the custodian
+          # rewound the war-zone branch. Measure only — NEVER write to steem.
+          if cano_ok and isinstance(cano.get("at"), str) and ci_ok and isinstance(ci.get("at"), str) and ci["at"] < cano["at"]:
+              print("::warning::steem CI path behind canonical (custodian rewind measured): steem at=%s < canonical at=%s — no steem write attempted (war zone, out of scope)" % (ci["at"], cano["at"]))
           hb_ok = isinstance(hb, dict)
           hb_at = hb.get("at") if hb_ok else None
           hb_age = age_s(hb_at)
           steps = hb.get("report", {}).get("steps", {}) if hb_ok else {}
 
           signals["heartbeat.fresh"] = {
-              "measured": "age=%s http=%s" % (fmt_age(hb_age), hb_code),
+              "measured": "src=%s age=%s http=%s" % (hb_src or "unavailable", fmt_age(hb_age), hb_code),
               "threshold": "age<=2400s (40m); missing/unparseable is red",
               "red": (hb_age is None or hb_age > 2400),
               "since": hb_at,
           }
           facts["heartbeatAt"], facts["heartbeatAgeS"], facts["heartbeatHttp"] = hb_at, hb_age, hb_code
+          facts["heartbeatSource"] = hb_src
 
           # custody
           cust = steps.get("custody", {}) if hb_ok else {}
@@ -675,6 +701,7 @@ jobs:
               "signals": {
                   "heartbeatAt": f.get("heartbeatAt"),
                   "heartbeatAgeS": num(f.get("heartbeatAgeS")),
+                  "heartbeatSource": f.get("heartbeatSource"),
                   "custodyVerified": num(f.get("custodyVerified")),
                   "custodyTotal": num(f.get("custodyTotal")),
                   "socialExecuted": num(f.get("socialExecuted")),
