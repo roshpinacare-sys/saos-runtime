@@ -1,21 +1,208 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-13T22:22:02.552Z",
+  "builtAt": "2026-10-13T22:25:48.595Z",
   "repo": "roshpinacare-sys/saos-runtime",
-  "flows": [],
+  "flows": [
+    {
+      "name": "blurt-revival",
+      "path": ".github/workflows/blurt-revival.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-13T21:16:13Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "custody-recover",
+      "path": ".github/workflows/custody-recover.yml",
+      "crons": [
+        "41 3 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-13T11:04:00Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "escrow-payroll",
+      "path": ".github/workflows/escrow-payroll.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-12T03:22:33Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "fee-engine",
+      "path": ".github/workflows/fee-engine.yml",
+      "crons": [
+        "23 */4 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:19:51Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "fleet-rotation-a",
+      "path": ".github/workflows/fleet-rotation-a.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T00:01:51Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "gen2-rotation",
+      "path": ".github/workflows/gen2-rotation.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-12T15:41:03Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "grid-watchdog",
+      "path": ".github/workflows/grid-watchdog.yml",
+      "crons": [
+        "13,43 * * * *"
+      ],
+      "gapMinutes": 30,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "cancelled",
+        "event": "schedule",
+        "created_at": "2026-10-13T21:49:25Z"
+      },
+      "verdict": "CANCELLED"
+    },
+    {
+      "name": "operator-triage",
+      "path": ".github/workflows/operator-triage.yml",
+      "crons": [
+        "4 9 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:25:39Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "owner-key-adopt",
+      "path": ".github/workflows/owner-key-adopt.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-12T16:48:45Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "sovereign-evolution",
+      "path": ".github/workflows/sovereign-evolution.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-13T14:34:14Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "sovereign-runtime",
+      "path": ".github/workflows/sovereign-runtime.yml",
+      "crons": [
+        "23 * * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:13:35Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "system-map",
+      "path": ".github/workflows/system-map.yml",
+      "crons": [
+        "17,47 * * * *"
+      ],
+      "gapMinutes": 30,
+      "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:25:37Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "treasury-ladder",
+      "path": ".github/workflows/treasury-ladder.yml",
+      "crons": [
+        "41 5,17 * * *"
+      ],
+      "gapMinutes": 720,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "failure",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:17:31Z"
+      },
+      "verdict": "RED"
+    }
+  ],
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "verdict": "UNREACHABLE"
+    "at": "2026-10-13T22:16:23Z",
+    "ageMinutes": 10,
+    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
+    "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 0,
-    "red": 0,
-    "stale": 0,
+    "alive": 6,
+    "red": 1,
+    "stale": 5,
     "gated": 0,
-    "cancelled": 0,
+    "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "heartbeat": "UNREACHABLE"
+    "heartbeat": "ALIVE"
   }
 }
