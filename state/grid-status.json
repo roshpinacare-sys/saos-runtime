@@ -1,6 +1,6 @@
 {
  "crossRepo": true,
- "generatedAt": "2026-10-13T07:42:30Z",
+ "generatedAt": "2026-10-13T08:19:08Z",
  "redCount": 6,
  "reds": [
   "blurt.live",
@@ -17,17 +17,17 @@
   "custodyTotal": 14,
   "custodyVerified": 1,
   "dexAnchorAgeMs": null,
-  "fleetDigestAgeS": 18280,
+  "fleetDigestAgeS": 20478,
   "fleetDigestCommitAt": "2026-10-13T02:37:48Z",
-  "heartbeatAgeS": 208,
-  "heartbeatAt": "2026-10-13T07:38:57.135Z",
-  "officeScheduleAgeS": 18300,
+  "heartbeatAgeS": 180,
+  "heartbeatAt": "2026-10-13T08:16:03.721Z",
+  "officeScheduleAgeS": 20499,
   "officeScheduleAt": "2026-10-13T02:37:28Z",
-  "potentialAgeS": 18279,
+  "potentialAgeS": 20478,
   "potentialCommitAt": "2026-10-13T02:37:48Z",
-  "pulseAgeS": 238,
-  "pulseRunAt": "2026-10-13T07:38:28Z",
-  "pulseRunId": 38363940954,
+  "pulseAgeS": 203,
+  "pulseRunAt": "2026-10-13T08:15:41Z",
+  "pulseRunId": 38368050337,
   "socialExecuted": null,
   "socialRefused": null
  }
