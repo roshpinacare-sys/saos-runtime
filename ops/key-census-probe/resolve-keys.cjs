@@ -93,35 +93,36 @@ async function main() {
     }
 
     // (B) ROT2 fast path — post-rotation fleet keys (override stale zip matches)
-    let rot2Matched = 0, rot2Accounts = 0;
+    // Measured shapes: custody-recover PUTs {rot2:{<chain>:{<account>:{<role>:{wif,...}}}}}
+    // — deep-walk collects every WIF-shaped string, zero shape assumptions (format-proof);
+    // classify re-derives account/role from the LIVE chain authorities, labels irrelevant.
+    let rot2Matched = 0, rot2Wifs = 0;
     const rot2Raw = process.env.ROT2_FLEET_KEYS || "";
     if (rot2Raw) {
       try {
         const parsed = JSON.parse(rot2Raw);
-        const fleet = (parsed && typeof parsed === "object" && parsed.rot2 && typeof parsed.rot2 === "object")
-          ? parsed.rot2
-          : (parsed && typeof parsed === "object" ? parsed : null);
-        if (fleet) {
-          for (const [account, roles] of Object.entries(fleet)) {
-            if (!roles || typeof roles !== "object") continue;
-            let acctHit = false;
-            for (const [role, wif] of Object.entries(roles)) {
-              if (typeof wif !== "string" || wif.length < 40) continue;
-              const r = P.classify({ source: "rot2-env", account, role, wif }, livePubs);
-              if (r.ok) {
-                map[r.account] = map[r.account] || {};
-                if (!map[r.account][r.role]) { matched++; rot2Matched++; }
-                map[r.account][r.role] = r.wif;
-                acctHit = true;
-              }
-            }
-            if (acctHit) rot2Accounts++;
+        const wifs = new Set();
+        const WIF_RE = P.WIF_RE || /^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/;
+        (function walk(node, depth) {
+          if (!node || typeof node !== "object" || depth > 8) return;
+          for (const v of Object.values(node)) {
+            if (typeof v === "string") { if (WIF_RE.test(v)) wifs.add(v); }
+            else if (v && typeof v === "object") walk(v, depth + 1);
+          }
+        })(parsed, 0);
+        rot2Wifs = wifs.size;
+        for (const wif of wifs) {
+          const r = P.classify({ source: "rot2-env", wif }, livePubs);
+          if (r.ok) {
+            map[r.account] = map[r.account] || {};
+            if (!map[r.account][r.role]) { matched++; rot2Matched++; }
+            map[r.account][r.role] = r.wif;
           }
         }
       } catch {
         console.log("[resolve-keys] ROT2_FLEET_KEYS unparsable — GEN-2 zip census stands alone");
       }
-      console.log(`[resolve-keys] rot2-env source: ${rot2Matched} live keys across ${rot2Accounts} accounts (chain-verified ROT2, overrides stale zip)`);
+      console.log(`[resolve-keys] rot2-env source: ${rot2Wifs} wif-candidates → ${rot2Matched} live keys (chain-verified ROT2, overrides stale zip)`);
     }
     fs.writeFileSync(outPath, JSON.stringify(map) + "\n");
     fs.chmodSync(outPath, 0o600);
