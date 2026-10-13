@@ -27,6 +27,13 @@
 #      engine cycle — trading, converts, the economy — until the sandbox
 #      returns. A fresh anchor = STANDBY (never races the local engine);
 #   6. state is committed back to the private tree (FF-only, no force).
+#   7. (26-b) the fresh CI-HEARTBEAT verdict is ALSO committed to THIS repo —
+#      state/beat/ci-last-heartbeat.json on main — its custodian-free canonical
+#      home. The steem copy stays a best-effort mirror: a resident operator-side
+#      custodian overwrites/rewinds it (measured R321 b96103e9 11:26:46Z froze
+#      at=10:08:07.706Z over fresher CI verdicts); THIS repo never sees that
+#      writer (last 30 commits: CI identities only). Byte-guarded, FF-only
+#      Contents-API PUT, fail-soft (a failure here never fails the beat).
 #
 # THE PULSE (R280): GitHub's scheduler degrades frequent crons to
 # multi-hour gaps (measured 2026-10-08: 30-min cron ran every ~7.5h).
@@ -888,6 +895,107 @@ jobs:
               exit 1
             fi
           fi
+
+      # 26-b — CANONICAL VERDICT HOME: commit this beat's CI-HEARTBEAT verdict
+      # to THIS repo (state/beat/ci-last-heartbeat.json on main). Runs AFTER the
+      # steem last-mile so the canonical home decouples from steem push success
+      # (the verdict file in-tree is final by then). Laws: publish ONLY a verdict
+      # produced by THIS beat (freshness gate vs the origin tip — a run that
+      # failed before the beat, or a beat that produced no CI-HEARTBEAT line,
+      # leaves the inherited clone copy in place and must NOT be republished);
+      # byte-identity guard vs the current branch blob (no empty commits when
+      # the verdict is frozen); Contents-API PUT only (FF by nature with sha
+      # handling, 404-tolerant first write, NEVER force); verdicts-only scrub
+      # (same key-material law as the 23-f last-mile); fail-soft — any failure
+      # is a loud ::warning:: and the beat continues with the steem mirror.
+      - name: Canonical verdict home — commit this beat's verdict to THIS repo (custodian-free · 26-b)
+        if: always()
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          cat > /tmp/canonical-verdict-26b.py <<'PY26B'
+          import base64, json, os, re, subprocess, urllib.error, urllib.request
+          tok = os.environ.get("GH_PAT", "")
+          ENG = os.path.join(os.environ.get("GITHUB_WORKSPACE", ""), "engine")
+          PATH = "mini-services/saos-engine/state/beat/ci-last-heartbeat.json"
+          API = "https://api.github.com/repos/roshpinacare-sys/saos-runtime/contents/state/beat/ci-last-heartbeat.json"
+
+          def warn(msg):
+              print("::warning::26-b canonical verdict: %s" % msg)
+
+          def log(msg):
+              print("26-b: %s" % msg)
+
+          if not tok:
+              warn("no GH_PAT env — canonical commit skipped (honest)")
+              raise SystemExit(0)
+          src = os.path.join(ENG, PATH)
+          if not os.path.isfile(src):
+              warn("engine verdict file absent — this run never produced a verdict")
+              raise SystemExit(0)
+          try:
+              raw = open(src, "rb").read()
+          except Exception as e:
+              warn("verdict file unreadable: %s" % str(e)[:120])
+              raise SystemExit(0)
+          # verdicts-only law (same as the 23-f last-mile): never publish key material
+          if re.search(rb"[1-9A-HJ-NP-Za-km-z]{50}", raw) or re.search(rb"[0-9a-fA-F]{40}", raw) or b"ghp_" in raw or b"github_pat_" in raw:
+              warn("verdict carries key-material pattern — refusing to publish (verdicts-only by design)")
+              raise SystemExit(0)
+          try:
+              at = json.loads(raw.decode("utf-8")).get("at")
+              assert isinstance(at, str) and "T" in at
+          except Exception as e:
+              warn("verdict unparseable (no at) — refusing to publish: %s" % str(e)[:120])
+              raise SystemExit(0)
+          # freshness gate: publish only a verdict NEWER than what the origin tip
+          # already had at clone time — a beat that produced nothing (or a run
+          # that failed before the beat) leaves the inherited clone copy in
+          # place, which must NOT be republished as canonical.
+          origin_at = ""
+          try:
+              g = subprocess.run(["git", "-C", ENG, "show", "origin/saos-cockpit:" + PATH], capture_output=True, timeout=20)
+              if g.returncode == 0 and g.stdout:
+                  origin_at = json.loads(g.stdout.decode("utf-8")).get("at") or ""
+          except Exception:
+              pass
+          if origin_at and at <= origin_at:
+              log("verdict at=%s not newer than origin tip at=%s — no fresh verdict this beat; nothing to publish (honest)" % (at, origin_at))
+              raise SystemExit(0)
+          sha = None
+          try:
+              rq = urllib.request.Request(API + "?ref=main")
+              rq.add_header("Authorization", "token " + tok)
+              rq.add_header("Accept", "application/vnd.github+json")
+              with urllib.request.urlopen(rq, timeout=30) as resp:
+                  meta = json.load(resp)
+              sha = meta.get("sha")
+              branch_b = base64.b64decode(meta.get("content") or "")
+              if branch_b == raw:  # 26-b byte-identity guard: never commit a frozen verdict twice
+                  log("canonical blob byte-identical (at=%s) — nothing to commit" % at)
+                  raise SystemExit(0)
+          except urllib.error.HTTPError as ge:
+              if ge.code != 404:
+                  warn("canonical GET failed (http=%d) — fail-soft skip" % ge.code)
+                  raise SystemExit(0)
+          except Exception as e:
+              warn("canonical GET failed: %s — fail-soft skip" % str(e)[:120])
+              raise SystemExit(0)
+          body = {"message": "beat verdict: canonical home (custodian-free) %s" % at,
+                  "content": base64.b64encode(raw).decode(), "branch": "main"}
+          if sha:
+              body["sha"] = sha
+          try:
+              pq = urllib.request.Request(API, data=json.dumps(body).encode(), method="PUT")
+              pq.add_header("Authorization", "token " + tok)
+              pq.add_header("Accept", "application/vnd.github+json")
+              with urllib.request.urlopen(pq, timeout=30) as resp:
+                  out = json.load(resp)
+              log("canonical verdict committed (at=%s, commit %s)" % (at, str(out.get("commit", {}).get("sha", ""))[:12]))
+          except Exception as e:
+              warn("canonical PUT failed: %s — steem mirror and the rest of the beat continue" % str(e)[:160])
+          PY26B
+          python3 /tmp/canonical-verdict-26b.py || echo "::warning::26-b canonical verdict step errored — fail-soft, beat continues"
 
       - name: Summary (verdicts only — this page is public)
         if: always()
