@@ -59,7 +59,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: sovereign-runtime
+  # R324 pulse-hardening: the hourly cron backstop no longer queues behind (and
+  # gets cancelled against) the 15-min self-dispatch pulse chain. The pulse owns
+  # its group; the backstop owns a separate one — two independent revivers.
+  group: ${{ github.event_name == 'schedule' && 'sovereign-runtime-backstop' || 'sovereign-runtime' }}
   cancel-in-progress: false
 
 jobs:
