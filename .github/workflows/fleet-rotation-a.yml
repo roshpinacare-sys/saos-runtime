@@ -100,6 +100,8 @@ jobs:
           echo "steem push verified: $(git rev-parse --short HEAD)"
 
       - name: Public receipt (fingerprints only)
+        env:
+          FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }} # 3-c refs law: the public receipt speaks acct-NN refs, resolved here
         run: node ops/fleet-rotation/receipt.mjs /tmp/rot-result.json ops/fleet-rotation/receipt-A.json
 
       - name: Commit receipt to saos-runtime (push verified)

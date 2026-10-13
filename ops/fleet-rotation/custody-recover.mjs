@@ -46,6 +46,7 @@ import path from "path";
 import os from "os";
 import crypto from "crypto";
 import { execFileSync } from "child_process";
+import { refOf, R } from "../../scripts/refs.mjs"; // 3-c refs law: receipt of record speaks acct-NN refs
 
 const STEEM_DIR = process.env.REC_STEEM_DIR || "steem-engine";
 const API = "https://api.github.com/repos/roshpinacare-sys/";
@@ -222,7 +223,17 @@ async function runMode(receiptOut) {
   const holes = [];
   for (const a of src.accounts) {
     if (String(a.verdict || "").startsWith("ROTATED") && !(a.custodyRepos || []).length) {
-      holes.push({ chain: a.chain, account: a.account, expect: a.newPubFp || {} });
+      // 3-c refs law: the receipt of record speaks acct-NN refs. Resolve the real
+      // chain name env-side (FLEET_ROSTER_MAP) for chain/RPC/archive lookups; a
+      // legacy real-name row passes through unchanged (back-compat); an unresolved
+      // ref is a fail-closed ABORT — never fabricate a chain identity.
+      const ref = String(a.account || "");
+      const name = R(ref) || (/^acct-\d\d$/.test(ref) ? null : ref);
+      if (!name) {
+        log("ABORT: roster-unresolved for custody hole " + a.chain + ":" + ref + " — FLEET_ROSTER_MAP absent/unmapped (fail-closed, nothing touched)");
+        process.exit(1);
+      }
+      holes.push({ chain: a.chain, account: name, ref, expect: a.newPubFp || {} });
     }
   }
   if (!holes.length) {
@@ -236,7 +247,10 @@ async function runMode(receiptOut) {
     log({ VERDICT: "PASS", holes: 0, note: "no-op — secrets untouched" });
     process.exit(0);
   }
-  log({ custodyHoles: holes.length, list: holes.map((h) => h.chain + ":" + h.account).join(",") });
+  // display identity = the ref (estate-pseudonym law); h.account stays the real
+  // chain name for RPC/archive lookups and the custody map keys (internal only).
+  const refOfH = (h) => refOf(h.account);
+  log({ custodyHoles: holes.length, list: holes.map((h) => h.chain + ":" + refOfH(h)).join(",") });
 
   const GH = process.env.GH_PAT || "";
   const H = { Authorization: "Bearer " + GH, Accept: "application/vnd.github+json" };
@@ -258,7 +272,7 @@ async function runMode(receiptOut) {
     } catch {}
     if (!cands.length) {
       writeReceipt(receiptOut, { protocol: "SAOS-CUSTODY-RECOVER/1", at: startedAt, verdict: "FAIL-LOST",
-        holes: { total: holes.length, covered: 0, absent: holes.map((h) => h.chain + ":" + h.account), details: [] },
+        holes: { total: holes.length, covered: 0, absent: holes.map((h) => h.chain + ":" + refOfH(h)), details: [] },
         error: "no ROT2 archive found under " + vault,
         recoveryPath: "owner-authority reset is the only recovery (owner keys were untouched in phase A by law)" });
       log({ VERDICT: "FAIL-LOST", reason: "no ROT2 archive of record found" });
@@ -326,16 +340,16 @@ async function runMode(receiptOut) {
       else { roles[role] = { status: "ABSENT" }; full = false; }
     }
     if (full) covered++; else absent.push(h);
-    details.push({ chain: h.chain, account: h.account, inArchive: !!mat, verifiedBy: mat ? "receipt-newPubFp" : null, roles });
+    details.push({ chain: h.chain, account: refOfH(h), inArchive: !!mat, verifiedBy: mat ? "receipt-newPubFp" : null, roles });
   }
-  log({ archiveCoverage: { holes: holes.length, covered, absent: absent.map((h) => h.chain + ":" + h.account).join(",") || "none" } });
+  log({ archiveCoverage: { holes: holes.length, covered, absent: absent.map((h) => h.chain + ":" + refOfH(h)).join(",") || "none" } });
 
   // 5) history dig for holes absent from the archive of record (live chain-judge)
   const historyDug = [];
   let rpcDead = false;
   if (absent.length) {
     const commits = sealCommits(encRel);
-    log({ historyDig: "start", candidateSealCommits: commits.length, absent: absent.map((h) => h.chain + ":" + h.account).join(",") });
+    log({ historyDig: "start", candidateSealCommits: commits.length, absent: absent.map((h) => h.chain + ":" + refOfH(h)).join(",") });
     for (const sha of commits) {
       if (!absent.length) break;
       let digMeta = null, blobPath = "";
@@ -357,24 +371,24 @@ async function runMode(receiptOut) {
         let judge;
         try { judge = await chainJudge(h.chain, h.account, mat); } catch (e) {
           rpcDead = true;
-          log({ historyDig: "rpc-fail", hole: h.chain + ":" + h.account, err: String(e.message || e).slice(0, 60) });
+          log({ historyDig: "rpc-fail", hole: h.chain + ":" + refOfH(h), err: String(e.message || e).slice(0, 60) });
           continue;
         }
         if (judge.judge !== "ALL-LIVE-MATCH") {
-          log({ historyDig: "judge-reject", hole: h.chain + ":" + h.account, judge: judge.judge });
+          log({ historyDig: "judge-reject", hole: h.chain + ":" + refOfH(h), judge: judge.judge });
           continue;
         }
         custodyMap[h.chain] = custodyMap[h.chain] || {};
         custodyMap[h.chain][h.account] = mat;
         covered++; absent.splice(absent.indexOf(h), 1);
-        const det = details.find((d) => d.chain === h.chain && d.account === h.account);
+        const det = details.find((d) => d.chain === h.chain && d.account === refOfH(h));
         if (det) { det.inArchive = true; det.verifiedBy = "live-chain-judge@" + sha.slice(0, 8); det.roles = Object.fromEntries(Object.keys(mat).map((r) => [r, { status: "LIVE-MATCH", pubFp: mat[r] && mat[r].pub ? pubFp(mat[r].pub) : null }])); }
-        historyDug.push({ chain: h.chain, account: h.account, fromCommit: sha.slice(0, 8), fromArchive: blobPath ? digMeta.keysZipFile : "?", openedWith: digOpened.passRef, integrity: digOpened.integrity, judge: judge.judge, roles: Object.keys(mat) });
-        log({ historyDig: "RECOVERED", hole: h.chain + ":" + h.account, fromCommit: sha.slice(0, 8), judge: judge.judge });
+        historyDug.push({ chain: h.chain, account: refOfH(h), fromCommit: sha.slice(0, 8), fromArchive: blobPath ? digMeta.keysZipFile : "?", openedWith: digOpened.passRef, integrity: digOpened.integrity, judge: judge.judge, roles: Object.keys(mat) });
+        log({ historyDig: "RECOVERED", hole: h.chain + ":" + refOfH(h), fromCommit: sha.slice(0, 8), judge: judge.judge });
       }
       try { execFileSync("shred", ["-u", digOpened.dec], { stdio: "pipe" }); } catch {}
     }
-    log({ historyDig: { recovered: historyDug.length, stillAbsent: absent.map((h) => h.chain + ":" + h.account).join(",") || "none" } });
+    log({ historyDig: { recovered: historyDug.length, stillAbsent: absent.map((h) => h.chain + ":" + refOfH(h)).join(",") || "none" } });
   }
   const custodyAccounts = Object.values(custodyMap).reduce((n, m) => n + Object.keys(m).length, 0);
 
@@ -440,7 +454,7 @@ async function runMode(receiptOut) {
       accountsInArchive: totalAccounts,
       historyDug,
     },
-    holes: { total: holes.length, covered, absent: absent.map((h) => h.chain + ":" + h.account), details },
+    holes: { total: holes.length, covered, absent: absent.map((h) => h.chain + ":" + refOfH(h)), details },
     custody: {
       secret: "ROT2_FLEET_KEYS",
       repos: custodyRes,
@@ -453,15 +467,16 @@ async function runMode(receiptOut) {
       "plaintext confined to 0700 /tmp, shredded after use",
       "HEAD-archive material verified vs receipt newPubFp; history-dug material verified vs LIVE chain authorities",
       "custody PUT carries the recoverable set; absent holes keep the verdict red (FAIL-LOST) with the owner-authority reset path documented",
+      "estate-pseudonym law (3-c): this receipt speaks acct-NN refs only; chain identities resolved env-side from FLEET_ROSTER_MAP (fail-closed), never written",
     ],
   };
   if (verdict === "FAIL-LOST" || absent.length) {
     receipt.recoveryPath = "owner-authority reset is the only recovery for: " +
-      (absent.map((h) => h.chain + ":" + h.account).join(",") || "none") +
+      (absent.map((h) => h.chain + ":" + refOfH(h)).join(",") || "none") +
       " — owner keys were untouched in phase A by law, so owner-signed re-adoption/rotation (owner-key-adopt lane) can restore these accounts; no usable material for them exists in the archive of record or its history";
   }
   writeReceipt(receiptOut, receipt);
-  log({ VERDICT: verdict, holes: holes.length, covered, absent: absent.map((h) => h.chain + ":" + h.account).join(",") || "none" });
+  log({ VERDICT: verdict, holes: holes.length, covered, absent: absent.map((h) => h.chain + ":" + refOfH(h)).join(",") || "none" });
 
   // 8) shred plaintext, exit by verdict
   try { execFileSync("shred", ["-u", opened.dec], { stdio: "pipe" }); } catch { try { fs.unlinkSync(opened.dec); } catch {} }

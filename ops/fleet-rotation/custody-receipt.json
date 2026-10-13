@@ -21,7 +21,7 @@
   "details": [
    {
     "chain": "steem",
-    "account": "cashmachine",
+    "account": "acct-01",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -41,7 +41,7 @@
    },
    {
     "chain": "steem",
-    "account": "haran",
+    "account": "acct-02",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -61,7 +61,7 @@
    },
    {
     "chain": "steem",
-    "account": "israelnews",
+    "account": "acct-03",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -81,7 +81,7 @@
    },
    {
     "chain": "steem",
-    "account": "lsa",
+    "account": "acct-04",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -101,7 +101,7 @@
    },
    {
     "chain": "steem",
-    "account": "macrame",
+    "account": "acct-05",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -121,7 +121,7 @@
    },
    {
     "chain": "steem",
-    "account": "siq",
+    "account": "acct-06",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -141,7 +141,7 @@
    },
    {
     "chain": "steem",
-    "account": "tov",
+    "account": "acct-07",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -161,7 +161,7 @@
    },
    {
     "chain": "steem",
-    "account": "wic",
+    "account": "acct-08",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -181,7 +181,7 @@
    },
    {
     "chain": "steem",
-    "account": "wog",
+    "account": "acct-09",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -201,7 +201,7 @@
    },
    {
     "chain": "steem",
-    "account": "woq",
+    "account": "acct-10",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -221,7 +221,7 @@
    },
    {
     "chain": "steem",
-    "account": "hcsoldier4",
+    "account": "acct-11",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -237,7 +237,7 @@
    },
    {
     "chain": "steem",
-    "account": "hcsoldier5",
+    "account": "acct-12",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -253,7 +253,7 @@
    },
    {
     "chain": "steem",
-    "account": "hcsoldier6",
+    "account": "acct-13",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -269,7 +269,7 @@
    },
    {
     "chain": "hive",
-    "account": "israelnews",
+    "account": "acct-03",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -285,7 +285,7 @@
    },
    {
     "chain": "hive",
-    "account": "lsa",
+    "account": "acct-04",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -301,7 +301,7 @@
    },
    {
     "chain": "hive",
-    "account": "siq",
+    "account": "acct-06",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -317,7 +317,7 @@
    },
    {
     "chain": "hive",
-    "account": "wog",
+    "account": "acct-09",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {
@@ -333,7 +333,7 @@
    },
    {
     "chain": "hive",
-    "account": "woq",
+    "account": "acct-10",
     "inArchive": true,
     "verifiedBy": "receipt-newPubFp",
     "roles": {

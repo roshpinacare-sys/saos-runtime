@@ -15,7 +15,7 @@
   "accounts": [
     {
       "chain": "steem",
-      "account": "cashmachine",
+      "account": "acct-01",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "2ab1f4e2c426622d6a",
@@ -39,7 +39,7 @@
     },
     {
       "chain": "steem",
-      "account": "haran",
+      "account": "acct-02",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "dc56dab40364c48343",
@@ -63,7 +63,7 @@
     },
     {
       "chain": "steem",
-      "account": "israelnews",
+      "account": "acct-03",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "d1dd8abcbf559de01a",
@@ -87,7 +87,7 @@
     },
     {
       "chain": "steem",
-      "account": "lsa",
+      "account": "acct-04",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "b7f6968d147b073577",
@@ -111,7 +111,7 @@
     },
     {
       "chain": "steem",
-      "account": "macrame",
+      "account": "acct-05",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "9785f7ab187508bf8d",
@@ -135,7 +135,7 @@
     },
     {
       "chain": "steem",
-      "account": "siq",
+      "account": "acct-06",
       "verdict": "FAIL-BROADCAST",
       "signerRole": "active",
       "oldPubFp": {
@@ -147,7 +147,7 @@
     },
     {
       "chain": "steem",
-      "account": "tov",
+      "account": "acct-07",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "6dc62fa1ca97f07ac3",
@@ -171,7 +171,7 @@
     },
     {
       "chain": "steem",
-      "account": "wic",
+      "account": "acct-08",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "5e438b3ef641823f4f",
@@ -195,7 +195,7 @@
     },
     {
       "chain": "steem",
-      "account": "wog",
+      "account": "acct-09",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "d5d0b111ab0ef0d964",
@@ -219,7 +219,7 @@
     },
     {
       "chain": "steem",
-      "account": "woq",
+      "account": "acct-10",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "5e2e54967e174a211f",
@@ -243,7 +243,7 @@
     },
     {
       "chain": "steem",
-      "account": "hcsoldier4",
+      "account": "acct-11",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "2f69d1daa8db22df57",
@@ -266,7 +266,7 @@
     },
     {
       "chain": "steem",
-      "account": "hcsoldier5",
+      "account": "acct-12",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "28f9cb70d6659c9c2d",
@@ -289,7 +289,7 @@
     },
     {
       "chain": "steem",
-      "account": "hcsoldier6",
+      "account": "acct-13",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "41a2b119375f0bcc61",
@@ -312,17 +312,17 @@
     },
     {
       "chain": "hive",
-      "account": "cashmachine",
+      "account": "acct-01",
       "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
-      "account": "haran",
+      "account": "acct-02",
       "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
-      "account": "israelnews",
+      "account": "acct-03",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "ba5e6332d2756e8d1f",
@@ -345,7 +345,7 @@
     },
     {
       "chain": "hive",
-      "account": "lsa",
+      "account": "acct-04",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "c41c2c521b3e75f065",
@@ -368,12 +368,12 @@
     },
     {
       "chain": "hive",
-      "account": "macrame",
+      "account": "acct-05",
       "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
-      "account": "siq",
+      "account": "acct-06",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "3c1523346e03d1831c",
@@ -396,12 +396,12 @@
     },
     {
       "chain": "hive",
-      "account": "wic",
+      "account": "acct-08",
       "verdict": "SKIP-NO-SIGNER"
     },
     {
       "chain": "hive",
-      "account": "wog",
+      "account": "acct-09",
       "verdict": "FAIL-BROADCAST",
       "signerRole": "active",
       "oldPubFp": {
@@ -413,7 +413,7 @@
     },
     {
       "chain": "hive",
-      "account": "woq",
+      "account": "acct-10",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
       "txid": "f8ebd3f66166698fd5",

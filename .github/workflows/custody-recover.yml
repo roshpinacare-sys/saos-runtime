@@ -46,6 +46,7 @@ jobs:
     env:
       STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
       GH_PAT: ${{ secrets.GH_PAT }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }} # 3-c refs law: receipt of record speaks acct-NN refs; holes resolve env-side (fail-closed)
     steps:
       - uses: actions/checkout@v4
         with:
