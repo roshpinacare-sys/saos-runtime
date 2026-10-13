@@ -967,17 +967,8 @@ jobs:
           # already had at clone time — a beat that produced nothing (or a run
           # that failed before the beat) leaves the inherited clone copy in
           # place, which must NOT be republished as canonical.
-          origin_at = ""
-          try:
-              g = subprocess.run(["git", "-C", ENG, "show", "origin/saos-cockpit:" + PATH], capture_output=True, timeout=20)
-              if g.returncode == 0 and g.stdout:
-                  origin_at = json.loads(g.stdout.decode("utf-8")).get("at") or ""
-          except Exception:
-              pass
-          if origin_at and at <= origin_at:
-              log("verdict at=%s not newer than origin tip at=%s — no fresh verdict this beat; nothing to publish (honest)" % (at, origin_at))
-              raise SystemExit(0)
           sha = None
+          canon_at = ""
           try:
               rq = urllib.request.Request(API + "?ref=main")
               rq.add_header("Authorization", "token " + tok)
@@ -986,9 +977,26 @@ jobs:
                   meta = json.load(resp)
               sha = meta.get("sha")
               branch_b = base64.b64decode(meta.get("content") or "")
+              try:
+                  canon_at = json.loads(branch_b.decode("utf-8")).get("at") or ""
+              except Exception:
+                  canon_at = ""
               if branch_b == raw:  # 26-b byte-identity guard: never commit a frozen verdict twice
                   log("canonical blob byte-identical (at=%s) — nothing to commit" % at)
                   raise SystemExit(0)
+          except urllib.error.HTTPError as ge:
+              if ge.code != 404:
+                  warn("canonical GET failed (http=%d) — fail-soft skip" % ge.code)
+                  raise SystemExit(0)
+          except Exception as e:
+              warn("canonical GET failed: %s — fail-soft skip" % str(e)[:120])
+              raise SystemExit(0)
+          # 26-b gate v2: freshness baseline = the canonical home itself, NOT the
+          # engine origin tip (this very beat updates that tip before this step
+          # runs, so gate v1 compared the verdict against itself and always skipped).
+          if canon_at and at <= canon_at:
+              log("canonical already at=%s (verdict at=%s) — nothing newer to publish (honest)" % (canon_at, at))
+              raise SystemExit(0)
           except urllib.error.HTTPError as ge:
               if ge.code != 404:
                   warn("canonical GET failed (http=%d) — fail-soft skip" % ge.code)
