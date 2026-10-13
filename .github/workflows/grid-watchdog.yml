@@ -739,8 +739,8 @@ jobs:
                   fh.write("FHQ_REF=%s\n" % (f.get("fhqDefaultBranch") or "main"))
           print("status: %s | self-heal plan: %s" % (msg, ",".join(plan) or "none"))
           WDSTATUS
-          git config user.name "grid-watchdog"
-          git config user.email "grid-watchdog@users.noreply.github.com"
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
           git config credential.helper '!f() { echo "username=x-access-token"; echo "password=${WF_TOKEN}"; }; f'
           MSG=$(cat /tmp/status-commit-msg.txt)
           git add STATUS.md state/grid-status.json state/watchdog-actions.json
@@ -805,8 +805,8 @@ jobs:
               json.dump(d, fh, indent=1, sort_keys=True)
               fh.write("\n")
           WDREVERT
-            git config user.name "grid-watchdog"
-            git config user.email "grid-watchdog@users.noreply.github.com"
+            git config user.name "roshpinacare-sys"
+            git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
             git config credential.helper '!f() { echo "username=x-access-token"; echo "password=${WF_TOKEN}"; }; f'
             git add state/watchdog-actions.json
             git commit -m "watchdog: self-heal dispatch failed for:$FAILED (retry next cycle)" || true

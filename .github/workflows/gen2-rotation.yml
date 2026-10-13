@@ -231,8 +231,8 @@ jobs:
         working-directory: steem
         run: |
           set -Eeuo pipefail
-          git config user.name "saos-runtime-ci"
-          git config user.email "saos-runtime-ci@users.noreply.github.com"
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
           git add agent/vault/KEYS-ZIP-GEN2-*.zip.enc agent/vault/KEYS-BACKUP-GEN2-*.tar.enc agent/recovery-meta.json agent/vault/GEN-2-ERA-META.json
           if git diff --cached --quiet; then
             echo "CONVERGED-ALREADY: vault files+metas match the bundle state (honest no-op)"

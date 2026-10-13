@@ -80,8 +80,8 @@ jobs:
         run: |
           git clone --filter=blob:none --branch saos-cockpit "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" engine
           cd engine
-          git config user.name "saos-runtime-ci"
-          git config user.email "saos-runtime-ci@users.noreply.github.com"
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
           git fetch origin main:refs/remotes/origin/main || echo "main fetch skipped (vault revival will report honestly)"
           echo "engine @ $(git rev-parse --short HEAD)"
 

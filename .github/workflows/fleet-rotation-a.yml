@@ -84,8 +84,8 @@ jobs:
           if [ -z "$GEN2ZIP" ]; then echo "ABORT: no seal pass"; exit 1; fi
           python3 ops/fleet-rotation/seal_meta.py
           cd steem-engine
-          git config user.name "fleet-rotation[bot]"
-          git config user.email "fleet-rotation[bot]@users.noreply.github.com"
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
           git add agent/vault/KEYS-ROT2-*.zip.enc agent/recovery-meta.json
           git commit -m "custody(T-67): ROT2 phase-A seal - exposed army credentials rotated (owner untouched), re-sealed under gen2-era pass, meta v4 inner-sha pinned"
           PUSHED=0
@@ -107,8 +107,8 @@ jobs:
       - name: Commit receipt to saos-runtime (push verified)
         run: |
           set -Eeuo pipefail
-          git config user.name "fleet-rotation[bot]"
-          git config user.email "fleet-rotation[bot]@users.noreply.github.com"
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
           git add ops/fleet-rotation/receipt-A.json
           git commit -m "fleet-rotation-a: phase A receipt $(date -u +%FT%TZ) [skip ci]" || echo "no receipt delta"
           for i in 1 2 3; do
