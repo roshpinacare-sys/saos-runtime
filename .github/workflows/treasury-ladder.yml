@@ -62,9 +62,18 @@ jobs:
           NODE_PATH=/tmp/steemjs/node_modules node grids/treasury-ladder.mjs --selftest
 
       - name: Resolve live fleet keys from the sealed GEN-2 bundle (in-run, 0600, never logged)
-        run: NODE_PATH=/tmp/steemjs/node_modules node ops/key-census-probe/resolve-keys.cjs --out /tmp/fk.json
+        run: |
+          # T-77 anti-flood: 0 live keys = honest KEYLESS-STASIS (a state, not a
+          # failure). A red email 2x/day for a known owner-gated state recreated
+          # the inbox flood the owner reported (trace 1a1374bc626866c9). The
+          # stasis receipt IS the alarm — silence-watchdog pattern.
+          if ! NODE_PATH=/tmp/steemjs/node_modules node ops/key-census-probe/resolve-keys.cjs --out /tmp/fk.json; then
+            echo "KEYLESS-STASIS: 0 live keys — the ladder sleeps, honest receipt written"
+            echo "stasis=1" >> "$GITHUB_ENV"
+          fi
 
       - name: Treasury ladder cycle (maker-only, idempotent, key-gated, kill-law armed)
+        if: env.stasis != '1'
         working-directory: dex
         run: NODE_PATH=/tmp/steemjs/node_modules node grids/treasury-ladder.mjs --run --keys-file /tmp/fk.json
 
