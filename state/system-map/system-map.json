@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-13T22:29:12.959Z",
+  "builtAt": "2026-10-13T22:29:40.767Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -24,10 +24,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-13T11:04:00Z"
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:29:33Z"
       },
       "verdict": "ALIVE"
     },
@@ -93,12 +93,12 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-10-13T21:49:25Z"
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-13T22:29:32Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "operator-triage",
@@ -108,10 +108,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:29:03Z"
+        "status": "completed",
+        "conclusion": "success",
+        "event": "issues",
+        "created_at": "2026-10-13T22:29:16Z"
       },
       "verdict": "ALIVE"
     },
@@ -167,7 +167,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:29:02Z"
+        "created_at": "2026-10-13T22:29:30Z"
       },
       "verdict": "ALIVE"
     },
@@ -179,12 +179,12 @@
       ],
       "gapMinutes": 720,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "failure",
+        "status": "in_progress",
+        "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:17:31Z"
+        "created_at": "2026-10-13T22:29:31Z"
       },
-      "verdict": "RED"
+      "verdict": "ALIVE"
     }
   ],
   "heartbeat": {
@@ -196,11 +196,11 @@
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 6,
-    "red": 1,
+    "alive": 8,
+    "red": 0,
     "stale": 0,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
     "idle": 5,
