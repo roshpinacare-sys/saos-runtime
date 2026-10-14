@@ -711,26 +711,71 @@ jobs:
             if (!Array.isArray(cache.accounts)) { console.log("::warning::ROT2-RAIL: cache schema unexpected — honest no-op"); return; }
 
             const cands = [];
+            const bridging = [];
             for (const [ref, mat] of Object.entries(steemMap)) {
               /* shape insurance: keys may be acct-NN refs (3-c law) or real names — resolve refs, pass names through */
               const name = REFS.r2n[ref] || (ref.startsWith("acct-") ? null : ref);
-              if (!name) { say("unresolvable ref " + ref + " — skipped LOUD (map repair stays the standing owner lane)"); continue; }
+              if (!name) {
+                /* R327-b FINGERPRINT BRIDGE candidates: an unresolvable ref is NOT a dead end —
+                 * the map hole (measured: acct-06 lost in the ROT2 re-seal, loud since 10-12) must
+                 * not silence material that the CHAIN can bind by itself. The material's derived
+                 * pubkey is compared against every roster account's LIVE chain authority below;
+                 * a match binds ref→account BY THE CHAIN'S OWN JUDGMENT (never guessed), a
+                 * non-match is refused loud. The map repair stays the standing owner lane. */
+                const postingWif = (mat && mat.posting && mat.posting.wif) || null;
+                const activeWif = (mat && mat.active && mat.active.wif) || null;
+                if (postingWif || activeWif) bridging.push({ ref, name: null, postingWif, activeWif });
+                else say("ref " + ref + " unresolvable and material-less — skipped LOUD (map repair stays the standing owner lane)");
+                continue;
+              }
               const postingWif = (mat && mat.posting && mat.posting.wif) || null;
               const activeWif = (mat && mat.active && mat.active.wif) || null;
               if (!postingWif && !activeWif) continue;
               cands.push({ ref, name, postingWif, activeWif });
             }
-            if (!cands.length) { say("no resolvable material — honest no-op"); return; }
+            if (!cands.length && !bridging.length) { say("no resolvable material — honest no-op"); return; }
 
             let byName = new Map();
+            const rosterNames = [...new Set(cache.accounts.map((a) => a && a.name).filter(Boolean))];
             try {
-              const rpc = await fetch("https://api.steemit.com", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", method: "condenser_api.get_accounts", params: [cands.map((c) => c.name)], id: 1 }) }).then((r) => r.json());
+              const rpc = await fetch("https://api.steemit.com", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", method: "condenser_api.get_accounts", params: [[...new Set([...cands.map((c) => c.name), ...rosterNames])].filter(Boolean)], id: 1 }) }).then((r) => r.json());
               byName = new Map(((rpc && rpc.result) || []).map((a) => [a.name, a]));
             } catch { /* unreachable below */ }
             if (!byName.size) { console.log("::warning::ROT2-RAIL: chain unreachable — honest no-op (refusals stay loud)"); return; }
 
             const steem = require("steem");
             const fp = (p) => String(p || "").slice(0, 12);
+            const livePubOf = (acct, role) => (acct && acct[role] && acct[role].key_auths && acct[role].key_auths[0] && acct[role].key_auths[0][0]) || null;
+
+            /* the bridge: bind unresolvable refs by chain-judged pubkey match against the roster */
+            const claimed = new Set(cands.map((c) => c.name));
+            for (const c of bridging) {
+              let livePosting = null, liveActive = null, boundTo = null;
+              let derivedPosting = null, derivedActive = null;
+              try { if (c.postingWif) derivedPosting = steem.auth.wifToPublic(c.postingWif); } catch { /* judge refuses below */ }
+              try { if (c.activeWif) derivedActive = steem.auth.wifToPublic(c.activeWif); } catch { /* same */ }
+              for (const nm of rosterNames) {
+                if (claimed.has(nm)) continue;
+                const acct = byName.get(nm);
+                if (!acct) continue;
+                const mp = derivedPosting && livePubOf(acct, "posting") === derivedPosting;
+                const ma = derivedActive && livePubOf(acct, "active") === derivedActive;
+                if (mp || ma) {
+                  boundTo = nm;
+                  if (mp) livePosting = derivedPosting;
+                  if (ma) liveActive = derivedActive;
+                  break;
+                }
+              }
+              if (boundTo) {
+                say("FINGERPRINT-BRIDGE: " + c.ref + " bound to " + boundTo + " BY THE CHAIN (derived pub == live authority" + (livePosting ? " posting " + fp(livePosting) : "") + (liveActive ? " active" : "") + ") — map repair still recommended, custody no longer waits on it");
+                cands.push({ ref: c.ref, name: boundTo, postingWif: livePosting ? c.postingWif : null, activeWif: liveActive ? c.activeWif : null });
+                claimed.add(boundTo);
+              } else {
+                say("FINGERPRINT-BRIDGE: " + c.ref + " material matches NO roster account's live authority (posting " + (derivedPosting ? fp(derivedPosting) : "n/a") + ") — refused loud; the unregistered-broadcast class stays with the rotation lane");
+              }
+            }
+            if (!cands.length) { say("no resolvable material — honest no-op"); return; }
             let patched = 0;
             for (const c of cands) {
               const acct = byName.get(c.name);
