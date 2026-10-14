@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-14T01:24:45.839Z",
+  "builtAt": "2026-10-14T06:43:42.630Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-14T00:53:09Z"
+        "created_at": "2026-10-14T04:06:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -29,7 +29,7 @@
         "event": "schedule",
         "created_at": "2026-10-14T01:14:10Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "custody-recover",
@@ -69,8 +69,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:19:51Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T05:03:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -109,11 +109,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-10-14T01:10:52Z"
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-14T06:40:10Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "operator-triage",
@@ -153,8 +153,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-14T00:24:39Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T05:17:49Z"
       },
       "verdict": "ALIVE"
     },
@@ -182,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-14T01:19:13Z"
+        "created_at": "2026-10-14T06:27:56Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-14T01:24:32Z"
+        "created_at": "2026-10-14T06:43:34Z"
       },
       "verdict": "ALIVE"
     },
@@ -220,9 +220,9 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-14T01:22:43Z",
-    "ageMinutes": 2,
-    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
+    "at": "2026-10-14T06:43:04Z",
+    "ageMinutes": 1,
+    "subject": "R307 shortlist consumption (T-85, trace 1a139111c47003e9): the R304 ladder feeds the write",
     "verdict": "ALIVE"
   },
   "summary": {
@@ -230,10 +230,10 @@
     "red": 0,
     "stale": 0,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 5,
+    "idle": 6,
     "heartbeat": "ALIVE"
   }
 }
