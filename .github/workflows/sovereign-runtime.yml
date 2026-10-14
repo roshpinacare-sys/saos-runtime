@@ -599,8 +599,17 @@ jobs:
                 return !e.wif;
               });
               if (missing.length) {
-                console.error(`army-cache-resolve: roster incomplete — missing ${missing.map((n) => P.name2ref(n)).join(", ")} — honest abort (fail-closed)`);
-                process.exit(1);
+                /* 28-steem PARTIAL-IGNITE LAW (measured 2026-10-12..14): ONE unmapped
+                 * ref (acct-06, lost in the ROT2 re-seal ~17:13Z) aborted EVERY beat
+                 * for 31h+ and threw away 13 CHAIN-VERIFIED identities with it —
+                 * custody sat at 1/14 while the fleet's posts starved (owner standing
+                 * orders: תדליק-הכל + שלא-יפול-כלום). The abort is replaced by the
+                 * partial law this file's own downstream already implements: the cache
+                 * is written with the resolved accounts only, every WIF in it stays
+                 * chain-verified (the chain is the only judge), absent accounts remain
+                 * honestly REFUSED-NO-CUSTODY in the engine state, and the missing refs
+                 * stay LOUD here until the FLEET_ROSTER_MAP secret is repaired. */
+                console.error(`army-cache-resolve: roster incomplete — missing ${missing.map((n) => P.name2ref(n)).join(", ")} — PARTIAL IGNITE (chain-verified ${roster.length - missing.length}/${roster.length}); missing refs stay loud until the map is repaired`);
               }
 
               /* exact mirror of pullArmyKeysFromVault()'s cache schema: accounts sorted,
