@@ -1,12 +1,10 @@
 {
  "crossRepo": true,
- "generatedAt": "2026-10-14T02:51:48Z",
- "redCount": 4,
+ "generatedAt": "2026-10-14T02:53:50Z",
+ "redCount": 2,
  "reds": [
   "content.verdict",
-  "custody.coverage",
-  "dex.anchor",
-  "social.verdict"
+  "custody.coverage"
  ],
  "signals": {
   "billingBlock": false,
@@ -15,16 +13,16 @@
   "custodyTotal": 14,
   "custodyVerified": 13,
   "dexAnchorAgeMs": null,
-  "fleetDigestAgeS": 8870,
+  "fleetDigestAgeS": 8991,
   "fleetDigestCommitAt": "2026-10-14T00:23:56Z",
-  "heartbeatAgeS": 1106,
+  "heartbeatAgeS": 1227,
   "heartbeatAt": "2026-10-14T02:33:18.016Z",
   "heartbeatSource": "saos-runtime@main:state/beat/ci-last-heartbeat.json",
-  "officeScheduleAgeS": 8889,
+  "officeScheduleAgeS": 9011,
   "officeScheduleAt": "2026-10-14T00:23:37Z",
-  "potentialAgeS": 8870,
+  "potentialAgeS": 8991,
   "potentialCommitAt": "2026-10-14T00:23:56Z",
-  "pulseAgeS": 697,
+  "pulseAgeS": 819,
   "pulseRunAt": "2026-10-14T02:40:07Z",
   "pulseRunId": 38502229943,
   "socialExecuted": null,
