@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-14T06:43:42.630Z",
+  "builtAt": "2026-10-14T12:26:21.819Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -13,8 +13,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-14T04:06:32Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T08:50:09Z"
       },
       "verdict": "ALIVE"
     },
@@ -27,7 +27,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T01:14:10Z"
+        "created_at": "2026-10-14T07:39:42Z"
       },
       "verdict": "IDLE"
     },
@@ -41,8 +41,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-13T22:29:33Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T09:00:36Z"
       },
       "verdict": "ALIVE"
     },
@@ -69,8 +69,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-14T05:03:32Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-14T09:15:07Z"
       },
       "verdict": "ALIVE"
     },
@@ -111,7 +111,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-14T06:40:10Z"
+        "created_at": "2026-10-14T12:17:43Z"
       },
       "verdict": "ALIVE"
     },
@@ -154,7 +154,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T05:17:49Z"
+        "created_at": "2026-10-14T12:17:38Z"
       },
       "verdict": "ALIVE"
     },
@@ -167,9 +167,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-13T14:34:14Z"
+        "created_at": "2026-10-14T12:22:04Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-runtime",
@@ -182,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-14T06:27:56Z"
+        "created_at": "2026-10-14T12:14:22Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-14T06:43:34Z"
+        "created_at": "2026-10-14T12:26:15Z"
       },
       "verdict": "ALIVE"
     },
@@ -211,8 +211,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-13T23:52:06Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T10:34:20Z"
       },
       "verdict": "ALIVE"
     }
@@ -220,20 +220,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-14T06:43:04Z",
-    "ageMinutes": 1,
-    "subject": "R307 shortlist consumption (T-85, trace 1a139111c47003e9): the R304 ladder feeds the write",
+    "at": "2026-10-14T12:17:26Z",
+    "ageMinutes": 9,
+    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 9,
+    "alive": 10,
     "red": 0,
     "stale": 0,
     "gated": 0,
     "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 6,
+    "idle": 5,
     "heartbeat": "ALIVE"
   }
 }
