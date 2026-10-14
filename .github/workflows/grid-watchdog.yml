@@ -289,6 +289,14 @@ jobs:
           bv = hb.get("blurt") if hb_ok else None
           bl = steps.get("blurt", {}) if hb_ok else {}
           live, btot = bl.get("live"), bl.get("total")
+          # 26-c truth fix: the canonical book carries blurtLive TOP-LEVEL (measured
+          # 2026-10-14: report.steps is a phantom path — "report" never existed in
+          # the book's git history, so live read None while blurtLive=12 was live
+          # in the same book → false red for 26h). Book field is primary.
+          if live is None and hb_ok and isinstance(hb.get("blurtLive"), int) and not isinstance(hb.get("blurtLive"), bool):
+              live = hb.get("blurtLive")
+          if btot is None and hb_ok and isinstance(hb.get("blurtTotal"), int) and not isinstance(hb.get("blurtTotal"), bool):
+              btot = hb.get("blurtTotal")
           signals["blurt.live"] = {
               "measured": "verdict=%s live=%s/%s" % (bv, live, btot),
               "threshold": "live>=1",
