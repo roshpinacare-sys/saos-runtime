@@ -658,6 +658,112 @@ jobs:
             echo "- ignition: FAIL (honest red — resolver output above)" >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # R327 ROT2 CUSTODY RAIL — the vault of record can lag the chain (measured root,
+      # 2026-10-14: siq/acct-06 posting rotated ON-CHAIN at 20:17/20:45/21:34Z on 10-12
+      # — final STM6ucW9GYSy… op#4553 — while both vault generations predate it; the
+      # engine chain-judges honestly and refuses, custody sat 13/14, GRID red, social
+      # lanes braked). The rotation vault (ROT2_FLEET_KEYS, sealed by custody-recover
+      # 2-a and auto-decrypted by Actions into this env) holds the rotation-era
+      # material. This rail chain-judges EVERY ROT2 WIF itself (steem.auth.wifToPublic
+      # vs LIVE chain authority — the chain is the only judge, twice: here and again in
+      # the beat's adoptFromCache) and appends LIVE-MATCH material as a "ROT2" generation
+      # into the engine cache — the exact schema mirror, atomic 0600. Gen order keeps
+      # GEN-2 first; adoption picks the first chain-verified gen, so a stale GEN-2 can
+      # never mask a live ROT2 gen for the same account. Fail-soft by law: absent
+      # secret/cache/unresolvable refs are honest no-ops — the beat's own verdicts
+      # carry the reds; this rail only ever ADDS chain-verified material. Fingerprints
+      # only in output — never WIFs, never pubkeys beyond the 12-char fp class.
+      - name: ROT2 custody rail (chain-judged adoption for accounts the git vault can't serve)
+        working-directory: engine
+        env:
+          ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+          FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+        run: |
+          mkdir -p /tmp/ignite
+          cat > /tmp/ignite/rot2-rail.cjs <<'RAIL_EOF'
+          /* R327 ROT2 custody rail — chain-judged adoption for accounts the git vault can't serve.
+           * CJS + NODE_PATH (the ignite resolver's own convention): require("steem") resolves
+           * from /tmp/steemjs/node_modules installed by the ignition step. */
+          const fs = require("node:fs");
+          const ENV = process.env.ROT2_FLEET_KEYS || "";
+          const say = (m) => console.log("ROT2-RAIL: " + m);
+          (async () => {
+            if (!ENV.trim()) { say("secret absent — honest no-op (git vault remains the only source; refusals stay loud)"); return; }
+            let rot2 = null;
+            try { rot2 = JSON.parse(ENV); } catch (e) { console.log("::warning::ROT2-RAIL: secret unparseable — honest no-op (" + String(e && e.message || e).slice(0, 80) + ")"); return; }
+            const steemMap = (rot2 && (rot2.rot2?.steem || rot2.steem)) || null;
+            if (!steemMap || typeof steemMap !== "object") { say("no steem map in secret — honest no-op"); return; }
+            let REFS = { r2n: {}, n2r: {} };
+            try {
+              const m = JSON.parse(process.env.FLEET_ROSTER_MAP || "");
+              const f = {};
+              if (m && m.refs) Object.assign(f, m.refs);
+              if (m && m.names) Object.assign(f, m.names);
+              for (const [k, v] of Object.entries(m || {})) if (typeof k === "string" && typeof v === "string") f[k] = v;
+              for (const [k, v] of Object.entries(f)) {
+                if (k.startsWith("acct-")) { REFS.r2n[k] = v; REFS.n2r[v] = k; } else { REFS.n2r[k] = v; REFS.r2n[v] = k; }
+              }
+            } catch { /* unresolved refs stay loud below */ }
+            const CACHE = ".secrets/army-keys.json";
+            if (!fs.existsSync(CACHE)) { say("engine cache absent (ignite owns it) — honest no-op"); return; }
+            let cache;
+            try { cache = JSON.parse(fs.readFileSync(CACHE, "utf8")); } catch (e) { console.log("::warning::ROT2-RAIL: cache unparseable — honest no-op"); return; }
+            if (!Array.isArray(cache.accounts)) { console.log("::warning::ROT2-RAIL: cache schema unexpected — honest no-op"); return; }
+
+            const cands = [];
+            for (const [ref, mat] of Object.entries(steemMap)) {
+              /* shape insurance: keys may be acct-NN refs (3-c law) or real names — resolve refs, pass names through */
+              const name = REFS.r2n[ref] || (ref.startsWith("acct-") ? null : ref);
+              if (!name) { say("unresolvable ref " + ref + " — skipped LOUD (map repair stays the standing owner lane)"); continue; }
+              const postingWif = (mat && mat.posting && mat.posting.wif) || null;
+              const activeWif = (mat && mat.active && mat.active.wif) || null;
+              if (!postingWif && !activeWif) continue;
+              cands.push({ ref, name, postingWif, activeWif });
+            }
+            if (!cands.length) { say("no resolvable material — honest no-op"); return; }
+
+            let byName = new Map();
+            try {
+              const rpc = await fetch("https://api.steemit.com", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", method: "condenser_api.get_accounts", params: [cands.map((c) => c.name)], id: 1 }) }).then((r) => r.json());
+              byName = new Map(((rpc && rpc.result) || []).map((a) => [a.name, a]));
+            } catch { /* unreachable below */ }
+            if (!byName.size) { console.log("::warning::ROT2-RAIL: chain unreachable — honest no-op (refusals stay loud)"); return; }
+
+            const steem = require("steem");
+            const fp = (p) => String(p || "").slice(0, 12);
+            let patched = 0;
+            for (const c of cands) {
+              const acct = byName.get(c.name);
+              if (!acct) { say(c.ref + " not on chain — skipped"); continue; }
+              const chainPosting = (acct.posting && acct.posting.key_auths && acct.posting.key_auths[0] && acct.posting.key_auths[0][0]) || null;
+              const chainActive = (acct.active && acct.active.key_auths && acct.active.key_auths[0] && acct.active.key_auths[0][0]) || null;
+              let livePosting = null, liveActive = null;
+              try { if (c.postingWif) { const pub = steem.auth.wifToPublic(c.postingWif); if (chainPosting && pub === chainPosting) livePosting = pub; } } catch { /* the judge refuses bad material */ }
+              try { if (c.activeWif) { const pub = steem.auth.wifToPublic(c.activeWif); if (chainActive && pub === chainActive) liveActive = pub; } } catch { /* same */ }
+              if (!livePosting && !liveActive) { say(c.ref + " material does NOT match live chain authority — refused, stays loud"); continue; }
+              let entry = cache.accounts.find((a) => a && a.name === c.name);
+              if (!entry) { entry = { name: c.name, gens: [] }; cache.accounts.push(entry); }
+              if (!Array.isArray(entry.gens)) entry.gens = [];
+              const existing = entry.gens.find((g) => g && g.gen === "ROT2");
+              const gen = { gen: "ROT2", wif: livePosting ? c.postingWif : (existing && existing.wif) || null, pub: livePosting || (existing && existing.pub) || null, activeWif: liveActive ? c.activeWif : (existing && existing.activeWif) || null, activePub: liveActive || (existing && existing.activePub) || null };
+              if (existing) Object.assign(existing, gen); else entry.gens.push(gen);
+              patched++;
+              say(c.ref + " LIVE-MATCH gen=ROT2 posting=" + (livePosting ? "yes fp=" + fp(livePosting) : "no") + " active=" + (liveActive ? "yes" : "no") + " — the beat re-judges (chain is the only judge)");
+            }
+            if (patched > 0) {
+              cache.rot2RailAt = new Date().toISOString();
+              const tmp = CACHE + ".tmp." + process.pid;
+              fs.writeFileSync(tmp, JSON.stringify(cache, null, 2), { mode: 0o600 });
+              fs.chmodSync(tmp, 0o600);
+              fs.renameSync(tmp, CACHE);
+              say("cache patched 0600 (" + patched + " accounts) — custody verdict belongs to the beat");
+            } else {
+              say("zero live-match material — git vault verdicts stand (honest no-op)");
+            }
+          })().catch((e) => { console.log("::warning::ROT2-RAIL: fail-soft no-op — " + String(e && e.message || e).slice(0, 140)); });
+          RAIL_EOF
+          NODE_PATH=/tmp/steemjs/node_modules node /tmp/ignite/rot2-rail.cjs
+
       - name: Chain anchor probe (on-chain custody anchor must sit in HEAD lineage)
         working-directory: engine
         run: |
