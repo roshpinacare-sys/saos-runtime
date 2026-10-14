@@ -249,9 +249,21 @@ jobs:
           # visible in STATUS.md, NOT red-noise, NOT mirrored to GRID-ALERT, NOT email.
           # A real defect (crash / contract break / measure-gap) stays RED — never silenced.
           WAIT = {
-              "social": {"PART-GATED", "GATED", "STASIS-HALT"},
+              # 26-c additions (measured 2026-10-14):
+              #  · SOCIAL-STANDBY = the custody-protection brake doing its job
+              #    (army-social refuses to publish without chain-verified custody,
+              #    "nothing is ever fabricated"). It is a CONSEQUENCE of the
+              #    custody.coverage red — which stays red and carries the alarm.
+              #    Counting the brake as red too is double-counting noise.
+              #  · TAKEOVER-EXECUTED = the dex engine ACTIVELY healing a stale
+              #    anchor (dexReason=anchor-stale @ 02:33Z). The book never
+              #    carries anchorAgeMs (same phantom-path family as blurt.live),
+              #    so the only measurable state is the verdict itself; the
+              #    takeover is the designed response, amber-wait, visible in
+              #    STATUS.md. anchor truth lives in the dex lanes' own books.
+              "social": {"PART-GATED", "GATED", "STASIS-HALT", "SOCIAL-STANDBY"},
               "delegation": {"CUSTODY-GATE-REFUSED", "GATED", "STASIS-HALT"},
-              "dex": {"STANDBY", "IDLE"},
+              "dex": {"STANDBY", "IDLE", "TAKEOVER-EXECUTED"},
           }
           sv = hb.get("social") if hb_ok else None
           so = steps.get("social", {}) if hb_ok else {}
