@@ -1,6 +1,6 @@
 # Grid status
 
-Generated 2026-10-14T21:17:25Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-14T21:18:53Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Generated 2026-10-14T21:17:25Z by grid-watchdog (schedule 13,43 * * * * UTC). Cr
 | blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 | GREEN | 2026-10-14T18:28:00.304Z |
 | delegation.verdict | verdict=ALREADY-TODAY ops=None | verdict in green set (WAIT = custody gate refusal is the brake working) | RED | 2026-10-14T18:28:00.304Z |
 | digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-14T18:28:00.304Z |
-| pulse.fresh | age=44s conclusion=status=in_progress run=38638972378 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-14T21:16:33Z |
+| pulse.fresh | age=2m conclusion=status=in_progress run=38638972378 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-14T21:16:33Z |
 | potential.fresh | age=2.8h path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-14T18:29:59Z |
 | fleetdigest.fresh | age=2.8h path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-14T18:29:59Z |
 | office.schedule | age=2.8h conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-14T18:29:37Z |
