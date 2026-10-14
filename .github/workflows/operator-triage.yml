@@ -35,7 +35,7 @@ jobs:
         with: { fetch-depth: 1 }
 
       - uses: actions/setup-node@v5
-        with: { node-version: 20 }
+        with: { node-version: 22 }
 
       - name: Route operator claims to the autonomy (fail-soft, never red)
         run: node ops/operator-triage/triage.cjs

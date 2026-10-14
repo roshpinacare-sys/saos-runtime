@@ -27,7 +27,7 @@ jobs:
         with: { fetch-depth: 1 }
 
       - uses: actions/setup-node@v5
-        with: { node-version: 20 }
+        with: { node-version: 22 }
 
       - name: Remember (extract → reinforce → consolidate → commit evidence)
         run: node ops/self-memory/self-memory.cjs
