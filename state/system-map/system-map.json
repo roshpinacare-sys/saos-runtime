@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-14T20:58:26.684Z",
+  "builtAt": "2026-10-14T23:55:19.927Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -27,7 +27,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T18:39:33Z"
+        "created_at": "2026-10-14T23:15:36Z"
       },
       "verdict": "ALIVE"
     },
@@ -70,7 +70,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T20:15:00Z"
+        "created_at": "2026-10-14T23:18:41Z"
       },
       "verdict": "ALIVE"
     },
@@ -99,21 +99,6 @@
         "created_at": "2026-10-12T15:41:03Z"
       },
       "verdict": "IDLE"
-    },
-    {
-      "name": "grid-watchdog",
-      "path": ".github/workflows/grid-watchdog.yml",
-      "crons": [
-        "13,43 * * * *"
-      ],
-      "gapMinutes": 30,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-10-14T20:39:19Z"
-      },
-      "verdict": "CANCELLED"
     },
     {
       "name": "operator-triage",
@@ -154,7 +139,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T17:33:01Z"
+        "created_at": "2026-10-14T21:53:54Z"
       },
       "verdict": "ALIVE"
     },
@@ -181,8 +166,8 @@
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-14T20:50:20Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-14T23:52:38Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-14T20:58:19Z"
+        "created_at": "2026-10-14T23:55:15Z"
       },
       "verdict": "ALIVE"
     },
@@ -221,19 +206,19 @@
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
     "at": "2026-10-14T19:25:12Z",
-    "ageMinutes": 93,
+    "ageMinutes": 270,
     "subject": "R360 GIANT-UNIFICATION-ONE-SYSTEM: one system (Pulse/giant/), one channel (SAOS-SOVEREIGN-",
-    "verdict": "ALIVE"
+    "verdict": "STALE"
   },
   "summary": {
     "alive": 9,
     "red": 0,
     "stale": 0,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
     "idle": 5,
-    "heartbeat": "ALIVE"
+    "heartbeat": "STALE"
   }
 }
