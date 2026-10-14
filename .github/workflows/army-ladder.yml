@@ -87,7 +87,7 @@ jobs:
           set -Eeuo pipefail
           git config user.name "roshpinacare-sys"
           git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
-          git add grids/state/army-receipts.jsonl grids/state/army-public.json grids/state/volume-verify.json grids/state/policy-ledger.jsonl 2>/dev/null || true
+          git add grids/state/army-receipts.jsonl grids/state/army-public.json grids/state/volume-verify.json grids/state/policy-ledger.jsonl grids/state/policy-gears.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no receipt change — clean exit"
           else
