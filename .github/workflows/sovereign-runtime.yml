@@ -805,6 +805,22 @@ jobs:
             console.log("hive beat failed (honest, fail-soft):", String(e && e.message || e).slice(0, 160));
           }
           '
+      # exec29/29-a3 (2026-10-14): the PRIVATE steem repo's own Actions are behind
+      # the measured billing wall (presence-matrix runs 38503112902 / 38503516299 /
+      # 38505442929 queued forever — saos-dex DECISIONS #13/#14), so the read-only
+      # presence probe rides THIS public pulse instead: same job as setup-node,
+      # same plain-`node` pattern as the anchor probe above. The script is
+      # exit-0-by-design (FATAL is recorded to state and it still exits 0) and
+      # continue-on-error keeps the pulse inviolable regardless. Its three state
+      # files land under mini-services/saos-engine/state/ and are carried to
+      # steem@saos-cockpit by the push-back's `git add -A` below (path-based add,
+      # new files auto-included) — D5's digest-freshness (<12h) is thus fed hourly
+      # through the existing artery, no new secrets, no engine logic touched.
+      - name: "exec29 presence-matrix refresh (read-only)"
+        continue-on-error: true
+        working-directory: engine
+        run: node scripts/presence-matrix.mjs
+
       - name: Commit state back (FF-only, no force, ever · honest yield to the alive custodian — T-58 fix)
         working-directory: engine
         env:
