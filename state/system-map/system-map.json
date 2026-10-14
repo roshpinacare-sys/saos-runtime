@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-14T17:37:34.463Z",
+  "builtAt": "2026-10-14T20:58:26.684Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T08:50:09Z"
+        "created_at": "2026-10-14T19:27:37Z"
       },
       "verdict": "ALIVE"
     },
@@ -27,9 +27,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T13:44:44Z"
+        "created_at": "2026-10-14T18:39:33Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "custody-recover",
@@ -70,7 +70,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T13:51:07Z"
+        "created_at": "2026-10-14T20:15:00Z"
       },
       "verdict": "ALIVE"
     },
@@ -111,7 +111,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-14T17:04:40Z"
+        "created_at": "2026-10-14T20:39:19Z"
       },
       "verdict": "CANCELLED"
     },
@@ -182,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-14T17:21:44Z"
+        "created_at": "2026-10-14T20:50:20Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-14T17:37:27Z"
+        "created_at": "2026-10-14T20:58:19Z"
       },
       "verdict": "ALIVE"
     },
@@ -211,8 +211,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-14T14:42:05Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T20:56:49Z"
       },
       "verdict": "ALIVE"
     }
@@ -220,20 +220,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-14T17:33:48Z",
-    "ageMinutes": 4,
-    "subject": "R332 master plan: sovereignty-outlives-agents — mortality-transfer law, 4 open audit lanes",
+    "at": "2026-10-14T19:25:12Z",
+    "ageMinutes": 93,
+    "subject": "R360 GIANT-UNIFICATION-ONE-SYSTEM: one system (Pulse/giant/), one channel (SAOS-SOVEREIGN-",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 8,
+    "alive": 9,
     "red": 0,
     "stale": 0,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 6,
+    "idle": 5,
     "heartbeat": "ALIVE"
   }
 }
