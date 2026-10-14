@@ -1,0 +1,33 @@
+# SELF-MEMORY — הרשת זוכרת את עצמה (R324 · מחקר-ענקים: Eliza LongTermMemory).
+# כל-6 שע: שליפה (Extraction) מראיות-בגיט → EPISODIC/SEMANTIC/PROCEDURAL → חיזוק-זיכרון
+# (accessCount) → קונסולידציה (נשכחים נשרפים) → SELF-MEMORY.md + self-memory.json בגיט.
+# זו שדרוג שכבת-ההכרה-העצמית: המפה (system-map) היא "מה חי עכשיו"; הזיכרון הוא
+# "מה הרשת יודעת על עצמה לאורך-זמן". אפס-סודות (אפס-API-חובה, קבצים-בלבד). העדה = קומיט.
+name: self-memory
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # every 6 hours, off-peak minute 37 — MemoryConfig.longTermExtractionIntervalHours
+    - cron: "37 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: self-memory
+  cancel-in-progress: false
+
+jobs:
+  remember:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Remember (extract → reinforce → consolidate → commit evidence)
+        run: node ops/self-memory/self-memory.cjs
