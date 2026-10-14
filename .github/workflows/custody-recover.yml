@@ -48,7 +48,7 @@ jobs:
       GH_PAT: ${{ secrets.GH_PAT }}
       FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }} # 3-c refs law: receipt of record speaks acct-NN refs; holes resolve env-side (fail-closed)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -59,7 +59,7 @@ jobs:
           cd steem-engine
           echo "steem main @ $(git rev-parse --short HEAD)"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
 

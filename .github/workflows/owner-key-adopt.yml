@@ -37,7 +37,7 @@ jobs:
       IN_PUB: ${{ github.event.inputs.new_posting_pub }}
       IN_DRY: ${{ github.event.inputs.dry_run }}
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
       - name: Gates + adopt (fail-closed, key never logged)

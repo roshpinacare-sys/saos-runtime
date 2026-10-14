@@ -67,7 +67,7 @@ jobs:
       GH_PAT: ${{ secrets.GH_PAT }}
     steps:
       - name: Checkout saos-runtime
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 

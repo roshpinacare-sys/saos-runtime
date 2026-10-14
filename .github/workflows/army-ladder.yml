@@ -34,10 +34,10 @@ jobs:
       ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
       ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with: { fetch-depth: 1 }
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with: { node-version: 20 }
 
       - name: Install signer lib (house pattern)

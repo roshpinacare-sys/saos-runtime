@@ -81,7 +81,7 @@ jobs:
       # module .../ops/army-cache-resolve.cjs" (run 38197095126, 02:46Z).
       # The checkout is additive: the engine clone below is unchanged.
       - name: Checkout the public host (ops resolvers + workflow live here)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
       - name: Clone the private engine tree (vault on main, engine on saos-cockpit)
@@ -95,7 +95,7 @@ jobs:
           git fetch origin main:refs/remotes/origin/main || echo "main fetch skipped (vault revival will report honestly)"
           echo "engine @ $(git rev-parse --short HEAD)"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 

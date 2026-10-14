@@ -36,7 +36,7 @@ jobs:
       GH_PAT: ${{ secrets.GH_PAT }}
       ROT_STEEM_DIR: ${{ github.workspace }}/steem-engine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Checkout steem main (custody branch — vault of record) + engine overlay (saos-cockpit)
         run: |
@@ -51,7 +51,7 @@ jobs:
           node --check mini-services/saos-engine/steemtx.mjs
           echo "engine overlay ok: steemtx.mjs from saos-cockpit @ $(git rev-parse --short FETCH_HEAD)"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
 
