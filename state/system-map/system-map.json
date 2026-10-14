@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-14T12:26:21.819Z",
+  "builtAt": "2026-10-14T17:37:34.463Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -27,7 +27,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T07:39:42Z"
+        "created_at": "2026-10-14T13:44:44Z"
       },
       "verdict": "IDLE"
     },
@@ -69,8 +69,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-14T09:15:07Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T13:51:07Z"
       },
       "verdict": "ALIVE"
     },
@@ -109,11 +109,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-14T12:17:43Z"
+        "conclusion": "cancelled",
+        "event": "schedule",
+        "created_at": "2026-10-14T17:04:40Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "CANCELLED"
     },
     {
       "name": "operator-triage",
@@ -125,8 +125,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "issues",
-        "created_at": "2026-10-13T22:29:16Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T14:22:48Z"
       },
       "verdict": "ALIVE"
     },
@@ -154,7 +154,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T12:17:38Z"
+        "created_at": "2026-10-14T17:33:01Z"
       },
       "verdict": "ALIVE"
     },
@@ -169,7 +169,7 @@
         "event": "schedule",
         "created_at": "2026-10-14T12:22:04Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -181,8 +181,8 @@
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-14T12:14:22Z"
+        "event": "schedule",
+        "created_at": "2026-10-14T17:21:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-14T12:26:15Z"
+        "created_at": "2026-10-14T17:37:27Z"
       },
       "verdict": "ALIVE"
     },
@@ -211,8 +211,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-14T10:34:20Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-14T14:42:05Z"
       },
       "verdict": "ALIVE"
     }
@@ -220,20 +220,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-14T12:17:26Z",
-    "ageMinutes": 9,
-    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
+    "at": "2026-10-14T17:33:48Z",
+    "ageMinutes": 4,
+    "subject": "R332 master plan: sovereignty-outlives-agents — mortality-transfer law, 4 open audit lanes",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 10,
+    "alive": 8,
     "red": 0,
     "stale": 0,
     "gated": 0,
-    "cancelled": 0,
+    "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 5,
+    "idle": 6,
     "heartbeat": "ALIVE"
   }
 }
