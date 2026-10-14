@@ -638,13 +638,18 @@ jobs:
                       const e = byAccount.get(r.account) || {};
                       e.gens = e.gens || [];
                       if (r.role === "posting" && !e.wif) {
-                        e.wif = c.wif; e.pub = r.derivedPub || null;
+                        /* R327-c fix (measured #483): the ladder key lives ONLY in its own gen —
+                         * never in the GEN-2 slot (that slot is the primary seal's truth, and an
+                         * empty primary must stay empty-honest); and the entry MUST be set back —
+                         * siq had no primary entry, so the mutated throwaway object was dropped
+                         * and the cache sailed on without the live key (GEN-1-REFUSED again). */
                         e.gens.push({ gen: genLabel, wif: c.wif, pub: r.derivedPub || null, activeWif: null, activePub: null });
+                        byAccount.set(r.account, e);
                         missingSet.delete(r.account);
                         console.log(`army-cache-resolve: LADDER ${r.account} LIVE-MATCH via ${bf} (posting) — ${genLabel}`);
                       } else if (r.role === "active" && !e.activeWif) {
-                        e.activeWif = c.wif; e.activePub = r.derivedPub || null;
                         e.gens.push({ gen: genLabel, wif: null, pub: null, activeWif: c.wif, activePub: r.derivedPub || null });
+                        byAccount.set(r.account, e);
                         console.log(`army-cache-resolve: LADDER ${r.account} LIVE-MATCH via ${bf} (active) — ${genLabel}`);
                       }
                     }
@@ -657,7 +662,10 @@ jobs:
                 for (const name of roster) {
                   const e = byAccount.get(name) || {};
                   if (name === P.ref2name("acct-00")) { if (headCarried ? !e.activeWif : false) missing.push(name); continue; }
-                  if (!e.wif) missing.push(name);
+                  /* R327-c fix: a ladder gen with posting material counts as served —
+                   * the material is chain-verified, only its seal is older. */
+                  const ladderPosting = Array.isArray(e.gens) && e.gens.some((g) => g && g.wif);
+                  if (!e.wif && !ladderPosting) missing.push(name);
                 }
               }
               if (missing.length) {
@@ -684,11 +692,12 @@ jobs:
                 * (measured 22-e-1). Omission keeps the head on the master-era rail. */
               const accounts = roster.slice().sort().map((name) => {
                 const e = byAccount.get(name) || {};
-                if (!e.wif && !e.activeWif) return null;
-                /* R327-c: the primary bundle's gen first, then any generation-ladder
-                 * gens (chain-verified material from older seals) — adoptFromCache
-                 * picks the FIRST chain-verified gen, GEN-2 stays preferred. */
-                const gens = [{ gen: "GEN-2", wif: e.wif ?? null, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }, ...(e.gens || [])];
+                /* R327-c: the primary bundle's gen first (only if it carries material),
+                 * then generation-ladder gens (chain-verified material from older seals) —
+                 * adoptFromCache picks the FIRST gen with material, the chain judges it. */
+                const gens = [{ gen: "GEN-2", wif: e.wif ?? null, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }, ...(e.gens || [])]
+                  .filter((g) => g && (g.wif || g.activeWif));
+                if (!gens.length) return null;
                 return { name, gens };
               }).filter(Boolean);
               const cache = {
