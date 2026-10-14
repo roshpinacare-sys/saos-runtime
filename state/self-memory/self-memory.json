@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-14T00:24:49.633Z",
+  "builtAt": "2026-10-14T05:17:59.565Z",
   "config": {
     "longTermExtractionEnabled": true,
     "longTermConfidenceThreshold": 0.55,
@@ -8,9 +8,9 @@
     "consolidationMaxAgeDays": 30
   },
   "stats": {
-    "candidates": 9,
-    "added": 9,
-    "reinforced": 0,
+    "candidates": 10,
+    "added": 1,
+    "reinforced": 9,
     "rejected": 0,
     "burned": 0
   },
@@ -37,8 +37,8 @@
         "heartbeat": "ALIVE"
       },
       "createdAt": "2026-10-14T00:24:49.632Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.632Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.564Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -52,8 +52,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -67,8 +67,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -82,8 +82,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -97,8 +97,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -112,8 +112,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -130,8 +130,8 @@
         ]
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -145,8 +145,8 @@
         "at": "2026-10-13T14:34:22.683Z"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -181,7 +181,22 @@
         ]
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
+      "accessCount": 2,
+      "_tok": {}
+    },
+    {
+      "id": "425364c5df29e991",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-14T01:10:52Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "grid-watchdog",
+        "verdict": "CANCELLED"
+      },
+      "createdAt": "2026-10-14T05:17:59.565Z",
+      "lastAccessedAt": "2026-10-14T05:17:59.565Z",
       "accessCount": 1,
       "_tok": {}
     }
