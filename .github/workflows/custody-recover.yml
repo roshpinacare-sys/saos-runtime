@@ -61,7 +61,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install deps (pinned pattern from fleet-rotation-a)
         run: npm i --no-save --silent libsodium-wrappers steem

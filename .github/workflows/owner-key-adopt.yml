@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - name: Gates + adopt (fail-closed, key never logged)
         run: |
           set -Eeuo pipefail
