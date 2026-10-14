@@ -1,0 +1,189 @@
+{
+  "builtAt": "2026-10-14T00:24:49.633Z",
+  "config": {
+    "longTermExtractionEnabled": true,
+    "longTermConfidenceThreshold": 0.55,
+    "longTermSimilarityThreshold": 0.72,
+    "longTermExtractionIntervalHours": 6,
+    "consolidationMaxAgeDays": 30
+  },
+  "stats": {
+    "candidates": 9,
+    "added": 9,
+    "reinforced": 0,
+    "rejected": 0,
+    "burned": 0
+  },
+  "records": [
+    {
+      "id": "fa1aba5916f84081",
+      "category": "EPISODIC",
+      "content": "מפת-המשרד (2026-10-13T22:29:40.767Z): חיים=8 אדומים=0 נעדרי-דופק=0 · דופק-הצאצא ALIVE לפני 13 דק (roshpinacare-sys/steem@saos-cockpit)",
+      "confidence": 0.92,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "builtAt": "2026-10-13T22:29:40.767Z",
+        "summary": {
+          "alive": 8,
+          "red": 0,
+          "stale": 0,
+          "gated": 0,
+          "cancelled": 0,
+          "neverRun": 0,
+          "review": 0,
+          "idle": 5,
+          "heartbeat": "ALIVE"
+        },
+        "heartbeat": "ALIVE"
+      },
+      "createdAt": "2026-10-14T00:24:49.632Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.632Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "b9ba25dbe4863199",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: escrow-payroll · פסק IDLE · ריצה-אחרונה success @ 2026-10-12T03:22:33Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "escrow-payroll",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "b5919d6b67e4d84b",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: fleet-rotation-a · פסק IDLE · ריצה-אחרונה success @ 2026-10-13T00:01:51Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "fleet-rotation-a",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "0b28f4c247b71ec5",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: gen2-rotation · פסק IDLE · ריצה-אחרונה success @ 2026-10-12T15:41:03Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "gen2-rotation",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "9a5ed67afc8e2109",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: owner-key-adopt · פסק IDLE · ריצה-אחרונה success @ 2026-10-12T16:48:45Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "owner-key-adopt",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "3963a60cab959f23",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: sovereign-evolution · פסק IDLE · ריצה-אחרונה success @ 2026-10-13T14:34:14Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "sovereign-evolution",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "b138126e9ef89cdb",
+      "category": "EPISODIC",
+      "content": "דופק-SLO אחרון (3 מדידות): 2026-10-13T14:34 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+      "confidence": 0.7,
+      "source": "learning/ledger.jsonl",
+      "metadata": {
+        "tail": [
+          "2026-10-12T02:29 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+          "2026-10-12T16:05 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+          "2026-10-13T14:34 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]"
+        ]
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "e0f78bca3e18597d",
+      "category": "SEMANTIC",
+      "content": "ידע-על-הצי (חלון 2026-10-12→2026-10-13): Domain: 66 ירוק / 3 אדום / 26 בוטלים מתוך 2207 · Console: 84 ירוק / 5 אדום / 10 בוטלים מתוך 287 · Sandbox: שגיאת-מדידה (Error: 404 https://api.github.com/repos/roshpinacare-sys/San) · saos-runtime: 77 ירוק / 11 אדום / 10 בוטלים מתוך 262",
+      "confidence": 0.75,
+      "source": "learning/evolution-2026-10-13.json",
+      "metadata": {
+        "file": "evolution-2026-10-13.json",
+        "at": "2026-10-13T14:34:22.683Z"
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "47396d922b4d392b",
+      "category": "PROCEDURAL",
+      "content": "מפקד-יכולות (14 זרימות מתוזמנות, 5 תיקיות-ops): blurt-revival:ALIVE, custody-recover:ALIVE, escrow-payroll:IDLE, fee-engine:ALIVE, fleet-rotation-a:IDLE, gen2-rotation:IDLE, grid-watchdog:ALIVE, operator-triage:ALIVE, owner-key-adopt:IDLE, self-memory:ללא-מפה, sovereign-evolution:IDLE, sovereign-runtime:ALIVE, system-map:ALIVE, treasury-ladder:ALIVE · ops: fleet-rotation, key-census-probe, operator-triage, self-memory, system-map",
+      "confidence": 0.88,
+      "source": ".github/workflows + ops/",
+      "metadata": {
+        "workflows": [
+          "blurt-revival.yml",
+          "custody-recover.yml",
+          "escrow-payroll.yml",
+          "fee-engine.yml",
+          "fleet-rotation-a.yml",
+          "gen2-rotation.yml",
+          "grid-watchdog.yml",
+          "operator-triage.yml",
+          "owner-key-adopt.yml",
+          "self-memory.yml",
+          "sovereign-evolution.yml",
+          "sovereign-runtime.yml",
+          "system-map.yml",
+          "treasury-ladder.yml"
+        ],
+        "opsDirs": [
+          "fleet-rotation",
+          "key-census-probe",
+          "operator-triage",
+          "self-memory",
+          "system-map"
+        ]
+      },
+      "createdAt": "2026-10-14T00:24:49.633Z",
+      "lastAccessedAt": "2026-10-14T00:24:49.633Z",
+      "accessCount": 1,
+      "_tok": {}
+    }
+  ]
+}
