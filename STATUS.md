@@ -1,11 +1,11 @@
 # Grid status
 
-Generated 2026-10-14T18:41:22Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-14T19:12:28Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=13m http=200 | age<=2400s (40m); missing/unparseable is red | GREEN | 2026-10-14T18:28:00.304Z |
-| anchor.probe | verdict=OK age=36m src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-14T18:04:54Z |
+| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=44m http=200 | age<=2400s (40m); missing/unparseable is red | RED | 2026-10-14T18:28:00.304Z |
+| anchor.probe | verdict=OK age=68m src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-14T18:04:54Z |
 | custody.coverage | verified=14/total=14 | verified>=14 | GREEN | 2026-10-14T18:28:00.304Z |
 | social.verdict | verdict=SOCIAL-STANDBY executed=None refused=None | verdict in green set (WAIT = designed gate state) | WAIT (designed) | 2026-10-14T18:28:00.304Z |
 | content.verdict | verdict=QUEUED draftsQueued=None | verdict in green set (anything else red) | GREEN | 2026-10-14T18:28:00.304Z |
@@ -13,11 +13,11 @@ Generated 2026-10-14T18:41:22Z by grid-watchdog (schedule 13,43 * * * * UTC). Cr
 | blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 | GREEN | 2026-10-14T18:28:00.304Z |
 | delegation.verdict | verdict=ALREADY-TODAY ops=None | verdict in green set (WAIT = custody gate refusal is the brake working) | RED | 2026-10-14T18:28:00.304Z |
 | digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-14T18:28:00.304Z |
-| pulse.fresh | age=14m conclusion=status=in_progress run=38615297132 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-14T18:27:21Z |
-| potential.fresh | age=11m path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-14T18:29:59Z |
-| fleetdigest.fresh | age=11m path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-14T18:29:59Z |
-| office.schedule | age=12m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-14T18:29:37Z |
-| billing.block | no billing-block annotation (0 failed run(s) of 0 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
+| pulse.fresh | age=38s conclusion=status=in_progress run=38621596349 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-14T19:11:43Z |
+| potential.fresh | age=42m path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-14T18:29:59Z |
+| fleetdigest.fresh | age=42m path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-14T18:29:59Z |
+| office.schedule | age=43m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-14T18:29:37Z |
+| billing.block | no billing-block annotation (1 failed run(s) of 1 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
 
 Legend:
 - RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.
