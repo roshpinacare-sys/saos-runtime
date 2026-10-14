@@ -888,6 +888,7 @@ jobs:
                 git cat-file -e HEAD:mini-services/saos-engine/state/ci-last-heartbeat.json 2>/dev/null && echo "mini-services/saos-engine/state/ci-last-heartbeat.json"
                 git cat-file -e HEAD:mini-services/saos-engine/state/army-custody.json 2>/dev/null && echo "mini-services/saos-engine/state/army-custody.json"
                 git diff-tree --no-commit-id --name-only -r HEAD -- mini-services/saos-engine/state 2>/dev/null | grep -E '/[^/]*custody[^/]*\.json$' || true
+                git diff-tree --no-commit-id --name-only -r HEAD -- mini-services/saos-engine/state 2>/dev/null | grep -E '/presence-matrix[^/]*\.(json|md)$' || true
               } | sort -u
             )
             if [ -n "$cands" ]; then
