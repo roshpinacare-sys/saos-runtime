@@ -1,0 +1,99 @@
+# army-ladder.yml (saos-runtime) — R323: the army maker book + VERIFIED-VS-CHAIN.
+#
+# Owner mandate: DEX-activation (DECISIONS #12 IGNITION-R1) + limited-capital market
+# making with the 13-account fleet (R323) + VERIFIED-VS-CHAIN volume truth.
+#
+# Design: the engine of record lives in saos-dex (grids/army-ladder.mjs · grids/volume-verify.mjs);
+# this workflow is the Git-only runtime pulse that runs it (sandbox-ephemeral law #14).
+# Enforcement chain per account: STASIS → POLICY (policyCycleGate, lane grid) → key-gate
+# (active authority) → book-law (maker-only, idempotent orderids, kill-law, expiry).
+# Honesty: every honest state (FUEL-STASIS / KEY-STASIS / POLICY-HALT / UNREACHABLE)
+# exits 0 with a receipt — the receipt IS the alarm; zero red-email flood (T-77 law).
+name: army-ladder
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 2×/day canary cadence, off-peak, distinct minutes from treasury-ladder (41 5,17)
+    - cron: "23 3,15 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: army-ladder
+  cancel-in-progress: false
+
+jobs:
+  army:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
+      ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Install signer lib (house pattern)
+        run: npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
+
+      - name: Checkout the grids home (saos-dex — engine of record)
+        run: |
+          set -Eeuo pipefail
+          git clone --depth 1 --branch main "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-dex.git" dex
+          echo "saos-dex @ $(cd dex && git rev-parse --short HEAD)"
+
+      - name: Selftest gate (offline vectors — red selftest never reaches the chain)
+        working-directory: dex
+        run: |
+          set -Eeuo pipefail
+          npm install --omit=dev --no-audit --no-fund --loglevel=error bs58 steem@0.7.11 @noble/hashes @noble/curves
+          NODE_PATH=/tmp/steemjs/node_modules node grids/army-ladder.mjs --selftest
+          NODE_PATH=/tmp/steemjs/node_modules node grids/volume-verify.mjs --selftest
+
+      - name: Resolve live fleet keys from the sealed ROT2 bundle (in-run, 0600, never logged)
+        run: |
+          if ! NODE_PATH=/tmp/steemjs/node_modules node ops/key-census-probe/resolve-keys.cjs --out /tmp/fk.json; then
+            echo "KEYLESS-STASIS: 0 live keys — the army sleeps, honest receipt written"
+            echo "stasis=1" >> "$GITHUB_ENV"
+          fi
+
+      - name: Army ladder cycle (per-account STASIS→POLICY→key-gate→maker book)
+        if: env.stasis != '1'
+        working-directory: dex
+        run: NODE_PATH=/tmp/steemjs/node_modules node grids/army-ladder.mjs --run --keys-file /tmp/fk.json || echo "army run ended honestly (exit $?)"
+
+      - name: VERIFIED-VS-CHAIN (every receipt txid + every chain fill_order, honest verdict)
+        if: always()
+        working-directory: dex
+        run: NODE_PATH=/tmp/steemjs/node_modules node grids/volume-verify.mjs --verify || echo "volume-verify ended honestly (exit $?)"
+
+      - name: Cleanup key material
+        if: always()
+        run: rm -f /tmp/fk.json && echo "key file destroyed"
+
+      - name: Commit receipts to the grids home (evidence = commit; FF-only with yield)
+        if: always()
+        working-directory: dex
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          set -Eeuo pipefail
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
+          git add grids/state/army-receipts.jsonl grids/state/army-public.json grids/state/volume-verify.json grids/state/policy-ledger.jsonl 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no receipt change — clean exit"
+          else
+            git commit -m "army-ladder: canary receipt + verified-vs-chain $(date -u +%FT%TZ) [skip ci]"
+            git checkout -- . 2>/dev/null || true
+            for i in 1 2 3; do
+              git pull --rebase -X theirs --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; git checkout -- . 2>/dev/null || true; }
+            done
+          fi
