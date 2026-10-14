@@ -598,6 +598,68 @@ jobs:
                 if (name === P.ref2name("acct-00")) return headCarried ? !e.activeWif : false;
                 return !e.wif;
               });
+              /* R327-c GENERATION LADDER (chain-judged, per-account): a newer seal can carry
+               * an UNREGISTERED key for an account whose live key lives in the PREVIOUS seal
+               * (measured 2026-10-14: siq's live posting = the 21:34:33Z broadcast, sealed in
+               * KEYS-ROT2-2026-10-12.zip.enc on the custody branch; the 00:05Z re-seal
+               * (KEYS-ROT2-2026-10-13, run #14) overwrote the roster gate with the failed-
+               * broadcast material — GEN-2-REFUSED:posting-authority-mismatch ever since).
+               * The R255 law — "the vault re-pulls until the chain says yes" — applied ACROSS
+               * bundles: for every still-missing roster account, open the other sealed bundles
+               * (newest-first), classify THEIR material for that account only, and a live
+               * match lands as an additional generation (gen "GEN-2b:<bundle>"). The chain is
+               * the only judge — same livePubs, same classify; nothing trusted by name/shape. */
+              if (missing.length) {
+                const vaultDir = path.join(steemDir, "agent", "vault");
+                const ladder = fs.readdirSync(vaultDir)
+                  .filter((f) => /^KEYS-.*\.zip\.enc$/.test(f) && `agent/vault/${f}` !== zipFile)
+                  .sort()
+                  .reverse();
+                const missingSet = new Set(missing);
+                for (const bf of ladder) {
+                  if (!missingSet.size) break;
+                  const safe = bf.replace(/[^A-Za-z0-9.-]/g, "_");
+                  const bDec = path.join(work, "ladder-" + safe + ".zip");
+                  let opened = false;
+                  for (const p of passes) {
+                    if (P.decryptTry(path.join(vaultDir, bf), bDec, p.value, p.name + ":" + bf)) { opened = true; break; }
+                  }
+                  if (!opened) { console.log(`army-cache-resolve: ladder ${bf} — no known pass opened it (honest skip)`); continue; }
+                  const bDir = path.join(work, "ladder-unz-" + safe);
+                  fs.mkdirSync(bDir, { recursive: true });
+                  try {
+                    execFileSync("unzip", ["-o", "-q", bDec, "-d", bDir], { stdio: "pipe" });
+                    const bCands = [];
+                    P.scanDir(bDir, bCands);
+                    const genLabel = "GEN-2b:" + bf.replace(/\.zip\.enc$/, "");
+                    for (const c of bCands) {
+                      const r = P.classify(c, livePubs);
+                      if (!r.ok || !missingSet.has(r.account)) continue;
+                      const e = byAccount.get(r.account) || {};
+                      e.gens = e.gens || [];
+                      if (r.role === "posting" && !e.wif) {
+                        e.wif = c.wif; e.pub = r.derivedPub || null;
+                        e.gens.push({ gen: genLabel, wif: c.wif, pub: r.derivedPub || null, activeWif: null, activePub: null });
+                        missingSet.delete(r.account);
+                        console.log(`army-cache-resolve: LADDER ${r.account} LIVE-MATCH via ${bf} (posting) — ${genLabel}`);
+                      } else if (r.role === "active" && !e.activeWif) {
+                        e.activeWif = c.wif; e.activePub = r.derivedPub || null;
+                        e.gens.push({ gen: genLabel, wif: null, pub: null, activeWif: c.wif, activePub: r.derivedPub || null });
+                        console.log(`army-cache-resolve: LADDER ${r.account} LIVE-MATCH via ${bf} (active) — ${genLabel}`);
+                      }
+                    }
+                  } finally {
+                    fs.rmSync(bDir, { recursive: true, force: true });
+                    try { execFileSync("shred", ["-u", bDec], { stdio: "pipe" }); } catch { fs.rmSync(bDec, { force: true }); }
+                  }
+                }
+                missing.length = 0;
+                for (const name of roster) {
+                  const e = byAccount.get(name) || {};
+                  if (name === P.ref2name("acct-00")) { if (headCarried ? !e.activeWif : false) missing.push(name); continue; }
+                  if (!e.wif) missing.push(name);
+                }
+              }
               if (missing.length) {
                 /* 28-steem PARTIAL-IGNITE LAW (measured 2026-10-12..14): ONE unmapped
                  * ref (acct-06, lost in the ROT2 re-seal ~17:13Z) aborted EVERY beat
@@ -623,7 +685,11 @@ jobs:
               const accounts = roster.slice().sort().map((name) => {
                 const e = byAccount.get(name) || {};
                 if (!e.wif && !e.activeWif) return null;
-                return { name, gens: [{ gen: "GEN-2", wif: e.wif ?? null, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }] };
+                /* R327-c: the primary bundle's gen first, then any generation-ladder
+                 * gens (chain-verified material from older seals) — adoptFromCache
+                 * picks the FIRST chain-verified gen, GEN-2 stays preferred. */
+                const gens = [{ gen: "GEN-2", wif: e.wif ?? null, pub: e.pub ?? null, activeWif: e.activeWif ?? null, activePub: e.activePub ?? null }, ...(e.gens || [])];
+                return { name, gens };
               }).filter(Boolean);
               const cache = {
                 extractedAt: new Date().toISOString(),
