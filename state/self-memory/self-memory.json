@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-15T11:59:42.054Z",
+  "builtAt": "2026-10-15T17:18:07.848Z",
   "config": {
     "longTermExtractionEnabled": true,
     "longTermConfidenceThreshold": 0.55,
@@ -8,9 +8,9 @@
     "consolidationMaxAgeDays": 30
   },
   "stats": {
-    "candidates": 10,
-    "added": 0,
-    "reinforced": 10,
+    "candidates": 9,
+    "added": 2,
+    "reinforced": 7,
     "rejected": 0,
     "burned": 0
   },
@@ -37,8 +37,8 @@
         "heartbeat": "ALIVE"
       },
       "createdAt": "2026-10-14T00:24:49.632Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.053Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.847Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -52,8 +52,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.053Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -67,8 +67,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.053Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -82,8 +82,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.053Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -97,8 +97,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.053Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -145,8 +145,8 @@
         "at": "2026-10-13T14:34:22.683Z"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.053Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -181,8 +181,8 @@
         ]
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-15T11:59:42.054Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -227,6 +227,41 @@
       },
       "createdAt": "2026-10-14T21:54:03.893Z",
       "lastAccessedAt": "2026-10-14T21:54:03.893Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "0a95e002b3180d12",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-15T14:09:55Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "grid-watchdog",
+        "verdict": "CANCELLED"
+      },
+      "createdAt": "2026-10-15T17:18:07.848Z",
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "ae8ffd21734998a3",
+      "category": "EPISODIC",
+      "content": "דופק-SLO אחרון (5 מדידות): 2026-10-15T12:06 SLO-BREACH [P0-1:0,T1:1,T1:1,T1:1]",
+      "confidence": 0.7,
+      "source": "learning/ledger.jsonl",
+      "metadata": {
+        "tail": [
+          "2026-10-12T02:29 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+          "2026-10-12T16:05 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+          "2026-10-13T14:34 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+          "2026-10-14T12:22 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]",
+          "2026-10-15T12:06 SLO-BREACH [P0-1:0,T1:1,T1:1,T1:1]"
+        ]
+      },
+      "createdAt": "2026-10-15T17:18:07.848Z",
+      "lastAccessedAt": "2026-10-15T17:18:07.848Z",
       "accessCount": 1,
       "_tok": {}
     }
