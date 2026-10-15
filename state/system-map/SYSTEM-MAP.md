@@ -1,25 +1,25 @@
 # מפת-המשרד החיה — הרשת רואה את עצמה
 
-נבנתה אוטונומית: **2026-10-14T23:55:19.927Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
+נבנתה אוטונומית: **2026-10-15T04:40:59.954Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
 
 ## פסק-על
-- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 270 דק** — STALE
-  - «R360 GIANT-UNIFICATION-ONE-SYSTEM: one system (Pulse/giant/), one channel (SAOS-SOVEREIGN-»
-- **איברים**: 🟢 חיים 9 · 🔴 אדומים 0 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 5 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
-- **פסק המשרד**: 🟠/🔴 0 איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)
+- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 4 דק** — ALIVE
+  - «SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]»
+- **איברים**: 🟢 חיים 8 · 🔴 אדומים 0 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 6 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
+- **פסק המשרד**: 🟢 עומד ומתפקד — כל-האיברים בתוקף
 
 ## טבלת-החיים
 | פסק | איבר | קצב-מתוכנן | הרצה-אחרונה |
 |---|---|---|---|
 | 🟢 ALIVE | army-ladder | כל 12 שע | 2026-10-14T19:27:37Z · schedule · success |
-| 🟢 ALIVE | blurt-revival | dispatch-בלבד | 2026-10-14T23:15:36Z · schedule · success |
 | 🟢 ALIVE | custody-recover | כל 1 יום | 2026-10-14T09:00:36Z · schedule · success |
-| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-14T23:18:41Z · schedule · success |
+| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-15T03:42:35Z · workflow_dispatch · success |
 | 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-14T14:22:48Z · schedule · success |
 | 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-14T21:53:54Z · schedule · success |
-| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-14T23:52:38Z · workflow_dispatch · in_progress |
-| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-14T23:55:15Z · schedule · in_progress |
+| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-15T04:24:51Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-15T04:40:51Z · schedule · in_progress |
 | 🟢 ALIVE | treasury-ladder | כל 12 שע | 2026-10-14T20:56:49Z · schedule · success |
+| 🔵 IDLE | blurt-revival | dispatch-בלבד | 2026-10-14T23:15:36Z · schedule · success |
 | 🔵 IDLE | escrow-payroll | dispatch-בלבד | 2026-10-12T03:22:33Z · workflow_dispatch · success |
 | 🔵 IDLE | fleet-rotation-a | dispatch-בלבד | 2026-10-13T00:01:51Z · workflow_dispatch · success |
 | 🔵 IDLE | gen2-rotation | dispatch-בלבד | 2026-10-12T15:41:03Z · workflow_dispatch · success |
