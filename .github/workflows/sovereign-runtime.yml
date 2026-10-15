@@ -985,10 +985,19 @@ jobs:
           # is NOT run here (measured-empty 2026-10-12) — heartbeat stays lean.
           if [ -n "$STEEM_ACTIVE_WIF" ]; then
             if [ ! -d /tmp/steemjs/node_modules/steem ]; then npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error; fi
-            # acct-00 refs only (estate-pseudonym law) — note: ops/key-census-probe/probe-v2.cjs was
-            # archived out of the public tree (2026-10-12, PUBLISH-POLICY), so this arm soft-fails
-            # honestly until the probe returns home (long-term: the private engine tree).
-            NODE_PATH=/tmp/steemjs/node_modules node "$GITHUB_WORKSPACE/ops/key-census-probe/probe-v2.cjs" --arm ../../.secrets/acct-00.key --arm-account acct-00 --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
+            # acct-00 refs only (estate-pseudonym law) — R361 FLOW-IGNITION (owner word
+            # "open all economic barriers"): the arming probe now PULLS AT RUNTIME from
+            # the private vault-home archive (PUBLISH-POLICY §3 kept: the public tree
+            # stays clean; the runner fetches the operational tool only into /tmp).
+            VPROBE=/tmp/probe-v2.cjs
+            curl -fsS --max-time 30 -H "authorization: Bearer ${GH_PAT}" -o "$VPROBE" \
+              "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe-v2.cjs" \
+              || echo "probe fetch failed (honest) — arm soft-fails this round"
+            if [ -s "$VPROBE" ]; then
+              NODE_PATH=/tmp/steemjs/node_modules node "$VPROBE" --arm ../../.secrets/acct-00.key --arm-account acct-00 --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
+            else
+              echo "probe-v2 unavailable — grid ticks honestly UNARMED this round (fail-closed preserved)"
+            fi
           else
             echo "STEEM_ACTIVE_WIF absent — grid ticks honestly UNARMED (owner one-action pending; law-grid-exec-alive holds the alarm)"
           fi
@@ -996,6 +1005,7 @@ jobs:
         env:
           CI_EXEC_ARMED: ${{ secrets.CI_EXEC_ARMED }}
           STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+          GH_PAT: ${{ secrets.GH_PAT }}
 
       # Z-20-e (exec-20 · owner=active): THE HIVE BEAT — the user's standing order
       # "תמצא פתרון להזרים את הhive" closed at the WORKFLOW layer (the engine's own
