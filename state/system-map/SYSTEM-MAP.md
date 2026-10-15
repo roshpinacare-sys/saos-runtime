@@ -1,34 +1,34 @@
 # מפת-המשרד החיה — הרשת רואה את עצמה
 
-נבנתה אוטונומית: **2026-10-15T14:26:06.474Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
+נבנתה אוטונומית: **2026-10-15T18:40:52.962Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
 
 ## פסק-על
-- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 14 דק** — ALIVE
+- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 11 דק** — ALIVE
   - «SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]»
-- **איברים**: 🟢 חיים 10 · 🔴 אדומים 0 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 1 · 🔵 צופים-לטריגר 4 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
+- **איברים**: 🟢 חיים 9 · 🔴 אדומים 0 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 1 · 🔵 צופים-לטריגר 5 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
 - **פסק המשרד**: 🟠/🔴 1 איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)
 
 ## טבלת-החיים
 | פסק | איבר | קצב-מתוכנן | הרצה-אחרונה |
 |---|---|---|---|
-| 🟠 CANCELLED | grid-watchdog | כל 30 דק | 2026-10-15T14:09:55Z · schedule · cancelled |
+| 🟠 CANCELLED | grid-watchdog | כל 30 דק | 2026-10-15T18:19:07Z · schedule · cancelled |
 | 🟢 ALIVE | army-ladder | כל 12 שע | 2026-10-15T08:25:09Z · schedule · success |
-| 🟢 ALIVE | blurt-revival | dispatch-בלבד | 2026-10-15T11:32:15Z · schedule · success |
+| 🟢 ALIVE | blurt-revival | dispatch-בלבד | 2026-10-15T17:03:00Z · schedule · success |
 | 🟢 ALIVE | custody-recover | כל 1 יום | 2026-10-15T08:34:50Z · schedule · success |
-| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-15T13:32:07Z · schedule · success |
+| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-15T17:50:05Z · workflow_dispatch · success |
 | 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-15T14:00:08Z · schedule · success |
-| 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-15T11:59:34Z · schedule · success |
-| 🟢 ALIVE | sovereign-evolution | dispatch-בלבד | 2026-10-15T12:06:44Z · schedule · success |
-| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-15T14:00:55Z · workflow_dispatch · in_progress |
-| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-15T14:25:52Z · schedule · in_progress |
+| 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-15T17:18:01Z · schedule · success |
+| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-15T18:26:07Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-15T18:40:48Z · schedule · in_progress |
 | 🟢 ALIVE | treasury-ladder | כל 12 שע | 2026-10-15T10:16:38Z · schedule · success |
 | 🔵 IDLE | escrow-payroll | dispatch-בלבד | 2026-10-12T03:22:33Z · workflow_dispatch · success |
 | 🔵 IDLE | fleet-rotation-a | dispatch-בלבד | 2026-10-13T00:01:51Z · workflow_dispatch · success |
 | 🔵 IDLE | gen2-rotation | dispatch-בלבד | 2026-10-12T15:41:03Z · workflow_dispatch · success |
 | 🔵 IDLE | owner-key-adopt | dispatch-בלבד | 2026-10-12T16:48:45Z · workflow_dispatch · success |
+| 🔵 IDLE | sovereign-evolution | dispatch-בלבד | 2026-10-15T12:06:44Z · schedule · success |
 
 ## למה — שורש-כל-אדום
-- **grid-watchdog** (CANCELLED): הרצה-אחרונה cancelled @ 2026-10-15T14:09:55Z (schedule) — הלוגים ב-Actions; התיקון בתור operator-triage
+- **grid-watchdog** (CANCELLED): הרצה-אחרונה cancelled @ 2026-10-15T18:19:07Z (schedule) — הלוגים ב-Actions; התיקון בתור operator-triage
 
 ---
 *חוק-העדות (R324): מילים אינן הוכחה. כל-פסק כאן נמדד מול-ה-API בריצה-זו ונכתב-בגיט. המפעיל לא נדרש לגלות קריסות במייל — הרשת מדווחת על-עצמה כל-30 דק.*

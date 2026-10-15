@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-15T14:26:06.474Z",
+  "builtAt": "2026-10-15T18:40:52.962Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -27,7 +27,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T11:32:15Z"
+        "created_at": "2026-10-15T17:03:00Z"
       },
       "verdict": "ALIVE"
     },
@@ -69,8 +69,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-15T13:32:07Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-15T17:50:05Z"
       },
       "verdict": "ALIVE"
     },
@@ -111,7 +111,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-15T14:09:55Z"
+        "created_at": "2026-10-15T18:19:07Z"
       },
       "verdict": "CANCELLED"
     },
@@ -154,7 +154,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T11:59:34Z"
+        "created_at": "2026-10-15T17:18:01Z"
       },
       "verdict": "ALIVE"
     },
@@ -169,7 +169,7 @@
         "event": "schedule",
         "created_at": "2026-10-15T12:06:44Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -182,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-15T14:00:55Z"
+        "created_at": "2026-10-15T18:26:07Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-15T14:25:52Z"
+        "created_at": "2026-10-15T18:40:48Z"
       },
       "verdict": "ALIVE"
     },
@@ -220,20 +220,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-15T14:12:38Z",
-    "ageMinutes": 14,
+    "at": "2026-10-15T18:30:20Z",
+    "ageMinutes": 11,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 10,
+    "alive": 9,
     "red": 0,
     "stale": 0,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 4,
+    "idle": 5,
     "heartbeat": "ALIVE"
   }
 }
