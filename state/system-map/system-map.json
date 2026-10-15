@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-15T09:27:38.887Z",
+  "builtAt": "2026-10-15T14:26:06.474Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -27,9 +27,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T04:42:03Z"
+        "created_at": "2026-10-15T11:32:15Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "custody-recover",
@@ -69,8 +69,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-15T09:08:10Z"
+        "event": "schedule",
+        "created_at": "2026-10-15T13:32:07Z"
       },
       "verdict": "ALIVE"
     },
@@ -109,11 +109,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-15T09:07:09Z"
+        "conclusion": "cancelled",
+        "event": "schedule",
+        "created_at": "2026-10-15T14:09:55Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "CANCELLED"
     },
     {
       "name": "operator-triage",
@@ -126,7 +126,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T14:22:48Z"
+        "created_at": "2026-10-15T14:00:08Z"
       },
       "verdict": "ALIVE"
     },
@@ -154,7 +154,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T05:04:55Z"
+        "created_at": "2026-10-15T11:59:34Z"
       },
       "verdict": "ALIVE"
     },
@@ -167,9 +167,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T12:22:04Z"
+        "created_at": "2026-10-15T12:06:44Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-runtime",
@@ -182,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-15T09:23:12Z"
+        "created_at": "2026-10-15T14:00:55Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-15T09:27:29Z"
+        "created_at": "2026-10-15T14:25:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -212,7 +212,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-14T20:56:49Z"
+        "created_at": "2026-10-15T10:16:38Z"
       },
       "verdict": "ALIVE"
     }
@@ -220,20 +220,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-15T09:07:57Z",
-    "ageMinutes": 20,
+    "at": "2026-10-15T14:12:38Z",
+    "ageMinutes": 14,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 9,
+    "alive": 10,
     "red": 0,
     "stale": 0,
     "gated": 0,
-    "cancelled": 0,
+    "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 6,
+    "idle": 4,
     "heartbeat": "ALIVE"
   }
 }
