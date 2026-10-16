@@ -51,8 +51,6 @@
 name: sovereign-runtime
 
 on:
-  schedule:
-    - cron: "23 * * * *"   # hourly backstop — revives the pulse chain if it ever dies
   workflow_dispatch: {}
 
 permissions:

@@ -7,10 +7,6 @@ name: system-map
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # twice an hour, off-peak minutes — same degraded-cron tolerance as the map's own law
-    - cron: "17,47 * * * *"
-
 permissions:
   contents: write
   actions: read

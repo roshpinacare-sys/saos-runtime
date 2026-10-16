@@ -14,10 +14,6 @@ name: treasury-ladder
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # 2×/day canary cadence — off-peak minutes (the engine re-prices around the live book)
-    - cron: "41 5,17 * * *"
-
 permissions:
   contents: read
 

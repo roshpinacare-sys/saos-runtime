@@ -7,10 +7,6 @@ name: self-memory
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # every 6 hours, off-peak minute 37 — MemoryConfig.longTermExtractionIntervalHours
-    - cron: "37 */6 * * *"
-
 permissions:
   contents: write
 

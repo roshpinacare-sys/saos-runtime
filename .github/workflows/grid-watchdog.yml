@@ -43,8 +43,6 @@
 name: grid-watchdog
 
 on:
-  schedule:
-    - cron: "13,43 * * * *"   # two slots per hour at odd minutes; avoids top-of-hour scheduler congestion
   workflow_dispatch: {}
 
 permissions:

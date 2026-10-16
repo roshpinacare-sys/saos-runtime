@@ -4,8 +4,6 @@
 # files an issue on SLO breach. Runs while the owner sleeps — GitHub only.
 name: sovereign-evolution
 on:
-  schedule:
-    - cron: '44 6 * * *'
   workflow_dispatch:
     inputs:
       strict:

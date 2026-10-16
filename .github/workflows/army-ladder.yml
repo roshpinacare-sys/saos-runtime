@@ -13,10 +13,6 @@ name: army-ladder
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # 2×/day canary cadence, off-peak, distinct minutes from treasury-ladder (41 5,17)
-    - cron: "23 3,15 * * *"
-
 permissions:
   contents: read
 
