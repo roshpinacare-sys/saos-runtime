@@ -993,6 +993,13 @@ jobs:
             curl -fsS --max-time 30 -H "authorization: Bearer ${GH_PAT}" -o "$VPROBE" \
               "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe-v2.cjs" \
               || echo "probe fetch failed (honest) — arm soft-fails this round"
+            # R329-fix (measured 2026-10-16 14:06Z): probe-v2 requires its sibling
+            # ./probe.cjs — fetched alone it died with MODULE_NOT_FOUND and the
+            # grid ticked honestly UNARMED while phantom bid overflow grew.
+            # The sibling now rides along into the same /tmp dir. Fail-honest.
+            curl -fsS --max-time 30 -H "authorization: Bearer ${GH_PAT}" -o /tmp/probe.cjs \
+              "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe.cjs" \
+              || echo "probe.cjs sibling fetch failed (honest)"
             if [ -s "$VPROBE" ]; then
               NODE_PATH=/tmp/steemjs/node_modules node "$VPROBE" --arm ../../.secrets/acct-00.key --arm-account acct-00 --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
             else
