@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-16T00:25:16.546Z",
+  "builtAt": "2026-10-16T05:04:34.442Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -27,7 +27,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T21:24:53Z"
+        "created_at": "2026-10-16T00:25:37Z"
       },
       "verdict": "IDLE"
     },
@@ -70,7 +70,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T23:06:31Z"
+        "created_at": "2026-10-16T04:43:09Z"
       },
       "verdict": "ALIVE"
     },
@@ -111,7 +111,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-16T00:23:53Z"
+        "created_at": "2026-10-16T05:00:11Z"
       },
       "verdict": "CANCELLED"
     },
@@ -154,7 +154,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-15T21:41:50Z"
+        "created_at": "2026-10-16T04:53:55Z"
       },
       "verdict": "ALIVE"
     },
@@ -182,7 +182,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-16T00:10:15Z"
+        "created_at": "2026-10-16T04:56:50Z"
       },
       "verdict": "ALIVE"
     },
@@ -197,7 +197,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-16T00:25:11Z"
+        "created_at": "2026-10-16T05:04:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -220,8 +220,8 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-15T23:55:02Z",
-    "ageMinutes": 30,
+    "at": "2026-10-16T05:03:44Z",
+    "ageMinutes": 1,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
