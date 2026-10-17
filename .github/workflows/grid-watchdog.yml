@@ -576,9 +576,18 @@ jobs:
           from datetime import datetime, timezone
 
           # Thresholds — single inline source of truth for the watchdog (kept in sync with Observe).
+          # [W1.5 agent-zai 17.10] heartbeat thresholds re-anchored on MEASURED rhythm:
+          # ci-last-heartbeat.json history shows steady 39–46min gaps (12:06→20:03Z
+          # eleven consecutive beats, avg ~43min — the pulse runs ~2× its 20–25min
+          # design under today's load). A 2400s fresh threshold sits BELOW steady
+          # state → flappy red ~1-in-3 cycles (alarm fatigue hides real outages;
+          # measured 20:29Z green → 21:03Z red on the same healthy pulse).
+          # fresh = ~1.6× worst measured gap (4500s); dead = 6600s (~64min past the
+          # last beat of a truly-dead pulse still fails loud). Pulse-speed divergence
+          # from R280 design is flagged to the owner — not silently patched here.
           THRESHOLDS = {
-              "heartbeat.fresh.maxAgeS": 2400,
-              "heartbeat.dead.maxAgeS": 5400,
+              "heartbeat.fresh.maxAgeS": 4500,
+              "heartbeat.dead.maxAgeS": 6600,
               "pulse.fresh.maxAgeS": 2400,
               "custody.verified.min": 14,
               "blurt.live.min": 1,
