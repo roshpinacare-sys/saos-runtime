@@ -904,6 +904,13 @@ jobs:
                   "officeScheduleAt": f.get("officeScheduleAt"),
                   "officeScheduleAgeS": num(f.get("officeScheduleAgeS")),
                   "billingBlock": bool(f.get("billingBlock")),
+                  # [agent-zai/G5] R-CMDHIER enforcement telemetry — counts/timestamps only,
+                  # same machine-law as the rest of this file
+                  "hierarchyDay": f.get("hierarchyDay"),
+                  "hierarchyCounts": f.get("hierarchyCounts") or {},
+                  "hierarchyEnforceFlags": f.get("hierarchyEnforceFlags") or {},
+                  "hierarchyGuardLastAt": f.get("hierarchyGuardLastAt"),
+                  "hierarchyDenialsTail": num(f.get("hierarchyDenialsTail")),
               },
           }
           os.makedirs(os.path.join(REPO_DIR, "state"), exist_ok=True)
