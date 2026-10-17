@@ -9,7 +9,7 @@
 # WHAT ONE BEAT DOES (every hourly :53, fail-closed at every gate):
 #   1. clone the chain home (saos-dex) via the GH_PAT secret — full clone, the
 #      truth chain lives in git (state-snapshot.json + tape.jsonl);
-#   2. STANDBY GUARD — if a beat younger than 50min already landed, this layer
+#   2. STANDBY GUARD — if a beat younger than 10min already landed, this layer
 #      honestly stands down (cloud-first law: one writer is enough; the guard
 #      is git-only, no API);
 #   3. deps + evidence schema (bun install, prisma db push — Roast-65);
@@ -62,7 +62,7 @@ jobs:
           NOW=$(date +%s)
           AGE=$(( NOW - LAST ))
           echo "last beat age: $(( AGE/60 ))min"
-          if [ "$AGE" -lt 3000 ]; then
+          if [ "$AGE" -lt 600 ]; then
             echo "STANDBY=true" >> "$GITHUB_ENV"
             echo "fresh beat exists — this layer stands down honestly"
           fi
