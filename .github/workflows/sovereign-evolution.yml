@@ -4,6 +4,12 @@
 # files an issue on SLO breach. Runs while the owner sleeps — GitHub only.
 name: sovereign-evolution
 on:
+  # [W1.5 agent-zai] the header claims "Runs on schedule" but the trigger was
+  # dispatch-only — measured: the learning loop went silent with every dead
+  # sandbox session (learning/ ledger depended on mortal hands). 05:33 UTC daily
+  # (odd-minute fleet cron hygiene); dispatch kept for operator use.
+  schedule:
+    - cron: "33 5 * * *"
   workflow_dispatch:
     inputs:
       strict:
