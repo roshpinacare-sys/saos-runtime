@@ -180,6 +180,7 @@ for (const [k, v] of Object.entries(secrets)) {
 // ── 2. GEN-1 vault (sha-pinned) via STEEM_VAULT_PASSES ──────────────────────
 try {
   const bundle = JSON.parse(secrets.STEEM_VAULT_PASSES ?? "{}");
+  log({ step: "bundle-eras", eras: Object.keys(bundle) });
   const pass = bundle?.gen1?.keysZipUnlock;
   if (typeof pass === "string" && pass.length >= 8) {
     const b64 = process.env.GEN1_ZIP_B64 ?? "";
@@ -207,6 +208,7 @@ try {
 // ── 2. ALL sealed eras × all vault blobs, via the Actions-held pass bundle ──
 try {
   const bundle = JSON.parse(secrets.STEEM_VAULT_PASSES ?? "{}");
+  log({ step: "bundle-eras", eras: Object.keys(bundle) });
   for (const era of ["gen1", "recovery-3"]) {
     const bundleEra = bundle?.[era];
     if (!bundleEra) { log({ step: "era-absent", era }); continue; }
@@ -219,9 +221,11 @@ try {
         try {
           const t2 = fs.mkdtempSync(os.tmpdir() + "/op-");
           fs.writeFileSync(`${t2}/a.enc`, blob, { mode: 0o600 });
-          const iters = era === "gen1" ? "300000" : "200000";
-          execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", iters, "-in", `${t2}/a.enc`, "-out", `${t2}/out.bin`, "-pass", `pass:${pass}`], { stdio: ["ignore", "ignore", "pipe"] });
-          const out = fs.readFileSync(`${t2}/out.bin`);
+          let out = null;
+          for (const iters of ["200000", "300000"]) {
+            try { out = execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", iters, "-in", `${t2}/a.enc`, "-out", `${t2}/out.bin`, "-pass", `pass:${pass}`], { stdio: ["ignore", "ignore", "pipe"] }) ?? fs.readFileSync(`${t2}/out.bin`); break; } catch { /* next iter */ }
+          }
+          if (!out) throw new Error("no-iter-opened");
           const found = [];
           await unwrap(out, `${era}:${fname}`, 0, found);
           log({ step: "era-open", era, field, file: fname, leaves: found.length });
