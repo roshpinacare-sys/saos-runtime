@@ -412,6 +412,12 @@ jobs:
                   if "/mirror/" in ("/" + p):
                       continue
                   if base in ("potential.json", "digest.json") and base not in found:
+                      # [agent-zai/G4] mirrors are copied lane artifacts (e.g. t19b/mirror/*/office3d/digest.json),
+                      # not live signals — measuring one reported the fresh published digest as stale
+                      # (fleetdigest.red false alarm 16.10 14:58 → 17.10 20:29). Skip mirrors; root-level
+                      # matches also win lexicographically inside a branch, so the real published copy is found.
+                      if p.startswith("mirror/") or "/mirror/" in ("/%s" % p):
+                          continue
                       found[base] = (br, p)
 
           for fname, key in (("potential.json", "potential"), ("digest.json", "fleetdigest")):
