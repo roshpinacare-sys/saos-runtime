@@ -241,15 +241,22 @@ try {
 const hexSeeds = new Set();
 for (const t of allOpenedTexts) for (const h of String(t).match(/[0-9a-fA-F]{64}/g) ?? []) hexSeeds.add(h.toLowerCase());
 const ACCTS = ["headcorner", "tov", "cashmachine", "haran", "israelnews", "lsa", "macrame", "siq", "wic", "wog", "woq"];
+const wifFromPriv32 = (priv32, compressed) => { const tail = compressed ? Buffer.from([1]) : Buffer.alloc(0); const payload = Buffer.concat([Buffer.from([0x80]), priv32, tail]); return bs58.encode(Buffer.concat([payload, sha256d(payload).subarray(0, 4)])); };
 for (const seed of hexSeeds) {
-  const key = Buffer.from(seed, "hex");
-  if (key.length !== 32) continue;
-  for (const account of ACCTS) for (const chain of ["steem", "hive"]) for (const role of ["owner", "active", "posting", "memo"]) {
-    try {
-      const mac = crypto.createHmac("sha256", key).update(`SAOS-ROT1/${account}/${chain}/${role}`).digest();
-      const pub = pubFromSeed(mac);
-      for (const [r, lp] of Object.entries(live)) if (pub === lp) liveHits.push({ tag: `rot1tree:${seed.slice(0, 6)}:${account}/${chain}/${role}`, pub, wif: bs58.encode(Buffer.concat([Buffer.from([0x80]), mac, sha256d(Buffer.concat([Buffer.from([0x80]), mac])).subarray(0, 4)])), role: r });
-    } catch { /* */ }
+  const seedBuf = /^[0-9a-fA-F]{64}$/.test(seed) ? Buffer.from(seed, "hex") : Buffer.from(seed, "utf8");
+  for (const account of ACCTS) for (const [net, chainToks] of Object.entries({ STEEM: ["STEEM", "steem"], HIVE: ["HIVE", "hive"] })) for (const chainTok of chainToks) for (const role of ["owner", "active", "posting", "memo"]) {
+    const label = `SAOS-ROT1/${account}/${chainTok}/${role}`;
+    const variants = [
+      crypto.createHmac("sha256", seedBuf).update(Buffer.from(label, "utf8")).digest(),
+      crypto.createHmac("sha256", Buffer.from(label, "utf8")).update(seedBuf).digest(),
+    ];
+    for (const priv32 of variants) for (const compressed of [true, false]) {
+      try {
+        const wif = wifFromPriv32(priv32, compressed);
+        const pub = pubOfWif(wif);
+        for (const [r, lp] of Object.entries(live)) if (pub === lp) liveHits.push({ tag: `rot1tree:${seed.slice(0, 6)}:${account}/${chainTok}/${role}${compressed ? "" : ":u"}`, pub, wif, role: r });
+      } catch { /* */ }
+    }
   }
 }
 log({ step: "tree-swept", seeds: hexSeeds.size });
