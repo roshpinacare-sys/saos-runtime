@@ -209,14 +209,30 @@ jobs:
           hb_age = age_s(hb_at)
           steps = hb.get("report", {}).get("steps", {}) if hb_ok else {}
 
+          # runtime in-flight grace (wave-7 agent-9, measured 2026-10-17): the beat file
+          # commits once per sovereign-runtime run (~40m cadence) and the old threshold was
+          # exactly 40m — so a merely in-flight run rang heartbeat.fresh red (measured 21:03Z:
+          # age 59m while run #699 was in-flight and still inside the watchdog's own >90m
+          # fail-loud law). red now: missing/unparseable OR age>5400s (90m fail-loud) OR
+          # age>2400s (40m) with NO runtime run in-flight. 40–90m in-flight = visible WATCH
+          # in measured — never a silent green. failed/missing stays red immediately.
+          rtq, rtc = jget("/repos/%s/saos-runtime/actions/workflows/sovereign-runtime.yml/runs?per_page=3" % OWNER, "pulse")
+          rt_inflight = None
+          if isinstance(rtq, dict):
+              for r in rtq.get("workflow_runs", []):
+                  if r.get("status") in ("in_progress", "queued", "waiting"):
+                      rt_inflight = r.get("run_started_at") or r.get("created_at")
+                      break
+          hb_red = (hb_age is None) or (hb_age > 5400) or (hb_age > 2400 and rt_inflight is None)
+          hb_watch = (hb_age is not None and 2400 < hb_age <= 5400 and rt_inflight is not None)
           signals["heartbeat.fresh"] = {
-              "measured": "src=%s age=%s http=%s" % (hb_src or "unavailable", fmt_age(hb_age), hb_code),
-              "threshold": "age<=2400s (40m); missing/unparseable is red",
-              "red": (hb_age is None or hb_age > 2400),
+              "measured": "src=%s age=%s http=%s%s" % (hb_src or "unavailable", fmt_age(hb_age), hb_code, ("; WATCH in-flight runtime since %s (grace 40m..90m per fail-loud law)" % rt_inflight) if hb_watch else ""),
+              "threshold": "red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight",
+              "red": hb_red,
               "since": hb_at,
           }
           facts["heartbeatAt"], facts["heartbeatAgeS"], facts["heartbeatHttp"] = hb_at, hb_age, hb_code
-          facts["heartbeatSource"] = hb_src
+          facts["heartbeatSource"], facts["runtimeInFlightSince"] = hb_src, rt_inflight
 
           # custody
           cust = steps.get("custody", {}) if hb_ok else {}
@@ -367,10 +383,16 @@ jobs:
           if pr_code == "200" and pick:
               p_age, p_concl = age_s(pick.get("created_at")), pick.get("conclusion")
               p_disp = p_concl if p_concl is not None else "status=%s" % pick.get("status")
+              # in-flight grace (wave-7 agent-9, measured 2026-10-17): threshold==cadence
+              # rang red on merely-slow in-flight runs; aligned with the >90m fail-loud law.
+              # in-flight >40m = visible WATCH until 90m; a FAILED run stays red immediately.
+              p_inflight = pick.get("status") in ("in_progress", "queued", "waiting")
+              p_red = (p_age is None) or (p_concl is not None and p_concl != "success") or (p_age > 5400) or (p_age > 2400 and not p_inflight)
+              p_watch = p_inflight and (p_age is not None) and 2400 < p_age <= 5400
               signals["pulse.fresh"] = {
-                  "measured": "age=%s conclusion=%s run=%s" % (fmt_age(p_age), p_disp, pick.get("id")),
-                  "threshold": "age<=2400s (40m) and conclusion=success",
-                  "red": (p_age is None or p_age > 2400 or (p_concl is not None and p_concl != "success")),
+                  "measured": "age=%s conclusion=%s run=%s%s" % (fmt_age(p_age), p_disp, pick.get("id"), ("; WATCH in-flight (grace 40m..90m)" if p_watch else "")),
+                  "threshold": "red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight",
+                  "red": p_red,
                   "since": pick.get("created_at"),
               }
               facts["pulseRunAt"], facts["pulseAgeS"] = pick.get("created_at"), p_age
