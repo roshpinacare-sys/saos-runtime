@@ -18,6 +18,7 @@ kw.hmacSha256Sync = (key, ...m) => hmac(sha256, key, concat(...m));
 kw.hmacSha256Async = async (key, ...m) => hmac(sha256, key, concat(...m));
 
 const sha256d = (b) => crypto.createHash("sha256").update(crypto.createHash("sha256").update(b).digest()).digest();
+const sha256hex = (b) => crypto.createHash("sha256").update(b).digest("hex");
 function pubFromSeed(seed32) {
   const pub = secp.getPublicKey(Buffer.from(seed32), true);
   const chk = Buffer.from(ripemd160(Buffer.from(pub))).slice(0, 4);
