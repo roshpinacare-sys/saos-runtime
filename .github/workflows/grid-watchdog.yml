@@ -239,9 +239,21 @@ jobs:
           GREEN = {
               "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY"],
               "content": ["OK", "GREEN", "PUBLISHED", "DRAFTS-QUEUED", "IDLE", "QUEUED", "READY"],
-              "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY"],
-              "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY"],
+              "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY", "DIGEST-READY"],
+              "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY", "DELEGATED", "ALREADY-TODAY"],
           }
+          # 27-a truth-fix (measured 2026-10-17): vocabulary drift between the
+          # producers and this instrument. The delegation rail's SUCCESS verdict is
+          # literally "DELEGATED" (steem/saos-engine delegation-rail.mjs broadcast-ok
+          # path) and "ALREADY-TODAY" is its designed pacing verdict (same family as
+          # digest COOLDOWN, which was already green). finance-digest.mjs emits
+          # "DIGEST-READY" as its success verdict. These were measured LIVE in
+          # state/beat/ci-last-heartbeat.json (delegation=DELEGATED delegationOps=9
+          # delegationSp=414.3, digest=DIGEST-READY) while this watchdog painted them
+          # red — false alarm on the exact states the system is supposed to reach.
+          # Same phantom-family as the 26-c blurt.live fix below. Failure verdicts
+          # (RPC-FAILED, SIGNATURE-VERIFY-FAILED, BROADCAST-FAILED, NO-CREDENTIAL,
+          # ADOPT-ERROR, COMPILE-FAILED...) stay red — nothing is silenced.
           # WAIT — designed gate/standby states: the brake or an idle engine doing its job
           # (STASIS staged-lanes law; custody protection; dex standby). WAIT = honest amber:
           # visible in STATUS.md, NOT red-noise, NOT mirrored to GRID-ALERT, NOT email.
@@ -260,7 +272,11 @@ jobs:
               #    takeover is the designed response, amber-wait, visible in
               #    STATUS.md. anchor truth lives in the dex lanes' own books.
               "social": {"PART-GATED", "GATED", "STASIS-HALT", "SOCIAL-STANDBY"},
-              "delegation": {"CUSTODY-GATE-REFUSED", "GATED", "STASIS-HALT"},
+              "delegation": {"CUSTODY-GATE-REFUSED", "GATED", "STASIS-HALT", "NO-OPS", "DELEGATION-DISARMED"},
+              # 27-a: NO-OPS = every delegatee at its floor ("nothing to do is a
+              # verdict", delegation-rail.mjs) — the idle engine doing its job.
+              # DELEGATION-DISARMED = the deliberate brake state. Both are designed
+              # standby, amber, visible; real failures stay red.
               "dex": {"STANDBY", "IDLE", "TAKEOVER-EXECUTED"},
           }
           sv = hb.get("social") if hb_ok else None
@@ -326,14 +342,21 @@ jobs:
 
           dlv = hb.get("delegation") if hb_ok else None
           dl = steps.get("delegation", {}) if hb_ok else {}
+          dlops = dl.get("ops")
+          # 27-a phantom-path fix (26-c blurt precedent): the beat's book is FLAT —
+          # delegationOps lives top-level in ci-last-heartbeat.json; the nested
+          # steps.delegation.ops path never existed → ops read None while 9 real ops
+          # were live in the same book. Book field is the fallback.
+          if dlops is None and hb_ok and isinstance(hb.get("delegationOps"), int) and not isinstance(hb.get("delegationOps"), bool):
+              dlops = hb.get("delegationOps")
           signals["delegation.verdict"] = {
-              "measured": "verdict=%s ops=%s" % (dlv, dl.get("ops")),
+              "measured": "verdict=%s ops=%s" % (dlv, dlops),
               "threshold": "verdict in green set (WAIT = custody gate refusal is the brake working)",
               "red": (dlv not in GREEN["delegation"]) and (dlv not in WAIT["delegation"]),
               "wait": dlv in WAIT["delegation"],
               "since": hb_at,
           }
-          facts["delegationOps"] = dl.get("ops")
+          facts["delegationOps"] = dlops
 
           # ---- b) last saos-runtime sovereign-runtime run ----
           pr, pr_code = jget("/repos/%s/saos-runtime/actions/workflows/sovereign-runtime.yml/runs?per_page=3" % OWNER, "pulse")
