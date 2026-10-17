@@ -1,0 +1,66 @@
+name: sovereign-pulse
+# AUTONOMOUS HEARTBEAT DIRECTIVE — the hostless loop's self-pacing side.
+# Every 6h (UTC) the public rail broadcasts ONE read-only task directive onto
+# saos-bus-v1 (posting WIF from secrets, chain-judged adoption, selftest gate,
+# thinkGate inside directive-now.mjs). The Autonomy keyless consumer
+# (engine/directive-bus.mjs, cron */30) executes it and commits a receipt.
+# Result: the sovereignty paces itself — no human needed per beat. Operator
+# directives (directive-now / manual dispatch) still override at any moment.
+# LAW: read-only roster only (health-probe · minutes-census · fleet-report) —
+# all idempotent per Autonomy CHAINBUS.md at-least-once semantics.
+on:
+  schedule:
+    - cron: '17 1,7,13,19 * * *'   # 4 beats/day, offset :17 away from the :00 cron storm
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'override task name (default: read-only roster rotation)'
+        required: false
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: sovereign-pulse
+  cancel-in-progress: false
+jobs:
+  beat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Clone the private engine tree (signer+bus on saos-cockpit)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone --filter=blob:none --branch saos-cockpit "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" engine
+          cd engine
+          echo "engine @ $(git rev-parse --short HEAD)"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install engine crypto deps
+        working-directory: engine/mini-services/saos-engine
+        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^2.2.3 --silent
+      - name: Selftest gate (fail-closed — red run = public alarm, nothing broadcast)
+        working-directory: engine/mini-services/saos-engine
+        run: node selftest.mjs
+      - name: Pick this beat's task (read-only roster rotation, sanitized)
+        id: pick
+        env:
+          OVERRIDE: ${{ inputs.task }}
+        run: |
+          if [ -n "$OVERRIDE" ]; then
+            CLEAN=$(printf '%s' "$OVERRIDE" | tr -cd 'a-z0-9._-' | cut -c1-48)
+            echo "task=$CLEAN" >> "$GITHUB_OUTPUT"
+          else
+            ROSTER="health-probe minutes-census fleet-report"
+            BUCKET=$(( $(date -u +%s) / 21600 % 3 ))
+            TASK=$(echo "$ROSTER" | cut -d' ' -f$((BUCKET + 1)))
+            echo "task=$TASK" >> "$GITHUB_OUTPUT"
+          fi
+          echo "beat task: ${{ steps.pick.outputs.task }}" || true
+      - name: Broadcast one directive (posting role · chain-judged · thinkGate)
+        working-directory: engine/mini-services/saos-engine
+        env:
+          CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}
+          STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+        run: node directive-now.mjs "${{ steps.pick.outputs.task }}" "hb-$(date -u +%Y%m%dT%H%M%SZ)"
