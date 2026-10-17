@@ -58,7 +58,7 @@ jobs:
       - name: standby guard (git-only, cloud-first law)
         working-directory: chain
         run: |
-          LAST=$(git log -1 --format=%ct)
+          LAST=$(git log -1 --format=%ct --grep='^dex-beat:')
           NOW=$(date +%s)
           AGE=$(( NOW - LAST ))
           echo "last beat age: $(( AGE/60 ))min"
