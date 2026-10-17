@@ -1,132 +1,98 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-16T09:51:12.011Z",
+  "builtAt": "2026-10-17T17:02:27.620Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
       "name": "army-ladder",
       "path": ".github/workflows/army-ladder.yml",
-      "crons": [
-        "23 3,15 * * *"
-      ],
-      "gapMinutes": 720,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-16T08:17:40Z"
-      },
-      "verdict": "ALIVE"
-    },
-    {
-      "name": "blurt-revival",
-      "path": ".github/workflows/blurt-revival.yml",
-      "crons": [],
-      "gapMinutes": null,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-16T07:11:44Z"
-      },
-      "verdict": "ALIVE"
-    },
-    {
-      "name": "custody-recover",
-      "path": ".github/workflows/custody-recover.yml",
-      "crons": [
-        "41 3 * * *"
-      ],
-      "gapMinutes": 1440,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-16T08:29:29Z"
-      },
-      "verdict": "ALIVE"
-    },
-    {
-      "name": "escrow-payroll",
-      "path": ".github/workflows/escrow-payroll.yml",
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-12T03:22:33Z"
+        "created_at": "2026-10-17T11:30:22Z"
+      },
+      "verdict": "IDLE"
+    },
+    {
+      "name": "dex-beat",
+      "path": ".github/workflows/dex-beat.yml",
+      "crons": [
+        "53 * * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-17T16:54:31Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "directive-now",
+      "path": ".github/workflows/directive-now.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-17T04:32:50Z"
       },
       "verdict": "IDLE"
     },
     {
       "name": "fee-engine",
       "path": ".github/workflows/fee-engine.yml",
-      "crons": [
-        "23 */4 * * *"
-      ],
-      "gapMinutes": 1440,
+      "crons": [],
+      "gapMinutes": null,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-16T09:02:49Z"
+        "created_at": "2026-10-17T16:16:26Z"
       },
       "verdict": "ALIVE"
-    },
-    {
-      "name": "fleet-rotation-a",
-      "path": ".github/workflows/fleet-rotation-a.yml",
-      "crons": [],
-      "gapMinutes": null,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-13T00:01:51Z"
-      },
-      "verdict": "IDLE"
-    },
-    {
-      "name": "gen2-rotation",
-      "path": ".github/workflows/gen2-rotation.yml",
-      "crons": [],
-      "gapMinutes": null,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-12T15:41:03Z"
-      },
-      "verdict": "IDLE"
     },
     {
       "name": "grid-watchdog",
       "path": ".github/workflows/grid-watchdog.yml",
-      "crons": [
-        "13,43 * * * *"
-      ],
-      "gapMinutes": 30,
+      "crons": [],
+      "gapMinutes": null,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-16T09:47:35Z"
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-17T17:02:22Z"
       },
       "verdict": "ALIVE"
     },
     {
-      "name": "operator-triage",
-      "path": ".github/workflows/operator-triage.yml",
-      "crons": [
-        "4 9 * * *"
-      ],
-      "gapMinutes": 1440,
+      "name": "hive-custody-revival",
+      "path": ".github/workflows/hive-custody-revival.yml",
+      "crons": [],
+      "gapMinutes": null,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-15T14:00:08Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-17T06:16:39Z"
+      },
+      "verdict": "IDLE"
+    },
+    {
+      "name": "operator-triage",
+      "path": ".github/workflows/operator-triage.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "issues",
+        "created_at": "2026-10-17T17:02:12Z"
       },
       "verdict": "ALIVE"
     },
@@ -146,17 +112,15 @@
     {
       "name": "self-memory",
       "path": ".github/workflows/self-memory.yml",
-      "crons": [
-        "37 */6 * * *"
-      ],
-      "gapMinutes": 1440,
+      "crons": [],
+      "gapMinutes": null,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-16T04:53:55Z"
+        "created_at": "2026-10-16T11:50:09Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -166,53 +130,47 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-15T12:06:44Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-17T13:19:05Z"
       },
       "verdict": "IDLE"
     },
     {
+      "name": "sovereign-pulse",
+      "path": ".github/workflows/sovereign-pulse.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-17T16:28:05Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
       "name": "sovereign-runtime",
       "path": ".github/workflows/sovereign-runtime.yml",
-      "crons": [
-        "23 * * * *"
-      ],
-      "gapMinutes": 60,
+      "crons": [],
+      "gapMinutes": null,
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-16T09:43:58Z"
+        "created_at": "2026-10-17T16:31:28Z"
       },
       "verdict": "ALIVE"
     },
     {
       "name": "system-map",
       "path": ".github/workflows/system-map.yml",
-      "crons": [
-        "17,47 * * * *"
-      ],
-      "gapMinutes": 30,
+      "crons": [],
+      "gapMinutes": null,
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-16T09:51:07Z"
-      },
-      "verdict": "ALIVE"
-    },
-    {
-      "name": "treasury-ladder",
-      "path": ".github/workflows/treasury-ladder.yml",
-      "crons": [
-        "41 5,17 * * *"
-      ],
-      "gapMinutes": 720,
-      "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-16T09:36:54Z"
+        "created_at": "2026-10-17T17:02:20Z"
       },
       "verdict": "ALIVE"
     }
@@ -220,20 +178,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-16T09:28:41Z",
-    "ageMinutes": 23,
+    "at": "2026-10-17T14:45:15Z",
+    "ageMinutes": 137,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
-    "verdict": "ALIVE"
+    "verdict": "STALE"
   },
   "summary": {
-    "alive": 10,
+    "alive": 7,
     "red": 0,
     "stale": 0,
     "gated": 0,
     "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 5,
-    "heartbeat": "ALIVE"
+    "idle": 6,
+    "heartbeat": "STALE"
   }
 }

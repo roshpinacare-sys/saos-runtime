@@ -1,31 +1,29 @@
 # מפת-המשרד החיה — הרשת רואה את עצמה
 
-נבנתה אוטונומית: **2026-10-16T09:51:12.011Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
+נבנתה אוטונומית: **2026-10-17T17:02:27.620Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
 
 ## פסק-על
-- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 23 דק** — ALIVE
+- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 137 דק** — STALE
   - «SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]»
-- **איברים**: 🟢 חיים 10 · 🔴 אדומים 0 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 5 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
-- **פסק המשרד**: 🟢 עומד ומתפקד — כל-האיברים בתוקף
+- **איברים**: 🟢 חיים 7 · 🔴 אדומים 0 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 6 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
+- **פסק המשרד**: 🟠/🔴 0 איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)
 
 ## טבלת-החיים
 | פסק | איבר | קצב-מתוכנן | הרצה-אחרונה |
 |---|---|---|---|
-| 🟢 ALIVE | army-ladder | כל 12 שע | 2026-10-16T08:17:40Z · schedule · success |
-| 🟢 ALIVE | blurt-revival | dispatch-בלבד | 2026-10-16T07:11:44Z · schedule · success |
-| 🟢 ALIVE | custody-recover | כל 1 יום | 2026-10-16T08:29:29Z · schedule · success |
-| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-16T09:02:49Z · workflow_dispatch · success |
-| 🟢 ALIVE | grid-watchdog | כל 30 דק | 2026-10-16T09:47:35Z · schedule · success |
-| 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-15T14:00:08Z · schedule · success |
-| 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-16T04:53:55Z · schedule · success |
-| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-16T09:43:58Z · workflow_dispatch · in_progress |
-| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-16T09:51:07Z · schedule · in_progress |
-| 🟢 ALIVE | treasury-ladder | כל 12 שע | 2026-10-16T09:36:54Z · workflow_dispatch · success |
-| 🔵 IDLE | escrow-payroll | dispatch-בלבד | 2026-10-12T03:22:33Z · workflow_dispatch · success |
-| 🔵 IDLE | fleet-rotation-a | dispatch-בלבד | 2026-10-13T00:01:51Z · workflow_dispatch · success |
-| 🔵 IDLE | gen2-rotation | dispatch-בלבד | 2026-10-12T15:41:03Z · workflow_dispatch · success |
+| 🟢 ALIVE | dex-beat | כל 1 שע | 2026-10-17T16:54:31Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | fee-engine | dispatch-בלבד | 2026-10-17T16:16:26Z · workflow_dispatch · success |
+| 🟢 ALIVE | grid-watchdog | dispatch-בלבד | 2026-10-17T17:02:22Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | operator-triage | dispatch-בלבד | 2026-10-17T17:02:12Z · issues · success |
+| 🟢 ALIVE | sovereign-pulse | dispatch-בלבד | 2026-10-17T16:28:05Z · schedule · success |
+| 🟢 ALIVE | sovereign-runtime | dispatch-בלבד | 2026-10-17T16:31:28Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | system-map | dispatch-בלבד | 2026-10-17T17:02:20Z · workflow_dispatch · in_progress |
+| 🔵 IDLE | army-ladder | dispatch-בלבד | 2026-10-17T11:30:22Z · workflow_dispatch · success |
+| 🔵 IDLE | directive-now | dispatch-בלבד | 2026-10-17T04:32:50Z · workflow_dispatch · success |
+| 🔵 IDLE | hive-custody-revival | dispatch-בלבד | 2026-10-17T06:16:39Z · workflow_dispatch · success |
 | 🔵 IDLE | owner-key-adopt | dispatch-בלבד | 2026-10-12T16:48:45Z · workflow_dispatch · success |
-| 🔵 IDLE | sovereign-evolution | dispatch-בלבד | 2026-10-15T12:06:44Z · schedule · success |
+| 🔵 IDLE | self-memory | dispatch-בלבד | 2026-10-16T11:50:09Z · schedule · success |
+| 🔵 IDLE | sovereign-evolution | dispatch-בלבד | 2026-10-17T13:19:05Z · workflow_dispatch · success |
 
 ## למה — שורש-כל-אדום
 - אין אדומים במחזור-זה.
