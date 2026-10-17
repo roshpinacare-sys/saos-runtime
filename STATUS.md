@@ -1,22 +1,22 @@
 # Grid status
 
-Generated 2026-10-16T23:33:24Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-17T00:10:15Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=22m http=200 | age<=2400s (40m); missing/unparseable is red | GREEN | 2026-10-16T23:11:14.760Z |
-| anchor.probe | verdict=OK age=9.1h src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-16T14:28:27Z |
-| custody.coverage | verified=14/total=14 | verified>=14 | GREEN | 2026-10-16T23:11:14.760Z |
-| social.verdict | verdict=SOCIAL-STANDBY executed=None refused=None | verdict in green set (WAIT = designed gate state) | WAIT (designed) | 2026-10-16T23:11:14.760Z |
-| content.verdict | verdict=QUEUED draftsQueued=None | verdict in green set (anything else red) | GREEN | 2026-10-16T23:11:14.760Z |
-| dex.anchor | verdict=TAKEOVER-EXECUTED anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed | WAIT (designed) | 2026-10-16T23:11:14.760Z |
-| blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 | GREEN | 2026-10-16T23:11:14.760Z |
-| delegation.verdict | verdict=ALREADY-TODAY ops=None | verdict in green set (WAIT = custody gate refusal is the brake working) | RED | 2026-10-16T23:11:14.760Z |
-| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-16T23:11:14.760Z |
-| pulse.fresh | age=23m conclusion=status=in_progress run=38980003391 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-16T23:10:44Z |
-| potential.fresh | age=1.5h path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-16T22:00:44Z |
-| fleetdigest.fresh | age=8.6h path=main:t19b/mirror/Domain/office3d/digest.json | age<=93600s (26h) | GREEN | 2026-10-16T14:58:40Z |
-| office.schedule | age=23.8h conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-15T23:43:10Z |
+| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=21m http=200 | age<=2400s (40m); missing/unparseable is red | GREEN | 2026-10-16T23:48:41.061Z |
+| anchor.probe | verdict=OK age=9.7h src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-16T14:28:27Z |
+| custody.coverage | verified=14/total=14 | verified>=14 | GREEN | 2026-10-16T23:48:41.061Z |
+| social.verdict | verdict=SOCIAL-STANDBY executed=None refused=None | verdict in green set (WAIT = designed gate state) | WAIT (designed) | 2026-10-16T23:48:41.061Z |
+| content.verdict | verdict=QUEUED draftsQueued=None | verdict in green set (anything else red) | GREEN | 2026-10-16T23:48:41.061Z |
+| dex.anchor | verdict=TAKEOVER-EXECUTED anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed | WAIT (designed) | 2026-10-16T23:48:41.061Z |
+| blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 | GREEN | 2026-10-16T23:48:41.061Z |
+| delegation.verdict | verdict=ALREADY-TODAY ops=None | verdict in green set (WAIT = custody gate refusal is the brake working) | RED | 2026-10-16T23:48:41.061Z |
+| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-16T23:48:41.061Z |
+| pulse.fresh | age=22m conclusion=status=in_progress run=38983318926 | age<=2400s (40m) and conclusion=success | GREEN | 2026-10-16T23:48:14Z |
+| potential.fresh | age=25m path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-16T23:45:02Z |
+| fleetdigest.fresh | age=9.2h path=main:t19b/mirror/Domain/office3d/digest.json | age<=93600s (26h) | GREEN | 2026-10-16T14:58:40Z |
+| office.schedule | age=26m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-16T23:44:29Z |
 | billing.block | no billing-block annotation (2 failed run(s) of 5 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
 
 Legend:
