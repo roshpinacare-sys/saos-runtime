@@ -33,6 +33,7 @@ jobs:
       - name: judge custody + sign heartbeat (secrets never printed)
         env:
           STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+          GH_PAT: ${{ secrets.GH_PAT }}
           ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
           MAIN_KEY: ${{ secrets.MAIN_KEY }}
           ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
