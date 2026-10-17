@@ -1407,7 +1407,17 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          sleep 900
+          # [W1.6 agent-zai 17.10] sleep 900→120 — MEASURED ROOT CAUSE of the 2×
+          # cadence divergence the W1.5 watchdog fix flagged: the design assumed
+          # ~5-10min work + 15min spacing ≈ 20-25min, but the probes added later
+          # (Hyper-grid burst 924s + exec29 presence-matrix 546s) grew work to
+          # ~27.5min while the fixed sleep kept billing a runner to do nothing
+          # (measured runs 20:03/20:44/21:26/22:08 = 41/42/42/46min). 120s keeps
+          # the runaway-loop damping; cadence returns to ~29-30min; ~7.5
+          # runner-hours/day of pure sleep stop being billed. The 20-25min design
+          # is reachable only by parallelizing the probes — an architectural call
+          # that stays with the owner (this diff changes ONE number, honest).
+          sleep 120
           # T-22c hardening (grid-never-down): one transient dispatch failure must not kill
           # the pulse chain — 3 attempts with backoff before the beat reports dead. The hourly
           # cron backstop remains the final revive for infra/billing deaths where NOTHING runs.
