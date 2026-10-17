@@ -552,6 +552,64 @@ jobs:
           }
           facts["anchorProbeVerdict"] = ap_v
 
+          # ---- R-CMDHIER enforcement telemetry (public verifiability) ----
+          # [agent-zai/G5] The command hierarchy's production stats live in the private
+          # steem repo; mirroring the measured numbers here makes the enforcement
+          # externally auditable on the PUBLIC grid-status. Measured facts only —
+          # NO new red rules by design: a DENY is the law working, and the grid may
+          # legitimately pause (staleness of counters is not an alarm).
+          import re as _re
+          hc, hc_code = _read_hb("/repos/%s/steem/contents/mini-services/saos-engine/state/hierarchy-counters.json?ref=saos-cockpit" % OWNER, "hiercounters", True)
+          hcounts, hday = {}, None
+          if isinstance(hc, dict) and isinstance(hc.get("counts"), dict):
+              hday = hc.get("day")
+              hcounts = {k: v for k, v in hc["counts"].items() if isinstance(v, int) and k in ("T0", "T1", "T2", "T3")}
+          hch, hch_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/command-hierarchy.mjs?ref=saos-cockpit" % OWNER, "hiercode", True)
+          hflags = {}
+          if isinstance(hch, dict) and hch.get("encoding") == "base64":
+              try:
+                  _src = base64.b64decode(hch.get("content", "")).decode("utf-8", "replace")
+                  _m = _re.search(r"ENFORCE\s*=\s*\{([^}]*)\}", _src)
+                  if _m:
+                      hflags = {k: (v == "true") for k, v in _re.findall(r"(T\d)\s*:\s*(true|false)", _m.group(1))}
+              except Exception:
+                  hflags = {}
+          ha, ha_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/state/hierarchy-audit.jsonl?ref=saos-cockpit" % OWNER, "hieraudit", True)
+          hden, hlast_g, hlast_d_t = None, None, None
+          if isinstance(ha, dict) and ha.get("encoding") == "base64":
+              try:
+                  _lines = base64.b64decode(ha.get("content", "")).decode("utf-8", "replace").strip().splitlines()
+                  for _ln in _lines[-500:]:
+                      try:
+                          _e = json.loads(_ln)
+                      except Exception:
+                          continue
+                      if _e.get("type") != "hierarchy.guard":
+                          continue
+                      hlast_g = _e.get("at") or hlast_g
+                      if _e.get("verdict") == "DENY":
+                          hden = (hden or 0) + 1
+                          hlast_d_t = _e.get("tier")
+              except Exception:
+                  pass
+          signals["hierarchy.enforce"] = {
+              "measured": "day=%s guards=%s (T0=%s T1=%s T2=%s T3=%s) · flags=%s · lastGuard=%s · denials(tail500)=%s%s src=steem@saos-cockpit:hierarchy-{counters,audit}.jsonl" % (
+                  hday or "unavailable", sum(hcounts.values()) if hcounts else 0,
+                  hcounts.get("T0", 0), hcounts.get("T1", 0), hcounts.get("T2", 0), hcounts.get("T3", 0),
+                  json.dumps(hflags) if hflags else "unavailable",
+                  fmt_age(age_s(hlast_g)) if hlast_g else "unavailable",
+                  hden if hden is not None else "0",
+                  " lastTier=%s" % hlast_d_t if hlast_d_t else ""),
+              "threshold": "measured-only — enforcement telemetry (R-CMDHIER), no alarm rule by design",
+              "red": False,
+              "since": hlast_g,
+          }
+          facts["hierarchyDay"] = hday
+          facts["hierarchyCounts"] = hcounts
+          facts["hierarchyEnforceFlags"] = hflags
+          facts["hierarchyGuardLastAt"] = hlast_g
+          facts["hierarchyDenialsTail"] = hden
+
           # ---- open grid-alert issue snapshot (consumed by the Alarm step) ----
           iss, iss_code = jget("/repos/%s/saos-runtime/issues?labels=grid-alert&state=open&per_page=10" % OWNER, "issues")
           open_alerts = []
