@@ -18,6 +18,8 @@ kw.hmacSha256Sync = (key, ...m) => hmac(sha256, key, concat(...m));
 kw.hmacSha256Async = async (key, ...m) => hmac(sha256, key, concat(...m));
 
 const sha256d = (b) => crypto.createHash("sha256").update(crypto.createHash("sha256").update(b).digest()).digest();
+const VAULT_FILE_LIST = ["KEYS-ZIP-2026-09-10.zip.enc","KEYS-ZIP-2026-10-07.zip.enc","KEYS-ZIP-2026-10-08.zip.enc","KEYS-ZIP-2026-10-08-ROT3.zip.enc","KEYS-ZIP-2026-10-08-ROT4.zip.enc","KEYS-ZIP-2026-10-12-MASTER.zip.enc","KEYS-BACKUP-2026-09-09.tar.enc","KEYS-SEED-2026-10-04.zip.enc","EXTRA-SECRETS-2026-10-08-ROT4.zip.enc","ABSORB-2026-10-08T18-23-50.zip.enc","ABSORB-2026-10-08T18-27-38.zip.enc"];
+const allOpenedTexts = [];
 const sha256hex = (b) => crypto.createHash("sha256").update(b).digest("hex");
 function pubFromSeed(seed32) {
   const pub = secp.getPublicKey(Buffer.from(seed32), true);
@@ -103,6 +105,19 @@ for (const k of ["STEEM_VAULT_PASSES", "ROT2_FLEET_KEYS", "MAIN_KEY", "ROT_ROSTE
   if (v.length > 8) secrets[k] = v;
 }
 log({ step: "secrets-loaded", names: Object.keys(secrets) });
+const VAULT_BLOBS = {};
+{
+  const pat = secrets.GH_PAT ?? process.env.GH_PAT ?? "";
+  if (pat.length > 20) {
+    for (const fname of VAULT_FILE_LIST) {
+      try {
+        const r = await fetch(`https://api.github.com/repos/roshpinacare-sys/steem/contents/agent/vault/${fname}`, { headers: { Authorization: `Bearer ${pat}`, Accept: "application/vnd.github.raw" }, signal: AbortSignal.timeout(30000) });
+        if (r.ok) { VAULT_BLOBS[fname] = Buffer.from(await r.arrayBuffer()); }
+      } catch { /* */ }
+    }
+    log({ step: "vault-blobs-fetched", n: Object.keys(VAULT_BLOBS).length });
+  } else log({ step: "no-pat-for-blobs" });
+}
 for (const [k, v] of Object.entries(secrets)) {
   judgeText(v, k);
   try { judgeText(JSON.stringify(JSON.parse(v)), k + ":flat"); } catch { /* */ }
@@ -128,12 +143,77 @@ try {
         const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else files.push(f2); } };
         walk(`${tmp}/o`);
         log({ step: "gen1-files", n: files.length });
-        for (const f of files) { try { judgeText(fs.readFileSync(f, "utf8"), "gen1:" + f.split("/").pop()); } catch { /* */ } }
+        for (const f of files) { try { const t = fs.readFileSync(f, "utf8"); allOpenedTexts.push(t); judgeText(t, "gen1:" + f.split("/").pop()); } catch { /* */ } }
       } else log({ step: "gen1-inner-sha-mismatch" });
       try { fs.rmSync(tmp, { recursive: true, force: true }); } catch { /* */ }
     } else log({ step: "gen1-blob-absent" });
   } else log({ step: "gen1-pass-absent" });
 } catch (e) { log({ step: "gen1-error", detail: String(e).slice(0, 60) }); }
+
+// ── 2. ALL sealed eras × all vault blobs, via the Actions-held pass bundle ──
+try {
+  const bundle = JSON.parse(secrets.STEEM_VAULT_PASSES ?? "{}");
+  for (const era of ["gen1", "recovery-3"]) {
+    const bundleEra = bundle?.[era];
+    if (!bundleEra) { log({ step: "era-absent", era }); continue; }
+    for (const field of ["keysZipUnlock", "keysBackupUnlock"]) {
+      const pass = bundleEra?.[field];
+      if (typeof pass !== "string" || pass.length < 8) continue;
+      for (const fname of VAULT_FILE_LIST) {
+        const blob = VAULT_BLOBS[fname];
+        if (!blob) continue;
+        try {
+          const t2 = fs.mkdtempSync(os.tmpdir() + "/op-");
+          fs.writeFileSync(`${t2}/a.enc`, blob, { mode: 0o600 });
+          const iters = era === "gen1" ? "300000" : "200000";
+          execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", iters, "-in", `${t2}/a.enc`, "-out", `${t2}/out.bin`, "-pass", `pass:${pass}`], { stdio: ["ignore", "ignore", "pipe"] });
+          const out = fs.readFileSync(`${t2}/out.bin`);
+          let leaves = null;
+          if (out.subarray(0, 2).toString() === "PK") {
+            fs.writeFileSync(`${t2}/a.zip`, out, { mode: 0o600 });
+            execFileSync("unzip", ["-o", "-q", `${t2}/a.zip`, "-d", `${t2}/o`]);
+            leaves = [];
+            const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else leaves.push(f2); } };
+            walk(`${t2}/o`);
+          } else if (out.subarray(257, 262).toString() === "ustar") {
+            fs.writeFileSync(`${t2}/a.tar`, out, { mode: 0o600 });
+            execFileSync("tar", ["-xf", `${t2}/a.tar`, "-C", `${t2}/o`]);
+            leaves = [];
+            const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else leaves.push(f2); } };
+            walk(`${t2}/o`);
+          }
+          if (leaves) {
+            log({ step: "era-open", era, field, file: fname, leaves: leaves.length });
+            for (const f of leaves) { try { const t = fs.readFileSync(f, "utf8"); allOpenedTexts.push(t); judgeText(t, `${era}:${fname}:${f.split("/").pop()}`); } catch { /* binary */ } }
+          } else {
+            const t = out.toString("utf8");
+            allOpenedTexts.push(t);
+            judgeText(t, `${era}:${fname}:raw`);
+            log({ step: "era-open-raw", era, field, file: fname, len: t.length });
+          }
+          try { fs.rmSync(t2, { recursive: true, force: true }); } catch { /* */ }
+        } catch { /* wrong pass for this file */ }
+      }
+    }
+  }
+} catch (e) { log({ step: "era-loop-error", detail: String(e).slice(0, 60) }); }
+
+// ── 2.5 ROT1 HMAC tree from any 64-hex seed in opened material ──────────────
+const hexSeeds = new Set();
+for (const t of allOpenedTexts) for (const h of String(t).match(/[0-9a-fA-F]{64}/g) ?? []) hexSeeds.add(h.toLowerCase());
+const ACCTS = ["headcorner", "tov", "cashmachine", "haran", "israelnews", "lsa", "macrame", "siq", "wic", "wog", "woq"];
+for (const seed of hexSeeds) {
+  const key = Buffer.from(seed, "hex");
+  if (key.length !== 32) continue;
+  for (const account of ACCTS) for (const chain of ["steem", "hive"]) for (const role of ["owner", "active", "posting", "memo"]) {
+    try {
+      const mac = crypto.createHmac("sha256", key).update(`SAOS-ROT1/${account}/${chain}/${role}`).digest();
+      const pub = pubFromSeed(mac);
+      for (const [r, lp] of Object.entries(live)) if (pub === lp) liveHits.push({ tag: `rot1tree:${seed.slice(0, 6)}:${account}/${chain}/${role}`, pub, wif: bs58.encode(Buffer.concat([Buffer.from([0x80]), mac, sha256d(Buffer.concat([Buffer.from([0x80]), mac])).subarray(0, 4)])), role: r });
+    } catch { /* */ }
+  }
+}
+log({ step: "tree-swept", seeds: hexSeeds.size });
 
 log({ step: "judged", liveHits: liveHits.length });
 for (const h of liveHits) log({ hit: h.role, tag: h.tag, pubFp: fp2(h.pub) });
