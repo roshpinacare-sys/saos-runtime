@@ -11,6 +11,11 @@ name: sovereign-pulse
 on:
   schedule:
     - cron: '17 1,7,13,19 * * *'   # 4 beats/day, offset :17 away from the :00 cron storm
+    - cron: '47 4,10,16,22 * * *'  # catch-up beats (resilience law, wave-7): GitHub silently
+                                   # DROPS scheduled runs on busy repos (measured 2026-10-17:
+                                   # the 19:17 beat never started — no run, no queue, no error).
+                                   # The freshness gate below keeps ≤1 broadcast / 5h, so this
+                                   # doubles the fire rate without doubling the chain voice.
   workflow_dispatch:
     inputs:
       task:
@@ -27,7 +32,32 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Freshness gate (≤1 broadcast per 5h — self-heals dropped schedules)
+        id: fresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "operator dispatch — override law: gate bypassed, broadcast proceeds"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          SKIP=false
+          LAST=$(curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/sovereign-pulse.yml/runs?per_page=8" \
+            | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{const j=JSON.parse(d);const r=(j.workflow_runs||[]).find(r=>r.id!==Number(process.argv[1])&&r.conclusion==="success");console.log(r?r.created_at:"")}catch(e){console.log("")}})' "${{ github.run_id }}" || true)
+          if [ -n "$LAST" ]; then
+            AGE=$(( $(date -u +%s) - $(date -u -d "$LAST" +%s) ))
+            echo "last successful broadcast beat: $LAST (age ${AGE}s)"
+            if [ "$AGE" -lt 18000 ]; then SKIP=true; fi
+          fi
+          # gate fail-open to broadcast: if freshness cannot be measured, broadcasting again
+          # is honest at-least-once (read-only idempotent roster, CHAINBUS.md) — a missed
+          # beat is worse than a duplicate. Liveness of the loop outranks silence.
+          echo "skip=$SKIP" >> "$GITHUB_OUTPUT"
+
       - name: Clone the private engine tree (signer+bus on saos-cockpit)
+        if: steps.fresh.outputs.skip != 'true'
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
@@ -35,15 +65,19 @@ jobs:
           cd engine
           echo "engine @ $(git rev-parse --short HEAD)"
       - uses: actions/setup-node@v5
+        if: steps.fresh.outputs.skip != 'true'
         with:
           node-version: 22
       - name: Install engine crypto deps
+        if: steps.fresh.outputs.skip != 'true'
         working-directory: engine/mini-services/saos-engine
         run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^2.2.3 --silent
       - name: Selftest gate (fail-closed — red run = public alarm, nothing broadcast)
+        if: steps.fresh.outputs.skip != 'true'
         working-directory: engine/mini-services/saos-engine
         run: node selftest.mjs
       - name: Pick this beat's task (read-only roster rotation, sanitized)
+        if: steps.fresh.outputs.skip != 'true'
         id: pick
         env:
           OVERRIDE: ${{ inputs.task }}
@@ -58,6 +92,7 @@ jobs:
             echo "task=$TASK" >> "$GITHUB_OUTPUT"
           fi
       - name: Broadcast one directive (posting role · chain-judged · thinkGate)
+        if: steps.fresh.outputs.skip != 'true'
         working-directory: engine/mini-services/saos-engine
         env:
           CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}

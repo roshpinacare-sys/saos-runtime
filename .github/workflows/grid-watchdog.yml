@@ -404,6 +404,13 @@ jobs:
               for e in tree.get("tree", []):
                   p = e.get("path", "")
                   base = p.rsplit("/", 1)[-1]
+                  # live-rail law (fix 2026-10-17, agent-9 wave-7): mirrors are snapshots,
+                  # never the live signal. measured false-red: main:t19b/mirror/Domain/
+                  # office3d/digest.json (stale 29.5h) shadowed the live office-pages:
+                  # digest.json (3.9h old) because first-match-wins searched main first.
+                  # mirrors are skipped so a live rail on any branch always wins.
+                  if "/mirror/" in ("/" + p):
+                      continue
                   if base in ("potential.json", "digest.json") and base not in found:
                       found[base] = (br, p)
 
