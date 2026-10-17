@@ -1,0 +1,49 @@
+name: directive-now
+# ONE-SHOT OPERATOR DIRECTIVE on saos-bus-v1 — the hostless loop's send side.
+# Public host (free minutes), private engine cloned at runtime (their law),
+# role-scoped posting WIF from repo secrets (chain-judged at adoption),
+# thinkGate enforced. Broadcasts ONE type=directive custom_json; the
+# Autonomy engine/directive-bus.mjs cron consumes it and commits a receipt.
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'named task in Autonomy engine/tasks/ (e.g. health-probe)'
+        required: false
+        default: 'health-probe'
+      runId:
+        description: 'optional run id for the receipt trail'
+        required: false
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: directive-now
+  cancel-in-progress: false
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Clone the private engine tree (signer+bus+directive-now on saos-cockpit)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone --filter=blob:none --branch saos-cockpit "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" engine
+          cd engine
+          echo "engine @ $(git rev-parse --short HEAD)"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install engine crypto deps
+        working-directory: engine/mini-services/saos-engine
+        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^2.2.3 --silent
+      - name: Selftest gate (fail-closed — red run = public alarm, nothing broadcast)
+        working-directory: engine/mini-services/saos-engine
+        run: node selftest.mjs
+      - name: Broadcast one directive (posting role · chain-judged · thinkGate)
+        working-directory: engine/mini-services/saos-engine
+        env:
+          CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}
+          STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+        run: node directive-now.mjs "${{ inputs.task }}" "${{ inputs.runId }}"
