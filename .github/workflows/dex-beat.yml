@@ -1,0 +1,131 @@
+# SAOS DEX BEAT — the cloud twin of the chain's local pacer (W1.4, R71 cadence).
+#
+# GIT-FIRST LAW (owner 2026-10-17): the sandbox may be wiped at any moment — the
+# organism works from git. The local pacer (saos-dex deploy/dex-beat-keeper.sh +
+# the port-3044 mini-service) is now backed by THIS workflow: same canonical
+# beat, same dex-beat[bot] identity, same FF-only machine churn — run on GitHub
+# infrastructure, independent of any sandbox.
+#
+# WHAT ONE BEAT DOES (every hourly :53, fail-closed at every gate):
+#   1. clone the chain home (saos-dex) via the GH_PAT secret — full clone, the
+#      truth chain lives in git (state-snapshot.json + tape.jsonl);
+#   2. STANDBY GUARD — if a beat younger than 50min already landed, this layer
+#      honestly stands down (cloud-first law: one writer is enough; the guard
+#      is git-only, no API);
+#   3. deps + evidence schema (bun install, prisma db push — Roast-65);
+#   4. ONE BEAT — bun cloud-beat.ts: deterministic 3600 ticks, kernel self-gates
+#      everything (selftest evidence, gas, seals). No economic decisions here;
+#   5. push churn FF-only; on contention, rebase favoring incoming (the chain
+#      home is canonical) and retry once — honest skip if it still loses.
+#
+# THE PULSE (R280 law, same as sovereign-runtime): GitHub's scheduler degrades
+# frequent crons to multi-hour gaps (measured: 30-min cron ran every ~7.5h), so
+# after every run (success OR failure) a pulse job sleeps until the next :53 and
+# dispatches the next beat itself. The hourly cron remains the self-healing
+# backstop. The chain keeps its own time.
+#
+# WASH law: DAM-RELEASE 2026-10-17 (owner-ratified, hub lease W1.3) — floor 0.
+# This workflow makes zero economic decisions; it drives the canonical script.
+
+name: dex-beat
+
+on:
+  schedule:
+    - cron: "53 * * * *"   # R71 hourly :53 — self-healing backstop only
+  workflow_dispatch: {}
+
+concurrency:
+  group: dex-beat
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  beat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: clone the chain home
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-dex.git" chain
+          git -C chain log --oneline -3
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: standby guard (git-only, cloud-first law)
+        working-directory: chain
+        run: |
+          LAST=$(git log -1 --format=%ct)
+          NOW=$(date +%s)
+          AGE=$(( NOW - LAST ))
+          echo "last beat age: $(( AGE/60 ))min"
+          if [ "$AGE" -lt 3000 ]; then
+            echo "STANDBY=true" >> "$GITHUB_ENV"
+            echo "fresh beat exists — this layer stands down honestly"
+          fi
+
+      - name: deps + evidence schema
+        if: env.STANDBY != 'true'
+        working-directory: chain
+        run: |
+          bun install --frozen-lockfile || bun install
+          DATABASE_URL="file:$PWD/db/dex.db" bunx prisma db push --skip-generate
+
+      - name: one beat (deterministic, kernel self-gated)
+        if: env.STANDBY != 'true'
+        working-directory: chain
+        env:
+          GIT_AUTHOR_NAME: dex-beat[bot]
+          GIT_AUTHOR_EMAIL: dex-beat[bot]@agents.roshpinacare-sys
+          GIT_COMMITTER_NAME: dex-beat[bot]
+          GIT_COMMITTER_EMAIL: dex-beat[bot]@agents.roshpinacare-sys
+        run: |
+          bun cloud-beat.ts 2>&1 | tail -8
+          RC=${PIPESTATUS[0]}
+          echo "beat rc=$RC"
+          exit "$RC"
+
+      - name: push churn FF-only (honest skip on contention)
+        if: env.STANDBY != 'true'
+        working-directory: chain
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no churn — honest no-op beat"
+            exit 0
+          fi
+          git commit -m "dex-beat: $(date -u +%Y-%m-%dT%H:%M:%SZ) (cloud twin, git-first law)"
+          if ! git push -q origin main; then
+            git pull --rebase -q -X theirs origin main
+            git push -q origin main || { echo "contention lost — honest skip (the chain home is canonical)"; exit 0; }
+          fi
+          echo "pushed: $(git log --oneline -1)"
+
+  pulse:
+    needs: beat
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - name: sleep to the next :53 and re-arm the clock (R280 self-pulse)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          NOW=$(date +%s)
+          M=$(date -u +%M); S=$(date -u +%S)
+          CUR=$(( 10#$M * 60 + 10#$S ))
+          WAIT=$(( (53*60 + 90 - CUR) % 3600 ))
+          [ "$WAIT" -le 0 ] && WAIT=$(( WAIT + 3600 ))
+          echo "pulsing in ${WAIT}s (next :53 + 90s jitter)"
+          sleep "$WAIT"
+          CODE=$(curl -s -o /tmp/pulse.out -w "%{http_code}" -X POST \
+            -H "Authorization: token ${GH_PAT}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/roshpinacare-sys/saos-runtime/actions/workflows/dex-beat.yml/dispatches" \
+            -d '{"ref":"main"}')
+          echo "dispatch http=$CODE"
+          cat /tmp/pulse.out || true
+          [ "$CODE" = "204" ] || { echo "pulse dispatch failed — the hourly cron backstop will heal the clock"; exit 1; }
