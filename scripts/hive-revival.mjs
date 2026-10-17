@@ -209,7 +209,7 @@ try {
 try {
   const bundle = JSON.parse(secrets.STEEM_VAULT_PASSES ?? "{}");
   log({ step: "bundle-eras", eras: Object.keys(bundle) });
-  for (const era of ["gen1", "recovery-3"]) {
+  for (const era of ["gen1", "recovery-3", "gen2"]) {
     const bundleEra = bundle?.[era];
     if (!bundleEra) { log({ step: "era-absent", era }); continue; }
     for (const field of ["keysZipUnlock", "keysBackupUnlock"]) {
