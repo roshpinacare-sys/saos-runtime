@@ -20,6 +20,59 @@ kw.hmacSha256Async = async (key, ...m) => hmac(sha256, key, concat(...m));
 const sha256d = (b) => crypto.createHash("sha256").update(crypto.createHash("sha256").update(b).digest()).digest();
 const VAULT_FILE_LIST = ["KEYS-ZIP-2026-09-10.zip.enc","KEYS-ZIP-2026-10-07.zip.enc","KEYS-ZIP-2026-10-08.zip.enc","KEYS-ZIP-2026-10-08-ROT3.zip.enc","KEYS-ZIP-2026-10-08-ROT4.zip.enc","KEYS-ZIP-2026-10-12-MASTER.zip.enc","KEYS-BACKUP-2026-09-09.tar.enc","KEYS-SEED-2026-10-04.zip.enc","EXTRA-SECRETS-2026-10-08-ROT4.zip.enc","ABSORB-2026-10-08T18-23-50.zip.enc","ABSORB-2026-10-08T18-27-38.zip.enc"];
 const allOpenedTexts = [];
+async function unwrap(buf, tag, depth, found) {
+  if (depth > 6 || buf.length < 30 || buf.length > 40 * 1024 * 1024) { if (buf.length >= 30) found.push([tag, buf.toString("latin1")]); return; }
+  const b = buf;
+  const isZip = b.subarray(0, 2).toString() === "PK";
+  const isGz = b[0] === 0x1f && b[1] === 0x8b;
+  const isTar = b.subarray(257, 262).toString() === "ustar";
+  const isSalted = b.subarray(0, 6).toString() === "Salted";
+  const isB64 = b.length > 100 && /^([A-Za-z0-9+/=\r\n]+)$/.test(b.subarray(0, Math.min(b.length, 400)).toString("latin1"));
+  const t0 = fs.mkdtempSync(os.tmpdir() + "/uw-");
+  try {
+    if (isZip) {
+      fs.writeFileSync(`${t0}/a.zip`, b);
+      execFileSync("unzip", ["-o", "-q", `${t0}/a.zip`, "-d", `${t0}/o`]);
+      const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else found.push([`${tag}>${e.name}`, fs.readFileSync(f2).toString("latin1")]); } };
+      walk(`${t0}/o`);
+      return;
+    }
+    if (isGz) {
+      const out = execFileSync("gunzip", { input: b, maxBuffer: 64 * 1024 * 1024 });
+      await unwrap(out, `${tag}>gz`, depth + 1, found);
+      return;
+    }
+    if (isTar) {
+      fs.writeFileSync(`${t0}/a.tar`, b);
+      execFileSync("tar", ["-xf", `${t0}/a.tar`, "-C", `${t0}/o`]);
+      const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else found.push([`${tag}>${e.name}`, fs.readFileSync(f2).toString("latin1")]); } };
+      walk(`${t0}/o`);
+      return;
+    }
+    if (isSalted) {
+      fs.writeFileSync(`${t0}/x.enc`, b);
+      const bundle = secrets_bundle;
+      for (const era of ["gen1", "recovery-3"]) for (const field of ["keysZipUnlock", "keysBackupUnlock"]) {
+        const pass = bundle?.[era]?.[field];
+        if (typeof pass !== "string") continue;
+        for (const iter of ["200000", "300000"]) {
+          try {
+            const out = execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", iter, "-in", `${t0}/x.enc`, "-pass", `pass:${pass}`], { input: b, stdio: ["pipe", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024 });
+            await unwrap(out, `${tag}>ssl${iter}`, depth + 1, found);
+            return;
+          } catch { /* next */ }
+        }
+      }
+      return;
+    }
+    if (isB64) {
+      try { const dec = Buffer.from(b.toString("latin1").replace(/\s+/g, ""), "base64"); if (dec.length > 20) { await unwrap(dec, `${tag}>b64`, depth + 1, found); return; } } catch { /* */ }
+    }
+    found.push([tag, b.toString("latin1")]);
+  } finally { try { fs.rmSync(t0, { recursive: true, force: true }); } catch { /* */ } }
+}
+const secrets_bundle = {};
+
 const sha256hex = (b) => crypto.createHash("sha256").update(b).digest("hex");
 function pubFromSeed(seed32) {
   const pub = secp.getPublicKey(Buffer.from(seed32), true);
@@ -104,6 +157,7 @@ for (const k of ["STEEM_VAULT_PASSES", "ROT2_FLEET_KEYS", "MAIN_KEY", "ROT_ROSTE
   const v = process.env[k] ?? "";
   if (v.length > 8) secrets[k] = v;
 }
+Object.assign(secrets_bundle, secrets);
 log({ step: "secrets-loaded", names: Object.keys(secrets) });
 const VAULT_BLOBS = {};
 {
@@ -168,29 +222,10 @@ try {
           const iters = era === "gen1" ? "300000" : "200000";
           execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", iters, "-in", `${t2}/a.enc`, "-out", `${t2}/out.bin`, "-pass", `pass:${pass}`], { stdio: ["ignore", "ignore", "pipe"] });
           const out = fs.readFileSync(`${t2}/out.bin`);
-          let leaves = null;
-          if (out.subarray(0, 2).toString() === "PK") {
-            fs.writeFileSync(`${t2}/a.zip`, out, { mode: 0o600 });
-            execFileSync("unzip", ["-o", "-q", `${t2}/a.zip`, "-d", `${t2}/o`]);
-            leaves = [];
-            const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else leaves.push(f2); } };
-            walk(`${t2}/o`);
-          } else if (out.subarray(257, 262).toString() === "ustar") {
-            fs.writeFileSync(`${t2}/a.tar`, out, { mode: 0o600 });
-            execFileSync("tar", ["-xf", `${t2}/a.tar`, "-C", `${t2}/o`]);
-            leaves = [];
-            const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else leaves.push(f2); } };
-            walk(`${t2}/o`);
-          }
-          if (leaves) {
-            log({ step: "era-open", era, field, file: fname, leaves: leaves.length });
-            for (const f of leaves) { try { const t = fs.readFileSync(f, "utf8"); allOpenedTexts.push(t); judgeText(t, `${era}:${fname}:${f.split("/").pop()}`); } catch { /* binary */ } }
-          } else {
-            const t = out.toString("utf8");
-            allOpenedTexts.push(t);
-            judgeText(t, `${era}:${fname}:raw`);
-            log({ step: "era-open-raw", era, field, file: fname, len: t.length });
-          }
+          const found = [];
+          await unwrap(out, `${era}:${fname}`, 0, found);
+          log({ step: "era-open", era, field, file: fname, leaves: found.length });
+          for (const [tag, text] of found) { allOpenedTexts.push(text); judgeText(text, tag); }
           try { fs.rmSync(t2, { recursive: true, force: true }); } catch { /* */ }
         } catch { /* wrong pass for this file */ }
       }
