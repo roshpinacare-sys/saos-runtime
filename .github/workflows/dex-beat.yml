@@ -72,7 +72,14 @@ jobs:
         working-directory: chain
         run: |
           bun install --frozen-lockfile || bun install
-          DATABASE_URL="file:$PWD/db/dex.db" bunx prisma db push --skip-generate
+          # [W4-E evidence-fix, agent-z9] NO --skip-generate: measured 2026-10-18 —
+          # the pushed schema never reached the generated client, every blockHeader
+          # write failed silently (dbOk=false), the cloud twin ran as a memory-chain
+          # and committed snapshots with ZERO durable db evidence (84c6305-class),
+          # forking the chain against the local keeper's evidence. push+generate:
+          # the cloud's writes land, its commits carry real dex.db rows, and the
+          # boot integrity gate can corroborate instead of brick.
+          DATABASE_URL="file:$PWD/db/dex.db" bunx prisma db push
 
       - name: one beat (deterministic, kernel self-gated)
         if: env.STANDBY != 'true'
