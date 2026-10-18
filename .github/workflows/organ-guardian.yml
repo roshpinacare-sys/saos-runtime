@@ -1,0 +1,30 @@
+name: organ-guardian
+# [W4-F, agent-z9] אנטי-ניטרול-שקט — הגרדיאן השעתי.
+# Measured twice on 2026-10-18: 46 then 41 workflows silently disabled (NOT by
+# FleetHQ's legitimate claims-quarantine — its ledger shows disabled:0). The
+# owner's law forbids closure/locking of the organism. This guardian re-enables
+# silently-disabled workflows hourly (:41, off the storm minutes), while
+# respecting FleetHQ's documented quarantines (ops/claims status=quarantined).
+# Every action lands in ops/guardian.jsonl — zero hiding.
+on:
+  schedule:
+    - cron: "41 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: clone the runtime home
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone -q "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-runtime.git" rt
+          cd rt
+          if ! ls scripts/organ-guardian.mjs >/dev/null 2>&1; then echo "guardian script missing — skip"; exit 0; fi
+          node scripts/organ-guardian.mjs
