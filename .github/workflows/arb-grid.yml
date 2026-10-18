@@ -42,6 +42,12 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install signer-lib deps (volume-verify imports mover.mjs → bs58/@noble — measured 2026-10-18)
+        working-directory: dex
+        run: |
+          npm install --omit=dev --no-audit --no-fund --loglevel=error bs58 steem@0.7.11 @noble/hashes @noble/curves
+          echo "NODE_PATH=$PWD/node_modules" >> "$GITHUB_ENV"
+
       - name: Selftest gate (offline vectors — red selftest never reaches the ledger)
         working-directory: dex
         run: |

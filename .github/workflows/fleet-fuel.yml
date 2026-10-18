@@ -103,14 +103,17 @@ jobs:
               let w = WIF;
               if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
               const dec = b58dec(w);
-              if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
-              const payload = dec.slice(0, -4);
+              // dual-form WIF (house parser, mirrors hive-revival wifDecode): 37 = raw,
+              // 38 = compressed (0x80+priv+0x01). Both live in the wild — measured.
+              let payload, privBytes;
+              if (dec.length === 38) { payload = dec.slice(0, 34); if (payload[0] !== 0x80 || payload[33] !== 0x01) throw new Error('wif-form-38'); privBytes = payload.slice(1, 33); }
+              else if (dec.length === 37) { payload = dec.slice(0, 33); if (payload[0] !== 0x80) throw new Error('wif-form-37'); privBytes = payload.slice(1); }
+              else throw new Error('wif-len-' + dec.length);
               if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
-              if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
-              priv = payload.slice(1);
+              priv = privBytes;
               derived = 'STM' + (() => {
                 const p33 = Buffer.from(secp.getPublicKey(priv, true));
-                const full = Buffer.concat([p33, crypto.createHash('ripemd160').update(p33).slice(0, 4)]);
+                const full = Buffer.concat([p33, crypto.createHash('ripemd160').update(p33).digest().slice(0, 4)]);
                 let n = 0n;
                 for (const x of full) n = n * 256n + BigInt(x);
                 let s = '';
