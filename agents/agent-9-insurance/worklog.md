@@ -671,3 +671,17 @@ Work Log:
 Stage Summary:
 - שלוש שאלות-הבעלים נענו במדידות: (א) ערך-מוכח → כספת-אוטומטית + 159/159 עורקים + תצפית-חזקה עם פסק-דין כן; (ב) המפתחות שהעלית → STEEM-active מאומת on-chain, HIVE-posting חסר מהחומר (המשך-נתיב: העלאת WIF-posting של headcorner-hive ל-bundle או הפעלת owner-key-adopt עם dry_run=false); (ג) לא יאבד חומר → כל הסנדבוקס הוגר והכספת מסתנכרנת יומית אוטומטית
 - פתוח לבעלים: (1) הראנרים-החסומים ב-steem (org runner-group policy); (2) אם רוצה פעילות-הייב: המפתח-posting של headcorner ב-HIVE לא נמצא בכספת — להעלות או לוותר במפורש
+
+---
+Task ID: 18-b (addendum)
+Agent: agent-9
+Task: סגירת פינת-הכספת — הענף agent-9-insurance ב-steem נעלם
+
+Work Log:
+- נתגלה: הענף agent-9-insurance (שנדחף ב-t17) נמחק מ-steem — **לא מתקפה**: איבר floating-builds v3 [R54-אפס-רחיפה] ראה שלוחה-זרה ואכסן אותה לתג `archive/agent-9-insurance` (אותו SHA 6065f5bf9) — דוקטרינת-אפס-שלוחות-זרות עושה את תפקידה
+- התאמה: vault-sync v2 ב-saos-runtime — הכספת כנתיב `agents/agent-9-insurance/` על main (אדיטיבי, בלי ענפים), משיכה יומית מ-Autonomy הציבורי, GITHUB_TOKEN לדחיפה עצמית
+- אומת חי: vault-sync v2 SUCCESS; worklog בכספת 118,953 bytes = זהה למקומי
+- לקח-תיאום-בין-איברים: לפני יצירת ענף חדש ב-repo — לבדוק אם קיים organ שמנקה שלוחות-זרות; נתיבי-עץ עדיפים על ענפים-צדדיים
+
+Stage Summary:
+- כספת-הביטוח הסופית: (1) Autonomy ציבורי — עותק ראשי; (2) saos-runtime/agents/agent-9-insurance פרטי — סנכרון יומי אוטומטי מוכח; (3) steem tag archive/agent-9-insurance — ארכיון-היסטורי; (4) סנדבוקס מקומי — מטמון
