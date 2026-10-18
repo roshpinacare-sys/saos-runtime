@@ -55,7 +55,8 @@ jobs:
             echo "NO-OP — honest skip (nothing to build this slot)"; exit 0
           fi
           git add -A
-          git commit -m "sovereign-builder: $(node -p "JSON.parse(require('fs').readFileSync('learning/'+require('fs').readdirSync('learning').filter(f=>f.startsWith('builder-')).sort().pop(),'utf8').task)") $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+          TASK=$(node -e "try{const fs=require('fs');const f=fs.readdirSync('learning').filter(x=>x.startsWith('builder-')).sort().pop();console.log(JSON.parse(fs.readFileSync('learning/'+f,'utf8')).task||'unknown')}catch(e){console.log('unknown')}")
+          git commit -m "sovereign-builder: ${TASK} $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
           if ! git push -q origin main; then
             git pull --rebase -q -X theirs origin main
             git push -q origin main || { echo "contention lost — honest skip (chain home is canonical)"; exit 0; }
