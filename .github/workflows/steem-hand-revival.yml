@@ -84,12 +84,11 @@ jobs:
           git add mini-services/saos-engine/state 2>/dev/null || true
           if ! git diff --cached --quiet; then
             git commit -m "exec-cycle (runtime-bridge W5): doctrine-capped broadcast receipts (txids, zero keys) [skip ci]"
-            # חוק-הברזל המלא: fetch → rebase (מקומי-שלנו גובר על-קונפליקט: קבלות-הן-append) → push, ×3 —
-            # מדיד: agent-9-דוחף-פעימות-ל-saos-cockpit-בזמן-הריצה; push-יחיד-נדחה (fetch first).
+            # חוק-הברזל המלא: rebase עם-autostash (מדיד: המנוע-משאיר-קבצים-מחוץ-ל-state →
+            # rebase-רגיל-מסרב-להתחיל; agent-9-דוחף-פעימות-במקביל) → push ×3.
             ok=0
             for i in 1 2 3; do
-              git fetch -q origin saos-cockpit
-              git rebase -q -X theirs FETCH_HEAD 2>/dev/null || git rebase --abort || true
+              git pull --rebase -X theirs --autostash -q origin saos-cockpit 2>/dev/null || true
               if git push -q origin HEAD:saos-cockpit 2>/dev/null; then ok=1; break; fi
               sleep 6
             done
