@@ -1,0 +1,63 @@
+# sovereign-builder — לולאת-הבנייה הריבונית (owner directive 2026-10-18)
+#
+# ה-owner: "אני רוצה בניה שיפור וכו תמיד ולא רק בדיקות" + "שיפור שמישות של הכל"
+#
+# מה זה עושה: בכל-הרצה — משימת-בנייה אחת אמיתית מ-BUILDQUEUE.json (saos-dex):
+#   · build-status     — תדריך-מוצר חי מהשרשרת (Σ credits, feeMeter, צבא, pools)
+#   · freshness-report — דוח-טריות לכל-מדד (🟢🟡🔴 — התשובה החיה ל"מה לא מעודכן")
+#   · tools-index      — מפת-כלים חיה (usability of everything)
+#   · ui-audit         — סקירת-סתימות בממשק
+#
+# חוקים: W1.5 integrity gate על כל-פלט · NO-OP כנה מועדף על עבודה-מזויפת ·
+#        אפס-מפתחות/סודות/כספות · FF-only עם rebase-on-contention (ה-chain home קאנוני).
+name: sovereign-builder
+
+on:
+  schedule:
+    - cron: '21 */3 * * *'   # כל-3 שעות ב-:21 — מוסט מהסערה (:00/:17/:41/:47/:53)
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'specific task id (default: round-robin by UTC hour)'
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sovereign-builder
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone chain home (git-first law)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git clone -q "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-dex.git" chain
+          cd chain
+          git config user.name "sovereign-builder[bot]"
+          git config user.email "sovereign-builder[bot]@users.noreply.github.com"
+
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+
+      - name: BUILD (one real task, gated, honest)
+        working-directory: chain
+        run: node scripts/builder/evolve.mjs ${{ github.event.inputs.task && format('--task {0}', github.event.inputs.task) || '' }}
+
+      - name: push FF-only (honest skip on contention)
+        working-directory: chain
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "NO-OP — honest skip (nothing to build this slot)"; exit 0
+          fi
+          git add -A
+          git commit -m "sovereign-builder: $(node -p "JSON.parse(require('fs').readFileSync('learning/'+require('fs').readdirSync('learning').filter(f=>f.startsWith('builder-')).sort().pop(),'utf8').task)") $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+          if ! git push -q origin main; then
+            git pull --rebase -q -X theirs origin main
+            git push -q origin main || { echo "contention lost — honest skip (chain home is canonical)"; exit 0; }
+          fi
+          echo "pushed: $(git log --oneline -1)"
