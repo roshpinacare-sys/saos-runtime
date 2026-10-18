@@ -53,12 +53,12 @@ jobs:
             -scriptPath /tmp/ghidra-lab/scripts \
             -postScript CountFunctions.java \
             -deleteProject 2>&1 | tee /tmp/ghidra-lab/headless.log | \
-            rg "SAOS-SMOKE|Analysis succeeded|ERROR" | head -12
+            grep -E "SAOS-SMOKE|Analysis succeeded|ERROR" | head -12
 
       - name: Verdict (measured from log only)
         run: |
-          if rg -q "SAOS-SMOKE verdict=PASS" /tmp/ghidra-lab/headless.log && \
-             rg -q "Analysis succeeded" /tmp/ghidra-lab/headless.log; then
+          if grep -qE "SAOS-SMOKE verdict=PASS" /tmp/ghidra-lab/headless.log && \
+             grep -qE "Analysis succeeded" /tmp/ghidra-lab/headless.log; then
             echo "GHIDRA-LAB: PASS — headless RE capability proven"
           else
             echo "GHIDRA-LAB: FAIL — recorded honestly, never faked green"
