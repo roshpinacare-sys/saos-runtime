@@ -27,6 +27,9 @@ jobs:
     timeout-minutes: 15
     env:
       STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
       GH_PAT: ${{ secrets.GH_PAT }}
     steps:
       - name: Checkout engine (private repo via PAT)
