@@ -1,13 +1,14 @@
 name: agent-9-vault-sync
-# [t18 · agent-9] סנכרון אוטומטי של עותק-הביטוח השלישי — רץ כאן (הראנרים חיים,
-# בניגוד ל-steem) כי ה-GH_PAT של saos-runtime הוכיח גישה ל-steem (משיכת-כספת).
-# append-only FF-only לענף agent-9-insurance; אף-פעם לא force.
+# [t18 · agent-9] כספת-הביטוח על נתיב בתוך העץ (לקח: ענף-נפרד ב-steem אוכלס
+# ע"י floating-builds organ [R54-אפס-רחיפה] — ענפים-זרים מאוכסנים לתגים).
+# נתיב agents/agent-9-insurance/ על main = אדיטיבי, בלי ענפים, היסטוריה נשמרת.
+# משיכה מ-Autonomy (ציבורי, ללא token) → commit ל-saos-runtime (GITHUB_TOKEN).
 on:
   schedule:
     - cron: "31 3 * * *"
   workflow_dispatch: {}
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: agent-9-vault-sync
   cancel-in-progress: false
@@ -16,27 +17,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: pull Autonomy insurance → push steem vault (FF-only)
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+      - uses: actions/checkout@v4
+      - name: pull Autonomy insurance → vault path in this repo
         run: |
           set -e
-          [ -n "$GH_PAT" ] || { echo NO_TOKEN — FAIL LOUD; exit 1; }
-          git clone --depth 1 https://github.com/roshpinacare-sys/Autonomy.git src
-          test -d src/agents/agent-9 || { echo 'insurance dir missing in Autonomy'; exit 1; }
-          git clone --depth 1 --branch agent-9-insurance "https://x-access-token:$GH_PAT@github.com/roshpinacare-sys/steem.git" vault
-          cd vault
           git config user.name sovereign-agent-9
           git config user.email agent9@fleet.local
-          rm -rf agents
-          mkdir -p agents
-          cp -r ../src/agents/agent-9 agents/
-          git add -A
-          if git diff --cached --quiet; then echo 'vault already fresh — quiet beat'; exit 0; fi
-          git commit -q -m 'vault-sync: agent-9 insurance refresh from Autonomy'
+          git clone --depth 1 https://github.com/roshpinacare-sys/Autonomy.git src
+          test -d src/agents/agent-9 || { echo INSURANCE_DIR_MISSING; exit 1; }
+          rm -rf agents/agent-9-insurance
+          mkdir -p agents/agent-9-insurance
+          cp -r src/agents/agent-9/. agents/agent-9-insurance/
+          git add agents/agent-9-insurance
+          if git diff --cached --quiet; then echo "vault fresh — quiet beat"; exit 0; fi
+          git commit -q -m "vault-sync: agent-9 insurance snapshot (worklog+tools+manifest)"
           for i in 1 2 3; do
-            git push origin agent-9-insurance -q && { echo VAULT_SYNCED_OK; exit 0; }
-            git pull --rebase origin agent-9-insurance -q || true
+            git pull --rebase origin main -q || true
+            git push origin HEAD:main -q && { echo VAULT_SYNCED_OK; exit 0; }
             sleep $((i*7))
           done
           echo VAULT_PUSH_FAILED_LOUD; exit 1
