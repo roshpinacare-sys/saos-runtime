@@ -1,0 +1,47 @@
+name: builder-catchup
+# [agent-z9/W4-C] self-healing for the sovereign-builder beat.
+# measured truth (2026-10-18): GitHub's scheduler SKIPPED the 03:21Z cron beat
+# under load — a 3h cadence cannot depend on schedule alone. This guardian runs
+# hourly at :51 (off the storm minutes) and dispatches the builder ONLY if the
+# last SUCCESSFUL build receipt is older than 3.6h. Honest no-op otherwise.
+on:
+  schedule:
+    - cron: '51 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  catchup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dispatch sovereign-builder if stale
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+          REPO="roshpinacare-sys/saos-runtime"
+          LAST=$(curl -s -H "Authorization: Bearer $GH_PAT" \
+            "https://api.github.com/repos/$REPO/actions/workflows/sovereign-builder.yml/runs?per_page=1&status=success" \
+            | python3 -c "import json,sys;w=json.load(sys.stdin).get('workflow_runs',[]);print(w[0]['created_at'] if w else '')")
+          if [ -z "$LAST" ]; then
+            echo "no successful builder run ever — dispatching"
+            curl -s -X POST -H "Authorization: Bearer $GH_PAT" \
+              "https://api.github.com/repos/$REPO/actions/workflows/sovereign-builder.yml/dispatches" \
+              -d '{"ref":"main"}'
+            echo "DISPATCHED"
+            exit 0
+          fi
+          AGE=$(( $(date -u +%s) - $(date -u -d "$LAST" +%s) ))
+          echo "last success: $LAST (age ${AGE}s)"
+          if [ "$AGE" -gt 12960 ]; then
+            echo "stale >3.6h — dispatching sovereign-builder"
+            curl -s -X POST -H "Authorization: Bearer $GH_PAT" \
+              "https://api.github.com/repos/$REPO/actions/workflows/sovereign-builder.yml/dispatches" \
+              -d '{"ref":"main"}'
+            echo "DISPATCHED"
+          else
+            echo "NO-OP honest: builder receipt is fresh"
+          fi
