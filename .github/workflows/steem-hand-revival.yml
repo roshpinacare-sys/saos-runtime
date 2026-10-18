@@ -31,6 +31,12 @@ jobs:
       ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
       ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
       GH_PAT: ${{ secrets.GH_PAT }}
+      # [W5-β] runner-WIF adoption contract (daily.mjs R243): the engine reads
+      # these directly from env and adopts posting+active (VERIFIED-VS-CHAIN).
+      # Measured gap: absent → curate BROADCAST-FAIL. signing-health
+      # (runtime-host) proved both hands LIVE (2026-10-18T14:11Z).
+      CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}
+      CI_ADOPT_WIF_ACTIVE: ${{ secrets.CI_ADOPT_WIF_ACTIVE }}
     steps:
       - name: Checkout engine (private repo via PAT)
         run: |
