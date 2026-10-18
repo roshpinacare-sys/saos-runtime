@@ -84,11 +84,31 @@ jobs:
           git add mini-services/saos-engine/state 2>/dev/null || true
           if ! git diff --cached --quiet; then
             git commit -m "exec-cycle (runtime-bridge W5): doctrine-capped broadcast receipts (txids, zero keys) [skip ci]"
-            git pull --rebase origin saos-cockpit || true
-            git push origin HEAD:saos-cockpit
+            # חוק-הברזל המלא: fetch → rebase (מקומי-שלנו גובר על-קונפליקט: קבלות-הן-append) → push, ×3 —
+            # מדיד: agent-9-דוחף-פעימות-ל-saos-cockpit-בזמן-הריצה; push-יחיד-נדחה (fetch first).
+            ok=0
+            for i in 1 2 3; do
+              git fetch -q origin saos-cockpit
+              git rebase -q -X theirs FETCH_HEAD 2>/dev/null || git rebase --abort || true
+              if git push -q origin HEAD:saos-cockpit 2>/dev/null; then ok=1; break; fi
+              sleep 6
+            done
+            if [ "$ok" != 1 ]; then
+              echo "::warning::receipts push failed after 3 attempts — preserved as artifact, fail-honest"
+              exit 1
+            fi
           else
             echo "no state delta this cycle"
           fi
+
+      - name: Receipts artifact (always — even when push loses the race)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exec-cycle-receipts
+          path: /home/runner/steem/mini-services/saos-engine/state/cycle-run.json
+          retention-days: 14
+          if-no-files-found: ignore
 
       - name: Cycle verdict (visible in the run summary)
         if: always()
