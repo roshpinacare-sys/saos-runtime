@@ -13,6 +13,9 @@
 name: treasury-ladder
 
 on:
+  schedule:
+    - cron: "47 3,9,15,21 * * *"   # W2 4×/day, offset away from the :00 cron storm —
+                                   # the treasury maker book was dispatch-only before
   workflow_dispatch: {}
 permissions:
   contents: read

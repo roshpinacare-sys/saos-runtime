@@ -1,0 +1,84 @@
+# arb-grid.yml (saos-runtime) — W2: owner mandate "עוד גרידים וארביטרז' על המחיר,
+# נזילות מקסימלית ל-DEX", 2026-10-18.
+#
+# The engines of record live in saos-dex (grids/ — home law); this workflow is the
+# Git-only scheduled pulse that runs them KEYLESS (zero keys, zero custody):
+#   1. arb-scan.mjs        — cross-venue arbitrage scan → grids/state/arb-ledger.json
+#                            (scan-only receipts; execution stays owner-armed).
+#   2. counter-grid.mjs    — opposing-ladder plan with per-side capital split →
+#                            grids/state/counter-grid-plan.json (plan-only).
+#   3. volume-verify.mjs --verify — VERIFIED-VS-CHAIN truth on army receipts/fills →
+#                            grids/state/volume-verify.json.
+# Honesty law: every honest state exits 0 with a receipt; the receipt IS the alarm.
+# The commit-back pattern is the proven army-ladder one (FF-with-yield, never force).
+name: arb-grid
+
+on:
+  schedule:
+    - cron: "23 * * * *"           # hourly :23 — continuous price-truth + arb ledger
+    - cron: "53 5,11,17,23 * * *"  # catch-up beats (resilience law, wave-7)
+  workflow_dispatch: {}
+permissions:
+  contents: read
+
+concurrency:
+  group: arb-grid
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout the grids home (saos-dex — engine of record)
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          set -Eeuo pipefail
+          git clone "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-dex.git" dex
+          echo "saos-dex @ $(cd dex && git rev-parse --short HEAD)"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Selftest gate (offline vectors — red selftest never reaches the ledger)
+        working-directory: dex
+        run: |
+          set -Eeuo pipefail
+          node grids/arb-scan.mjs --selftest
+          node grids/counter-grid.mjs --selftest
+          node grids/volume-verify.mjs --selftest
+          node grids/book-law-selftest.mjs
+
+      - name: Arb scan (cross-venue edges → ledger, never throws)
+        working-directory: dex
+        run: node grids/arb-scan.mjs || echo "arb-scan ended honestly (exit $?)"
+
+      - name: Counter-grid plan (opposing ladders, per-side capital split)
+        working-directory: dex
+        run: node grids/counter-grid.mjs || echo "counter-grid ended honestly (exit $?)"
+
+      - name: VERIFIED-VS-CHAIN (receipts vs chain fills, honest verdict)
+        working-directory: dex
+        run: node grids/volume-verify.mjs --verify || echo "volume-verify ended honestly (exit $?)"
+
+      - name: Commit ledgers to the grids home (evidence = commit; FF-only with yield)
+        if: always()
+        working-directory: dex
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          set -Eeuo pipefail
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
+          git add grids/state/arb-ledger.json grids/state/counter-grid-plan.json grids/state/volume-verify.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no ledger change — clean exit"
+          else
+            git commit -m "arb-grid: scan+plan+verify receipt $(date -u +%FT%TZ) [skip ci]"
+            git checkout -- . 2>/dev/null || true
+            for i in 1 2 3; do
+              git pull --rebase -X theirs --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; git checkout -- . 2>/dev/null || true; }
+            done
+          fi

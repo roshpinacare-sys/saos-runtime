@@ -12,6 +12,12 @@
 name: army-ladder
 
 on:
+  schedule:
+    - cron: "41 * * * *"           # W2 hourly :41 — the 12-account maker book breathes
+                                   # continuously (was dispatch-only: runs every ~11-13h
+                                   # when an agent remembered — measured from receipts)
+    - cron: "11 4,10,16,22 * * *"  # catch-up beats (resilience law, wave-7): GitHub
+                                   # silently DROPS scheduled runs on busy repos.
   workflow_dispatch: {}
 permissions:
   contents: read

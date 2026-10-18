@@ -1,0 +1,165 @@
+# fleet-fuel.yml (saos-runtime) — W2: owner volume mandate, 2026-10-18.
+#
+# Owner word (IM, this session): "שכל החשבונות שלו משתתפים — שכולם עובדים, בכמה שיותר
+# עוצמה" + explicit downpower-1000 approval. The measured blocker: 8 of the 12 army
+# traders sit at ~0.010 STEEM (honest FUEL-STASIS in army-ladder receipts) while ~275
+# liquid STEEM idles on acct-00 (estate — untradable BY LAW: FORBIDDEN_TRADERS custody
+# boundary). Fuel, not trading capital, is the missing wire.
+#
+# Authority chain: escrow-payroll's plan law says "switching payer to headcorner =
+# owner word" — this workflow IS that word, recorded (owner IM 2026-10-18 + this file).
+#
+# Gates (fail-closed; the key is never logged, never written to disk):
+#   G1  WIF parses + derives (graphene checksum + pubkey derivation).
+#   G2  derived pubkey ∈ LIVE active authorities of acct-00 (estate-pseudonym law —
+#       the real name resolves ONLY via FLEET_ROSTER_MAP).
+#   G3  hard caps in code: top-up target 0.600 STEEM/recipient · ≤ 0.500 STEEM per
+#       recipient per run · run-total ≤ 10.000 STEEM · recipients = the fixed 12-trader
+#       roster (below, mirrors grids/state/army-ladder-plan.json) · NEVER headcorner/
+#       cornerstone as recipients (custody boundary).
+#   G4  idempotent by LIVE balances: a recipient already ≥ target is skipped — safe
+#       re-runs and weekly re-dispatch as the downpower inflow lands.
+#   G5  dry_run=true (default) = computed fuel plan only, zero broadcast.
+#   G6  post-broadcast re-verification of every recipient balance.
+name: fleet-fuel
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'true = compute the fuel plan only (no broadcast)'
+        default: 'true'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fleet-fuel
+  cancel-in-progress: false
+
+jobs:
+  fuel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+      IN_DRY: ${{ github.event.inputs.dry_run }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Gates + fuel transfers (fail-closed, key never logged)
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/deps/node_modules:/tmp/steemjs/node_modules node << 'EOS'
+          const crypto = require('crypto');
+          const secp = require('@noble/secp256k1');
+          const steem = require('steem');
+          secp.etc.hmacSha256Sync = (key, ...msgs) => {
+            const h = crypto.createHmac('sha256', Buffer.from(key));
+            msgs.forEach((m) => h.update(Buffer.from(m)));
+            return new Uint8Array(h.digest());
+          };
+          const sha256 = (b) => crypto.createHash('sha256').update(b).digest();
+          const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+          const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 300) })); process.exit(1); };
+          const REF2NAME = (() => { try { const m = JSON.parse(process.env.FLEET_ROSTER_MAP || ''); const f = {}; if (m && m.refs) Object.assign(f, m.refs); if (m && m.names) Object.assign(f, m.names); for (const [k, v] of Object.entries(m || {})) if (typeof v === 'string') f[k] = v; const out = {}; for (const [k, v] of Object.entries(f)) { if (k.startsWith('acct-')) out[k] = v; else out[v] = k; } return out; } catch { return {}; } })();
+          const b58dec = (s) => {
+            let n = 0n;
+            for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
+            let h = n.toString(16).padStart(2, '0'); if (h.length % 2) h = '0' + h;
+            const buf = Buffer.from(h, 'hex');
+            let pad = 0;
+            for (const c of s) { if (c === '1') pad++; else break; }
+            return Buffer.concat([Buffer.alloc(pad), buf]);
+          };
+          const NODES = ['https://api.steemit.com', 'https://api.justyy.com', 'https://steem-rpc.publicnode.com'];
+          async function rpc(node, method, params) {
+            const res = await fetch(node, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+            const j = await res.json();
+            if (j.error) throw new Error((j.error.message || 'rpc-error').slice(0, 200));
+            return j.result;
+          }
+          // G3 — hard caps + fixed roster (mirror of grids/state/army-ladder-plan.json traders, W2 seal 2026-10-18)
+          const TOPUP_TARGET = 0.6;
+          const MAX_PER_RECIPIENT = 0.5;
+          const RUN_TOTAL_CAP = 10.0;
+          const FORBIDDEN_RECIPIENTS = new Set(['headcorner', 'cornerstone']);
+          const ROSTER = ['hcsoldier4', 'hcsoldier6', 'israelnews', 'tov', 'hcsoldier5', 'haran', 'lsa', 'macrame', 'wic', 'wog', 'woq', 'cashmachine'];
+          (async () => {
+            const PAYER = REF2NAME['acct-00'];
+            if (!PAYER) return fail('ROSTER-UNRESOLVED', 'acct-00 not resolvable from FLEET_ROSTER_MAP — fail-honest');
+            for (const r of ROSTER) if (FORBIDDEN_RECIPIENTS.has(r)) return fail('CUSTODY-BOUNDARY', 'owner-keyed account in recipient roster — refuse');
+            const DRY = String(process.env.IN_DRY ?? 'true') === 'true';
+            const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();
+            if (!WIF) return fail('NO-SECRET', 'STEEM_ACTIVE_WIF missing — the fleet sleeps honestly UNFED (owner one-action pending)');
+            // G1 + G2
+            let priv, derived;
+            try {
+              let w = WIF;
+              if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
+              const dec = b58dec(w);
+              if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
+              const payload = dec.slice(0, -4);
+              if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
+              if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
+              priv = payload.slice(1);
+              derived = 'STM' + (() => {
+                const p33 = Buffer.from(secp.getPublicKey(priv, true));
+                const full = Buffer.concat([p33, crypto.createHash('ripemd160').update(p33).slice(0, 4)]);
+                let n = 0n;
+                for (const x of full) n = n * 256n + BigInt(x);
+                let s = '';
+                while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+                for (const x of full) { if (x === 0) s = '1' + s; else break; }
+                return s;
+              })();
+            } catch (e) { return fail('BAD-WIF', e.message); }
+            let accs, nodeUsed = '';
+            for (const node of NODES) {
+              try { const a = await rpc(node, 'condenser_api.get_accounts', [[PAYER, ...ROSTER]]); if (a && a.length) { accs = a; nodeUsed = new URL(node).host; break; } } catch (e) { /* next */ }
+            }
+            if (!accs) return fail('ACCOUNT-LOOKUP-FAIL', 'all nodes failed');
+            const payer = accs.find((a) => a.name === PAYER);
+            if (!payer) return fail('PAYER-ABSENT', 'payer not returned');
+            const liveActive = (payer.active && payer.active.key_auths ? payer.active.key_auths : []).map((x) => x[0]);
+            if (!liveActive.includes(derived)) return fail('KEY-NOT-AUTHORIZED', 'derived active pubkey NOT on the LIVE active authority of acct-00 — refuse (fail-closed)');
+            // fuel plan (G4 — idempotent by live balances)
+            const plan = [];
+            let total = 0;
+            for (const name of ROSTER) {
+              const a = accs.find((x) => x.name === name);
+              if (!a) { plan.push({ to: name, state: 'ABSENT-ON-CHAIN', amount: 0 }); continue; }
+              const bal = parseFloat(a.balance);
+              if (bal >= TOPUP_TARGET) { plan.push({ to: name, state: 'FUELED', balance: bal, amount: 0 }); continue; }
+              const amt = Math.min(MAX_PER_RECIPIENT, Math.round((TOPUP_TARGET - bal) * 1000) / 1000);
+              if (amt <= 0) { plan.push({ to: name, state: 'FUELED', balance: bal, amount: 0 }); continue; }
+              if (total + amt > RUN_TOTAL_CAP) { plan.push({ to: name, state: 'RUN-CAP', amount: 0 }); continue; }
+              total = Math.round((total + amt) * 1000) / 1000;
+              plan.push({ to: name, state: 'TOPUP', balance: bal, amount: amt });
+            }
+            const ops = plan.filter((p) => p.amount > 0).map((p) => ['transfer', { from: PAYER, to: p.to, amount: p.amount.toFixed(3) + ' STEEM', memo: 'saos fleet fuel · W2 owner mandate 2026-10-18 · grid fuel (custody: estate→workers, one-way)' }]);
+            console.log(JSON.stringify({ step: 'fuel-plan', payer_ref: 'acct-00', node: nodeUsed, payer_balance: parseFloat(payer.balance), total: total, ops: ops.length, plan, dry_run: DRY }));
+            if (ops.length === 0) { console.log(JSON.stringify({ verdict: 'ALL-FUELED', note: 'every roster account ≥ target — honest skip (safe re-run)' })); return; }
+            if (total > RUN_TOTAL_CAP) return fail('CAP-BUG', 'computed total exceeds the run cap — refuse (never broadcast over-cap)');
+            if (DRY) { console.log(JSON.stringify({ verdict: 'DRY-RUN-GREEN', note: 'fuel plan computed, zero broadcast — dispatch with dry_run=false to execute' })); return; }
+            let res;
+            try {
+              res = await new Promise((resolve, reject) => { steem.broadcast.sendOperations(ops, WIF, (err, r) => err ? reject(err) : resolve(r)); });
+            } catch (e) { return fail('BROADCAST-FAIL', String(e && e.message || e).slice(0, 250)); }
+            // G6 — re-verify
+            let accs2 = null;
+            for (const node of NODES) { try { accs2 = await rpc(node, 'condenser_api.get_accounts', [[PAYER, ...ROSTER]]); if (accs2) break; } catch (e) { /* next */ } }
+            const after = {};
+            for (const name of ROSTER) { const a = (accs2 || []).find((x) => x.name === name); if (a) after[name] = parseFloat(a.balance); }
+            console.log('FLEET-FUEL-RECEIPT ' + JSON.stringify({ verdict: 'EXECUTED', txid: res && res.id ? res.id : null, ops: ops.length, total, after, at: new Date().toISOString() }));
+          })().catch((e) => fail('UNEXPECTED', e && e.message || e));
+          EOS
+
+      - name: Honest summary
+        if: always()
+        run: echo "fleet-fuel step done (verdict above — fail-closed at every gate)"
