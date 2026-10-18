@@ -90,7 +90,7 @@ jobs:
           git commit -m "custody(T-67): ROT2 phase-A seal - exposed army credentials rotated (owner untouched), re-sealed under gen2-era pass, meta v4 inner-sha pinned"
           PUSHED=0
           for i in 1 2 3; do
-            if git -c rebase.autoStash=true pull --rebase origin main && git push origin HEAD:main; then PUSHED=1; break; fi
+            if git -c rebase.autoStash=true pull --rebase -X theirs origin main && git push origin HEAD:main; then PUSHED=1; break; fi
             sleep 5
           done
           [ "$PUSHED" = "1" ] || { echo "PUSH-FAIL: steem ROT2 seal push exhausted — failing honestly (false-OK law)"; exit 1; }
