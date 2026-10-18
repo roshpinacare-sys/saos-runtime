@@ -1,0 +1,120 @@
+{
+ "at": "2026-10-18T22:16:11.627Z",
+ "window": {
+  "from": "2026-10-17",
+  "to": "2026-10-18"
+ },
+ "sections": {
+  "runs": {
+   "Domain": {
+    "count": 2500,
+    "sampled": 100,
+    "hist": {
+     "queued": 1,
+     "in_progress": 1,
+     "success": 77,
+     "cancelled": 20,
+     "failure": 1
+    }
+   },
+   "Console": {
+    "count": 590,
+    "sampled": 100,
+    "hist": {
+     "success": 76,
+     "cancelled": 23,
+     "failure": 1
+    }
+   },
+   "Sandbox": {
+    "error": "Error: 404 https://api.github.com/repos/roshpinacare-sys/Sandbox/actions/runs?pe"
+   },
+   "saos-runtime": {
+    "count": 324,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 3,
+     "pending": 1,
+     "success": 77,
+     "failure": 13,
+     "cancelled": 6
+    }
+   }
+  },
+  "econ": {
+   "pnlBook": {
+    "realized": null,
+    "edge": null,
+    "verdict": null,
+    "fields": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11"
+    ]
+   },
+   "pulse": {
+    "realizedUsd": null
+   },
+   "honestEcon": {
+    "realChainMarkedUsd": 0.7862,
+    "saosExternalBid": false
+   }
+  },
+  "exposure": {
+   "regressions": [
+    "sovereign-lighthouse/state.json redaction missing"
+   ],
+   "probes": {
+    "Domain/agent/inspections/INS-R66-001.json": "clean",
+    "Domain/receipts/key-check.json": "clean",
+    "Domain/about/team.json": "clean",
+    "TruthRail/receipts/sovereign-bootstrap-20261008-190743.json": "clean",
+    "TruthRail/receipts/blurt-gen2-rotation-2026-10-08.json": "clean",
+    "FleetHQ/vault/ssh-keys.tar.enc": "clean",
+    "FleetHQ/vault/keys.env.enc": "clean",
+    "sovereign-lighthouse/state.json": "NOT-REDACTED",
+    "sovereign-beacon/state.json": "redacted-ok"
+   }
+  },
+  "content": {
+   "report": "found",
+   "highSimPairs": null
+  }
+ },
+ "slos": [
+  {
+   "id": "P0-1",
+   "name": "no exposure regressions",
+   "ok": false,
+   "detail": "[\"sovereign-lighthouse/state.json redaction missing\"]"
+  },
+  {
+   "id": "T1",
+   "name": "Domain daily runs >= 30",
+   "ok": true,
+   "detail": "runs=2500"
+  },
+  {
+   "id": "T1",
+   "name": "Console daily runs >= 10",
+   "ok": true,
+   "detail": "runs=590"
+  },
+  {
+   "id": "T1",
+   "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
+   "ok": true,
+   "detail": "runs=324"
+  }
+ ],
+ "verdict": "SLO-BREACH"
+}
