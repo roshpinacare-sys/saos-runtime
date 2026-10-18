@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-FLEET-ROTATION-A/1",
-  "at": "2026-10-18T01:08:17.108Z",
+  "at": "2026-10-18T01:14:05.830Z",
   "phase": "A",
   "summary": {
     "rotatedVerified": 18,
@@ -18,18 +18,18 @@
       "account": "acct-01",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "02db4b3737d93a674b",
-      "digestFp": "07cccf9d92ccf542",
+      "txid": "e71a1ee591d0ceca28",
+      "digestFp": "2c71dce5363f851b",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7RriSDxVy",
-        "posting": "STM7KnftNxpv",
-        "memo": "STM6rJU959Sm"
-      },
-      "newPubFp": {
         "active": "STM6CMwDFSHJ",
         "posting": "STM7Xq6ZJTsX",
         "memo": "STM7iB4p7Dsn"
+      },
+      "newPubFp": {
+        "active": "STM7Fb54YAQH",
+        "posting": "STM6AmrMhaai",
+        "memo": "STM5GE2QMjZu"
       },
       "custodyRepos": [
         "steem",
@@ -42,18 +42,18 @@
       "account": "acct-02",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "fc2713029049bbec4b",
-      "digestFp": "2706780cac0cf6f7",
+      "txid": "92c3a99317d161ad65",
+      "digestFp": "838f9a44a98d3116",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM82nNVXejE",
-        "posting": "STM7211CZqfR",
-        "memo": "STM7f975abAa"
-      },
-      "newPubFp": {
         "active": "STM61LiYNoqa",
         "posting": "STM7HHpBAGku",
         "memo": "STM5KubR7TTo"
+      },
+      "newPubFp": {
+        "active": "STM5fUpGF1Xn",
+        "posting": "STM5DCrMEC7Q",
+        "memo": "STM5ecpeHL8Z"
       },
       "custodyRepos": [
         "steem",
@@ -66,18 +66,18 @@
       "account": "acct-03",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "b836e9150197ffebbe",
-      "digestFp": "ca077a399f903dc4",
+      "txid": "a1ba691fbddc3b26b0",
+      "digestFp": "dceb27ed31129eaa",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8NJBGYghU",
-        "posting": "STM7zC5n9thC",
-        "memo": "STM74LPAid9A"
-      },
-      "newPubFp": {
         "active": "STM6JDN1DjEa",
         "posting": "STM7DZA23D7F",
         "memo": "STM71Z4DqQb4"
+      },
+      "newPubFp": {
+        "active": "STM5hzCKA4BT",
+        "posting": "STM5XtPm9ToR",
+        "memo": "STM7dg3Yfxae"
       },
       "custodyRepos": [
         "steem",
@@ -90,18 +90,18 @@
       "account": "acct-04",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "a3bae19baee37ce06f",
-      "digestFp": "29daef78b5719871",
+      "txid": "a27fb5427e9ba0fa42",
+      "digestFp": "b46b3b0633f82aea",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM4uFDnqkR4",
-        "posting": "STM5oDWyMpB7",
-        "memo": "STM5GphWjfMw"
-      },
-      "newPubFp": {
         "active": "STM7vXrkjmuN",
         "posting": "STM5QD8SJLAU",
         "memo": "STM8ht1ARfAU"
+      },
+      "newPubFp": {
+        "active": "STM5gFW5MsbU",
+        "posting": "STM67WgnhmWW",
+        "memo": "STM7AKqJe4vD"
       },
       "custodyRepos": [
         "steem",
@@ -114,18 +114,18 @@
       "account": "acct-05",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "8809a77fff6547730e",
-      "digestFp": "3541995660beeda4",
+      "txid": "6f626798bd5d381234",
+      "digestFp": "3e765060ebee6d41",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5MBGVtmk2",
-        "posting": "STM7Gg86qA8y",
-        "memo": "STM6fURfMpKR"
-      },
-      "newPubFp": {
         "active": "STM5kq9tkygg",
         "posting": "STM7r7wgBDF6",
         "memo": "STM7jTDEvphV"
+      },
+      "newPubFp": {
+        "active": "STM8N8691zHd",
+        "posting": "STM5RjHSgx4J",
+        "memo": "STM6ahgA65Zt"
       },
       "custodyRepos": [
         "steem",
@@ -138,18 +138,18 @@
       "account": "acct-06",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "fb59a4b6e9757c4d96",
-      "digestFp": "ff5ac1bb003c48cc",
+      "txid": "0c9e766eb03d7e8257",
+      "digestFp": "088e7d1c0eef88d9",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8JX3eUne8",
-        "posting": "STM7XY1njdtU",
-        "memo": "STM7XAYTDftm"
-      },
-      "newPubFp": {
         "active": "STM87GyH8iDy",
         "posting": "STM5zaQ8ZhFk",
         "memo": "STM6XfxEnym8"
+      },
+      "newPubFp": {
+        "active": "STM5pLFseWGd",
+        "posting": "STM7UbxYugit",
+        "memo": "STM8UwwifC5f"
       },
       "custodyRepos": [
         "steem",
@@ -162,18 +162,18 @@
       "account": "acct-07",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "329669ff372a3194f6",
-      "digestFp": "f7320fa570678eff",
+      "txid": "ef5c92c54f6c94f95b",
+      "digestFp": "2de0e92183a58075",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8KU4i7ZAj",
-        "posting": "STM8PC6PpCVF",
-        "memo": "STM5SLHUY3TV"
-      },
-      "newPubFp": {
         "active": "STM7Uwirz6Y7",
         "posting": "STM7Rw2pUgMN",
         "memo": "STM5spt1jn2A"
+      },
+      "newPubFp": {
+        "active": "STM69h11X8tR",
+        "posting": "STM6PnhcERty",
+        "memo": "STM5nNDJYg1r"
       },
       "custodyRepos": [
         "steem",
@@ -186,18 +186,18 @@
       "account": "acct-08",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "b35cf9a03720bbed77",
-      "digestFp": "db04c2256fc815d9",
+      "txid": "89adacf7809e06eb09",
+      "digestFp": "3b0b7d4168879a9c",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM7Gqb8k55h",
-        "posting": "STM6eCXWhjeL",
-        "memo": "STM7RzhiX3Kx"
-      },
-      "newPubFp": {
         "active": "STM71vgSFThA",
         "posting": "STM5Fry3ZrKn",
         "memo": "STM4wDzbH2kS"
+      },
+      "newPubFp": {
+        "active": "STM4xGiVh218",
+        "posting": "STM5MBE3LZyb",
+        "memo": "STM8JXNs7THN"
       },
       "custodyRepos": [
         "steem",
@@ -210,18 +210,18 @@
       "account": "acct-09",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "2ef3ecd03458c586fd",
-      "digestFp": "fadba532dd48f76d",
+      "txid": "a4106e3e44b40cf116",
+      "digestFp": "fb79db164f16a08b",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6bR7SNN2C",
-        "posting": "STM847sywpHY",
-        "memo": "STM5nHeJGdie"
-      },
-      "newPubFp": {
         "active": "STM7AYjYcgV8",
         "posting": "STM5fuUYEXqj",
         "memo": "STM6qo8Ui5Z6"
+      },
+      "newPubFp": {
+        "active": "STM7743tSfBT",
+        "posting": "STM8R2b898ra",
+        "memo": "STM6FuLVdqtt"
       },
       "custodyRepos": [
         "steem",
@@ -234,18 +234,18 @@
       "account": "acct-10",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "ffc9f6fe3be178a773",
-      "digestFp": "65fded2a0b6147ed",
+      "txid": "a72ea1f49913247ad4",
+      "digestFp": "a93db87b22a73ee0",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8UWoGdf9Y",
-        "posting": "STM6r1JkA1an",
-        "memo": "STM6QVXVf4g8"
-      },
-      "newPubFp": {
         "active": "STM7h4xVZSRU",
         "posting": "STM7WfEZdHBs",
         "memo": "STM8b8Li2EuQ"
+      },
+      "newPubFp": {
+        "active": "STM7FMcbWCKQ",
+        "posting": "STM7TFvYhbqB",
+        "memo": "STM5VE1zX5n7"
       },
       "custodyRepos": [
         "steem",
@@ -258,17 +258,17 @@
       "account": "acct-11",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "357ac7ddd1a08c87d2",
-      "digestFp": "15528ec335ff31a1",
+      "txid": "f607a5b6459015bdbe",
+      "digestFp": "be797b8cd66162c5",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6inaiVu2Q",
-        "posting": "STM8i4DfRNYQ",
+        "active": "STM8ACy7bxU9",
+        "posting": "STM8hS1Rr55s",
         "memo": "STM8T4ndfFuE"
       },
       "newPubFp": {
-        "active": "STM8ACy7bxU9",
-        "posting": "STM8hS1Rr55s"
+        "active": "STM86oZBu31g",
+        "posting": "STM4vYwQDcor"
       },
       "custodyRepos": [
         "steem",
@@ -281,17 +281,17 @@
       "account": "acct-12",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "879bc35ec165c9af5d",
-      "digestFp": "4b74e8f9600a1165",
+      "txid": "5874cba30f10ceadc3",
+      "digestFp": "97090ec05eae4585",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8UxNNGHTp",
-        "posting": "STM6xikG9tof",
+        "active": "STM7dnysrj7k",
+        "posting": "STM54cBhg155",
         "memo": "STM7wEE2KefA"
       },
       "newPubFp": {
-        "active": "STM7dnysrj7k",
-        "posting": "STM54cBhg155"
+        "active": "STM8AyayeLs1",
+        "posting": "STM8etSVcLm2"
       },
       "custodyRepos": [
         "steem",
@@ -304,17 +304,17 @@
       "account": "acct-13",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "c4408e8401f38c836a",
-      "digestFp": "416452596b0f2a7e",
+      "txid": "57482f965f995518dc",
+      "digestFp": "6197b5cc9f23a898",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6mwJVxpLX",
-        "posting": "STM87jetjYUh",
+        "active": "STM5ABU8UKGW",
+        "posting": "STM7zicWYAe4",
         "memo": "STM4zUMqzDjr"
       },
       "newPubFp": {
-        "active": "STM5ABU8UKGW",
-        "posting": "STM7zicWYAe4"
+        "active": "STM7cFfce4eR",
+        "posting": "STM6L4PSr48d"
       },
       "custodyRepos": [
         "steem",
@@ -337,17 +337,17 @@
       "account": "acct-03",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "cd4372e376a8f5e20b",
-      "digestFp": "266b93d228050fe7",
+      "txid": "e2cbff74916ae10f20",
+      "digestFp": "c2634422096cbd06",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6QK3a5vvR",
-        "posting": "STM5N8sip3CP",
+        "active": "STM58kFFYAZX",
+        "posting": "STM8N47DuHUm",
         "memo": "STM7qiznscic"
       },
       "newPubFp": {
-        "active": "STM58kFFYAZX",
-        "posting": "STM8N47DuHUm"
+        "active": "STM8goeKWJeP",
+        "posting": "STM8mycBieEV"
       },
       "custodyRepos": [
         "steem",
@@ -360,17 +360,17 @@
       "account": "acct-04",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "c9c4a820c0270357b1",
-      "digestFp": "511cd0f06ce10bb6",
+      "txid": "21e33fdb11df99b65d",
+      "digestFp": "072e31672e38c5b7",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM6oWFSZkpG",
-        "posting": "STM5ywQ5cZsH",
+        "active": "STM71MqNDsVE",
+        "posting": "STM8WADawkws",
         "memo": "STM5Ctguov5Q"
       },
       "newPubFp": {
-        "active": "STM71MqNDsVE",
-        "posting": "STM8WADawkws"
+        "active": "STM7qdcUQA6E",
+        "posting": "STM5jRWexAAE"
       },
       "custodyRepos": [
         "steem",
@@ -388,17 +388,17 @@
       "account": "acct-06",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "f41cfbd665b6420e00",
-      "digestFp": "ba24b76fa5500a3b",
+      "txid": "edae8caa265771fb09",
+      "digestFp": "0b407c917e72ac24",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM5WoZo1L24",
-        "posting": "STM7MUtmy3eW",
+        "active": "STM7uJd5yHjH",
+        "posting": "STM85niTC9VD",
         "memo": "STM4xe3pLfnQ"
       },
       "newPubFp": {
-        "active": "STM7uJd5yHjH",
-        "posting": "STM85niTC9VD"
+        "active": "STM8eJNcfvMW",
+        "posting": "STM7ARn5eaZo"
       },
       "custodyRepos": [
         "steem",
@@ -416,17 +416,17 @@
       "account": "acct-09",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "e7a709125a69be01d2",
-      "digestFp": "2cef637accb66d3a",
+      "txid": "d26710382550514717",
+      "digestFp": "2f0e9c72b1ed7515",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM58aCtzy5e",
-        "posting": "STM7bfZg1kcc",
+        "active": "STM8MUyQT3jX",
+        "posting": "STM8DrrJ7RVN",
         "memo": "STM6H6U3Aywi"
       },
       "newPubFp": {
-        "active": "STM8MUyQT3jX",
-        "posting": "STM8DrrJ7RVN"
+        "active": "STM8BL1ez5ob",
+        "posting": "STM6mCDjHyK7"
       },
       "custodyRepos": [
         "steem",
@@ -439,17 +439,17 @@
       "account": "acct-10",
       "verdict": "ROTATED-VERIFIED",
       "signerRole": "active",
-      "txid": "2f42a20ae52ba01672",
-      "digestFp": "ca3a1329ed692647",
+      "txid": "9992eb4947beb12b52",
+      "digestFp": "6256765a5ede080f",
       "chainVerified": true,
       "oldPubFp": {
-        "active": "STM8kow1mErU",
-        "posting": "STM7hfeCmebM",
+        "active": "STM6LX7emj3M",
+        "posting": "STM52khij4Pd",
         "memo": "STM5pXs2rBEj"
       },
       "newPubFp": {
-        "active": "STM6LX7emj3M",
-        "posting": "STM52khij4Pd"
+        "active": "STM4uWdGe4QT",
+        "posting": "STM65xhBjvCK"
       },
       "custodyRepos": [
         "steem",
