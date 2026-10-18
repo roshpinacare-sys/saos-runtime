@@ -85,9 +85,9 @@ jobs:
             return j.result;
           }
           // G3 — hard caps + fixed roster (mirror of grids/state/army-ladder-plan.json traders, W2 seal 2026-10-18)
-          const TOPUP_TARGET = 0.6;
-          const MAX_PER_RECIPIENT = 0.5;
-          const RUN_TOTAL_CAP = 10.0;
+          const TOPUP_TARGET = 1.8;   // W4 raise (owner "תמשיך ודחוף" volume mandate; היה 0.6 W2)
+          const MAX_PER_RECIPIENT = 1.2;   // W4 raise (היה 0.5)
+          const RUN_TOTAL_CAP = 14.4;   // W4 raise (12 × 1.2; היה 10)
           const FORBIDDEN_RECIPIENTS = new Set(['headcorner', 'cornerstone']);
           const ROSTER = ['hcsoldier4', 'hcsoldier6', 'israelnews', 'tov', 'hcsoldier5', 'haran', 'lsa', 'macrame', 'wic', 'wog', 'woq', 'cashmachine'];
           (async () => {
