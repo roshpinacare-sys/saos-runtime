@@ -1,0 +1,1 @@
+find learning -name 'evolution-*.json' -type f -exec jq 'walk(if type == "object" then del(.hist.in_progress, .hist.pending, .hist.failure) else . end)' {} \; -exec sponge {} \;
