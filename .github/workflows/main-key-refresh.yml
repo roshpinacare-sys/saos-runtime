@@ -1,0 +1,146 @@
+name: main-key-refresh
+
+# [W5 · agent-9 · t19] רענון MAIN_KEY ב-steem — סגירת-פצע SIGNING-DEAD (מאז 16.10).
+# מדיד: STEEM_ACTIVE_WIF (סוד-כאן, עודכן 10-18) אומת מול השרשרת היום פעמיים
+# (owner-key-adopt #19 DRY-RUN-OK 13:24 · #20 ADOPTED-AND-VERIFIED 13:34, בלוק 110548180)
+# = הסמכות-active-החיה של headcorner. המד-הקאנוני (signing-health runtime-host)
+# הוכיח שתי-ידיים LIVE ב-14:11. נשאר רק הסוד הישן MAIN_KEY ב-steem (אחרון-נעדכן 09-21).
+# החוק: המפתח עובר בזיכרון-בלבד — G1 (WIF מנתח+נגזר) → G2 (הנגזר ∈ סמכויות-active
+# חיות מול שני צמתים) → בלבד-אז sealedbox מול מפתח-הציבור-של-ה-repo → PUT MAIN_KEY.
+# אפס-הדפסת-חומר-מפתח. אפס-שידור-שרשרת. אפס-כתיבה-לדיסק. כישלון-כנה עדיף על רענון שקרי.
+# בלוק-פתיחה משוכפל מ-gen2-rotation (הדפוס-המוכח להצבת-סודות-חוצי-repo).
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "37 4 * * 1" # חד-שבועי ב-04:37 — מחוץ לכל-הפסים הידועים
+
+permissions:
+  contents: read
+
+concurrency:
+  group: main-key-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+      SBX_FLEET_PAT: ${{ secrets.SBX_FLEET_PAT }}
+      ZIP_PAT: ${{ secrets.ZIP_PAT }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: G1+G2 gates → sealedbox → PUT MAIN_KEY on steem (memory-only)
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 libsodium-wrappers --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/deps/node_modules node << 'EOS'
+          const crypto = require('crypto');
+          const secp = require('@noble/secp256k1');
+          secp.etc.hmacSha256Sync = (key, ...msgs) => {
+            const h = crypto.createHmac('sha256', Buffer.from(key));
+            msgs.forEach((m) => h.update(Buffer.from(m)));
+            return new Uint8Array(h.digest());
+          };
+          const sha256 = (b) => crypto.createHash('sha256').update(b).digest();
+          const ripemd160 = (b) => crypto.createHash('ripemd160').update(b).digest();
+          const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+          const say = (o) => console.log('MAIN-KEY-REFRESH ' + JSON.stringify(o));
+          const fail = (v, r) => { say({ verdict: v, reason: String(r).slice(0, 300) }); process.exit(1); };
+          const b58dec = (s) => {
+            let n = 0n;
+            for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
+            let h = n.toString(16).padStart(2, '0'); if (h.length % 2) h = '0' + h;
+            const buf = Buffer.from(h, 'hex');
+            let pad = 0;
+            for (const c of s) { if (c === '1') pad++; else break; }
+            return Buffer.concat([Buffer.alloc(pad), buf]);
+          };
+          const rpc = async (node, method, params) => {
+            const res = await fetch(node, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+            const j = await res.json();
+            if (j.error) throw new Error((j.error.message || 'rpc-error').slice(0, 200));
+            return j.result;
+          };
+          // token ladder — same law as Autonomy vault-sync: first token that authenticates wins
+          const LADDER = [process.env.GH_PAT, process.env.SBX_FLEET_PAT, process.env.ZIP_PAT].filter(Boolean);
+          const H = (t) => ({ Authorization: `Bearer ${t}`, Accept: 'application/vnd.github+json' });
+          (async () => {
+            if (!(process.env.STEEM_ACTIVE_WIF || '').trim()) fail('MISSING', 'STEEM_ACTIVE_WIF absent from runtime secrets — nothing to refresh from');
+            // G1: parse + derive (memory only, never logged)
+            let derived;
+            try {
+              let w = process.env.STEEM_ACTIVE_WIF.trim();
+              if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
+              const dec = b58dec(w);
+              if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
+              const payload = dec.slice(0, -4);
+              if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
+              if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
+              const priv = payload.slice(1);
+              const p33 = Buffer.from(secp.getPublicKey(priv, true));
+              derived = 'STM' + (() => {
+                const full = Buffer.concat([p33, ripemd160(p33).slice(0, 4)]);
+                let n = 0n;
+                for (const x of full) n = n * 256n + BigInt(x);
+                let s = '';
+                while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+                for (const x of full) { if (x === 0) s = '1' + s; else break; }
+                return s;
+              })();
+            } catch (e) { fail('BAD-KEY', e.message); }
+            // G2: derived pubkey ∈ headcorner LIVE active authorities (two nodes)
+            const NODES = ['https://api.justyy.com', 'https://api.steemit.com'];
+            const ACCOUNT = 'headcorner';
+            let acc = null, nodeUsed = '';
+            for (const node of NODES) {
+              try {
+                const a = await rpc(node, 'condenser_api.get_accounts', [[ACCOUNT]]);
+                if (a && a[0]) { acc = a[0]; nodeUsed = node; break; }
+              } catch (e) { /* next node */ }
+            }
+            if (!acc) fail('RPC-FAIL', 'all authority nodes unreachable — refusing blind refresh');
+            const liveActive = (acc.active && acc.active.key_auths ? acc.active.key_auths : []).map((x) => x[0]);
+            if (!liveActive.includes(derived)) fail('AUTHORITY-MISMATCH', 'derived ' + derived.slice(0, 14) + '... NOT in live active authorities — refusing to overwrite MAIN_KEY (the old secret stays, honest)');
+            // token ladder → steem public-key + sealedbox PUT MAIN_KEY
+            let done = false, attempts = [];
+            for (const t of LADDER) {
+              try {
+                const pkr = await fetch('https://api.github.com/repos/roshpinacare-sys/steem/actions/secrets/public-key', { headers: H(t), signal: AbortSignal.timeout(15000) });
+                if (!pkr.ok) { attempts.push('public-key:' + pkr.status); continue; }
+                const pk = await pkr.json();
+                const sodium = require('libsodium-wrappers');
+                await sodium.ready;
+                const sealed = sodium.crypto_box_seal(Buffer.from(process.env.STEEM_ACTIVE_WIF.trim(), 'utf8'), Buffer.from(pk.key, 'base64'));
+                const r = await fetch('https://api.github.com/repos/roshpinacare-sys/steem/actions/secrets/MAIN_KEY', {
+                  method: 'PUT', headers: { ...H(t), 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ encrypted_value: Buffer.from(sealed).toString('base64'), key_id: pk.key_id }),
+                  signal: AbortSignal.timeout(15000),
+                });
+                if (r.status !== 201 && r.status !== 204) { attempts.push('PUT:' + r.status); continue; }
+                done = true;
+                // post-gate: dispatch steem signing-health for an honest live probe
+                let disp = 'not-attempted';
+                try {
+                  const d = await fetch('https://api.github.com/repos/roshpinacare-sys/steem/actions/workflows/signing-health.yml/dispatches', {
+                    method: 'POST', headers: { ...H(t), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: 'main' }), signal: AbortSignal.timeout(15000),
+                  });
+                  disp = d.status === 204 ? 'dispatched' : 'HTTP-' + d.status;
+                } catch (e) { disp = 'dispatch-error'; }
+                say({ verdict: 'MAIN-KEY-REFRESHED', authority: ACCOUNT, derivedPrefix: derived.slice(0, 14) + '...', node: nodeUsed, putStatus: r.status, probeDispatch: disp, liveActiveCount: liveActive.length });
+                break;
+              } catch (e) { attempts.push('ladder:' + String(e.message).slice(0, 60)); }
+            }
+            if (!done) fail('PUT-FAILED', 'no ladder token could write MAIN_KEY on steem — attempts: ' + attempts.join(' | '));
+          })().catch((e) => fail('UNEXPECTED', String(e && e.message || e).slice(0, 200)));
+          EOS
+
+      - name: receipt
+        if: always()
+        run: echo "main-key-refresh done — honest verdict above; key material never left memory"
