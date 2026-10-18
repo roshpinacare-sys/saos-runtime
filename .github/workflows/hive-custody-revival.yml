@@ -43,6 +43,7 @@ jobs:
           STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
           GEN1_INNER_SHA: "1392b18e79256d0e3c4908b6dd148c1ec824f3fd25d6e4350367a05002b91ea6"
         run: |
+          set -o pipefail
           mkdir -p /tmp/hr
           cp scripts/hive-revival.mjs /tmp/hr/
           cd /tmp/hr && bun init -y >/dev/null 2>&1 || true
