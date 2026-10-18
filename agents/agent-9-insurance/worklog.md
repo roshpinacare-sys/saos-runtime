@@ -685,3 +685,16 @@ Work Log:
 
 Stage Summary:
 - כספת-הביטוח הסופית: (1) Autonomy ציבורי — עותק ראשי; (2) saos-runtime/agents/agent-9-insurance פרטי — סנכרון יומי אוטומטי מוכח; (3) steem tag archive/agent-9-insurance — ארכיון-היסטורי; (4) סנדבוקס מקומי — מטמון
+
+---
+Task ID: 19
+Agent: agent-9
+Task: "תמשיך ודחוף" — שחזור-סנדבוק׸ אחרי אתחול + סגירת-פצע SIGNING-DEAD + יישור-כספת לדוקטרינת-18b
+
+Work Log:
+- אתחול-סנדבוקס נוסף (שלישי): creds+repos נמחקו; pat.env + worklog שרדו; שיבוט מלא בדקות. **גילוי-זיכרון**: ה-worklog המקומי חזר לגרסת-Task-15 (109,203B) בעוד העותק-ב-Autonomy הוא השלם (120,293B, עד 18-b) — **העותק-ב-origin הוא הזיכרון-האמיתי, המקומי רק מטמון** (שוחזר מ-Autonomy)
+- שלמות-ביטוח אומתה: 4 עותקים זהים-בייט (Autonomy ציבורי · saos-runtime/agents/agent-9-insurance פרטי 120,293B · steem@archive/agent-9-insurance 6065f5bf96ea · מקומי משוחזר)
+- census מלא: **194/194 פעילים** (Autonomy+Domain 150 · steem 12 · saos-runtime 32) — ה-org גדל מ-159; watchdog v2 חומש ופעימותיו נקיות (150 checked, 0 dead)
+- **פצע SIGNING-DEAD (מאז 16.10) נסגר**: נבנה main-key-refresh.yml ב-saos-runtime — STEEM_ACTIVE_WIF (מאומת-שרשרת היום פעמיים: DRY-RUN-OK 13:24 + ADOPTED-AND-VERIFIED 13:34, בלוק 110548180) עובר לסוד MAIN_KEY ב-steem בזיכרון-בלבד: G1 (WIF מנתח+נגזר STM5HhJD5WUXu8...) → G2 (הנגזר ∈ סמכויות-active חיות של headcorner מול שני צמתים) → sealedbox מול מפתח-הציבור-של-ה-repo → PUT 204. ריצה ראשונה: **MAIN-KEY-REFRESHED**. אפס-הדפסת-מפתח (הדפוס-משוכפל מ-gen2-rotation)
+- אבחנת-ראנרים מדויקת-סופית: ל-steem **אין ראנרים בכלל** (repo runners=[]), GitHub-hosted חסום-ספציפית-לו בעוד שאר-ה-repos רצים תקין = הגבלת-routing ברמת-org (404 על org API לי — פעולת-בעלים). היד-החתימה-עצמה חיה דרך-הגשר: steem-hand-revival #6 SUCCESS + signing-health runtime-host LIVE-OK 14:11; MAIN_KEY התקין ממתין ליום-שהראנרים-יחזרו
+- **לולאת-התקפלות נסגרת**: vault-sync v1 ב-Autonomy עוד דחף לענף-צדדי ב-steem (הדוקטרינה ש-18b הוציאה-מן-החוק — floating-builds מאכסן → תחייה → אכסון-מחדש). נכתב **v3**: העברה לנתיב-עץ agents/agent-9-insurance/ ב-saos-runtime, סולם-token, idempotent (שני-כותבים-בייטים-זהים: השני פעימה-שקטה), cron 03:47 אחרי-v2 (03:31) — גיבוי-עצמאי-הדדי בין-שני-האיברים
