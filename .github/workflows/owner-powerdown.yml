@@ -158,8 +158,8 @@ jobs:
             const weeklySp = (targetV - withdrawnV) * ratio / 4;
             console.log(JSON.stringify({ step: 'gates-passed', account_ref: 'acct-00', node: nodeUsed, sp_now: spNow.toFixed(1), amount_sp: amt, target_vests: targetV, weekly_sp: weeklySp.toFixed(1), dry_run: DRY }));
             if (DRY) { console.log(JSON.stringify({ verdict: 'DRY-RUN-GREEN', note: 'gates green, zero broadcast — dispatch with dry_run=false to execute' })); return; }
-            // broadcast (steem-js handles graphene serialization + signing)
-            steem.api.setNodes(NODES.map((n) => n));
+            // broadcast (steem-js 0.7.11 specialized broadcast — measured: api.setNodes
+            // does not exist in this lib; defaults already point at steemit nodes)
             const vsStr = (targetV / 1e6).toFixed(6) + ' VESTS';
             let txid = null;
             try {

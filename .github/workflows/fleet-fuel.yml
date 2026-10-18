@@ -150,16 +150,24 @@ jobs:
             if (ops.length === 0) { console.log(JSON.stringify({ verdict: 'ALL-FUELED', note: 'every roster account ≥ target — honest skip (safe re-run)' })); return; }
             if (total > RUN_TOTAL_CAP) return fail('CAP-BUG', 'computed total exceeds the run cap — refuse (never broadcast over-cap)');
             if (DRY) { console.log(JSON.stringify({ verdict: 'DRY-RUN-GREEN', note: 'fuel plan computed, zero broadcast — dispatch with dry_run=false to execute' })); return; }
-            let res;
-            try {
-              res = await new Promise((resolve, reject) => { steem.broadcast.sendOperations(ops, WIF, (err, r) => err ? reject(err) : resolve(r)); });
-            } catch (e) { return fail('BROADCAST-FAIL', String(e && e.message || e).slice(0, 250)); }
+            // broadcast per-op (steem-js 0.7.11 specialized transfers — measured:
+            // broadcast.sendOperations does not exist in this lib). Sequential txs,
+            // read-after-write per recipient in the receipt below.
+            const txids = [];
+            for (const p of plan.filter((x) => x.amount > 0)) {
+              const amtStr = p.amount.toFixed(3) + ' STEEM';
+              const memo = 'saos fleet fuel · W2 owner mandate 2026-10-18 · grid fuel (custody: estate→workers, one-way)';
+              try {
+                const res = await new Promise((resolve, reject) => { steem.broadcast.transfer(WIF, PAYER, p.to, amtStr, memo, (err, r) => err ? reject(err) : resolve(r)); });
+                txids.push({ to: p.to, amount: p.amount, txid: res && res.id ? res.id : null });
+              } catch (e) { return fail('BROADCAST-FAIL', `${p.to}: ${String(e && e.message || e).slice(0, 200)}`); }
+            }
             // G6 — re-verify
             let accs2 = null;
             for (const node of NODES) { try { accs2 = await rpc(node, 'condenser_api.get_accounts', [[PAYER, ...ROSTER]]); if (accs2) break; } catch (e) { /* next */ } }
             const after = {};
             for (const name of ROSTER) { const a = (accs2 || []).find((x) => x.name === name); if (a) after[name] = parseFloat(a.balance); }
-            console.log('FLEET-FUEL-RECEIPT ' + JSON.stringify({ verdict: 'EXECUTED', txid: res && res.id ? res.id : null, ops: ops.length, total, after, at: new Date().toISOString() }));
+            console.log('FLEET-FUEL-RECEIPT ' + JSON.stringify({ verdict: 'EXECUTED', transfers: txids.length, total, txids, after, at: new Date().toISOString() }));
           })().catch((e) => fail('UNEXPECTED', e && e.message || e));
           EOS
 
