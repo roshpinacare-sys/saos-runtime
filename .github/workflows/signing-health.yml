@@ -1,0 +1,132 @@
+name: signing-health (runtime-host)
+
+# [W5-β] מד-בריאות-החתימה — מאוחסן-ב-runtime, הבית-שהרגליים-שלו-מוכחות.
+# מדיד-קשה (2026-10-18): העותק-בריפו-steem מעולם-לא-רץ — 4+ ריצות-כושלות,
+# צעדים:0, לוגים-ריקים, 3-5ש׳ (startup-class, כמו-ה-hub-ב-W4-G). האדום-שם לא
+# היה-מד-כנה — היה-מוות-שקט. המד-חי-כאן-מעכשיו, נגד-הסודות-שחיים-כאן.
+#  G1: STEEM_ACTIVE_WIF מנתח (WIF checksum + secp256k1) → נגזר.
+#  G2: הנגזר ∈ סמכויות-active חיות של headcorner (שני-צמתים).
+#  G3: CI_ADOPT_WIF_POSTING מנתח → נגזר (יד-הפוסטינג-שהתקבלה-בשרשרת,
+#      tx de76b399, block 110548180).
+#  G4: נגזר-הפוסטינג ∈ סמכויות-posting חיות של headcorner.
+#  תשובה-כנה: LIVE-OK (exit 0) רק-אם-שתי-הידיים-חיות; PARTIAL/STALE/MISSING/
+#  BAD-KEY (exit 1 = אדום-גלוי). אפס-הדפסת-חומר-מפתח. אפס-שידור. בדיקה-בלבד.
+on:
+  schedule:
+    - cron: "43 * * * *" # :43 — מחוץ-לפסים :17/:23/:29/:37/:51/:53
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: signing-health-runtime
+  cancel-in-progress: false
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      CI_ADOPT_WIF_POSTING: ${{ secrets.CI_ADOPT_WIF_POSTING }}
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: G1..G4 gate probe (no broadcast, no key material in output)
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/deps/node_modules node << 'EOS'
+          const crypto = require('crypto');
+          const secp = require('@noble/secp256k1');
+          secp.etc.hmacSha256Sync = (key, ...msgs) => {
+            const h = crypto.createHmac('sha256', Buffer.from(key));
+            msgs.forEach((m) => h.update(Buffer.from(m)));
+            return new Uint8Array(h.digest());
+          };
+          const sha256 = (b) => crypto.createHash('sha256').update(b).digest();
+          const ripemd160 = (b) => crypto.createHash('ripemd160').update(b).digest();
+          const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+          const verdict = (v, extra) => {
+            const out = { verdict: v, at: new Date().toISOString(), ...(extra || {}) };
+            const line = 'SIGNING-HEALTH ' + JSON.stringify(out);
+            console.log(line);
+            try { require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### signing-health (runtime-host)\n\n\`\`\`json\n${JSON.stringify(out, null, 1)}\n\`\`\`\n`); } catch {}
+            process.exit(v === 'LIVE-OK' ? 0 : 1);
+          };
+          const b58dec = (s) => {
+            let n = 0n;
+            for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
+            let h = n.toString(16).padStart(2, '0'); if (h.length % 2) h = '0' + h;
+            const buf = Buffer.from(h, 'hex');
+            let pad = 0;
+            for (const c of s) { if (c === '1') pad++; else break; }
+            return Buffer.concat([Buffer.alloc(pad), buf]);
+          };
+          const derivePub = (wif) => {
+            let w = wif.trim();
+            if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
+            const dec = b58dec(w);
+            if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
+            const payload = dec.slice(0, -4);
+            if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
+            if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
+            const p33 = Buffer.from(secp.getPublicKey(payload.slice(1), true));
+            return 'STM' + (() => {
+              const full = Buffer.concat([p33, ripemd160(p33).slice(0, 4)]);
+              let n = 0n;
+              for (const x of full) n = n * 256n + BigInt(x);
+              let s = '';
+              while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+              for (const x of full) { if (x === 0) s = '1' + s; else break; }
+              return s;
+            })();
+          };
+          const rpc = async (node, method, params) => {
+            const res = await fetch(node, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+            const j = await res.json();
+            if (j.error) throw new Error((j.error.message || 'rpc-error').slice(0, 200));
+            return j.result;
+          };
+          (async () => {
+            const presence = {
+              STEEM_ACTIVE_WIF: !!(process.env.STEEM_ACTIVE_WIF || '').trim(),
+              CI_ADOPT_WIF_POSTING: !!(process.env.CI_ADOPT_WIF_POSTING || '').trim(),
+              STEEM_VAULT_PASSES: !!(process.env.STEEM_VAULT_PASSES || '').trim(),
+              ROT2_FLEET_KEYS: !!(process.env.ROT2_FLEET_KEYS || '').trim(),
+            };
+            if (!presence.STEEM_ACTIVE_WIF && !presence.CI_ADOPT_WIF_POSTING) verdict('MISSING', { presence, note: 'no signing material held in runtime at all' });
+            const NODES = ['https://api.justyy.com', 'https://api.steemit.com'];
+            const ACCOUNT = 'headcorner';
+            let acc = null, nodeUsed = '';
+            for (const node of NODES) {
+              try {
+                const a = await rpc(node, 'condenser_api.get_accounts', [[ACCOUNT]]);
+                if (a && a[0]) { acc = a[0]; nodeUsed = node; break; }
+              } catch (e) { /* next node */ }
+            }
+            if (!acc) verdict('RPC-FAIL', { presence });
+            const liveActive = (acc.active && acc.active.key_auths ? acc.active.key_auths : []).map((x) => x[0]);
+            const livePosting = (acc.posting && acc.posting.key_auths ? acc.posting.key_auths : []).map((x) => x[0]);
+            const legs = {};
+            if (presence.STEEM_ACTIVE_WIF) {
+              try {
+                const d = derivePub(process.env.STEEM_ACTIVE_WIF);
+                legs.active = { derivedPrefix: d.slice(0, 14) + '...', live: liveActive.includes(d) };
+              } catch (e) { legs.active = { live: false, error: e.message }; }
+            } else legs.active = { live: false, error: 'secret-absent' };
+            if (presence.CI_ADOPT_WIF_POSTING) {
+              try {
+                const d = derivePub(process.env.CI_ADOPT_WIF_POSTING);
+                legs.posting = { derivedPrefix: d.slice(0, 14) + '...', live: livePosting.includes(d) };
+              } catch (e) { legs.posting = { live: false, error: e.message }; }
+            } else legs.posting = { live: false, error: 'secret-absent' };
+            const aLive = !!(legs.active && legs.active.live);
+            const pLive = !!(legs.posting && legs.posting.live);
+            const v = aLive && pLive ? 'LIVE-OK' : (aLive || pLive) ? 'PARTIAL' : 'STALE';
+            verdict(v, { legs, node: nodeUsed, liveActiveCount: liveActive.length, livePostingCount: livePosting.length, presence, note: aLive && pLive ? 'both hands live — curate lane may broadcast on next doctrine-capped cycle' : 'fail-honest — see legs breakdown' });
+          })().catch((e) => verdict('UNEXPECTED', { error: String(e && e.message || e).slice(0, 200) }));
