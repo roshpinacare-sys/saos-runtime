@@ -1,0 +1,90 @@
+name: steem-hand-revival
+
+# [W5] גשר-חייאת-יד-החתימה — האורגניזם מרים-את-עצמו.
+# מדיד: exec-cycle בריפו-steem מת מ-16.10 (MAIN_KEY שם-אחרון-נעדכן 09-21,
+# ה-ROT2 סובב-סמכויות). אימות-חי 2026-10-18 (cross-custody-probe): המפתח-הטרי
+# STEEM_ACTIVE_WIF (עודכן 10-18) = הסמכות-active-החיה של headcorner (CUSTODY-PROVEN).
+# הסוד-הטרי חי כאן-ב-runtime — אז המחזור רץ-מכאן: clone-steem → להזרים-את-הקרדנשל
+# (.secrets 0600, runner-only) → שער-selftest fail-closed → מחזור-אחד-מוגבל-דוקטרינה
+# (SENSE→DECIDE→ACT→RECORD) → קבלות-על-הענף.
+# כל-שערי-המנוע-הפנימיים-נשארים (T-80 think-gate · funds-policy · delegation-policy).
+# אפס-הדפסת-חומר-מפתח. אפס-force-push. כישלון-כנה עדיף-על-חתימה-מזויפת.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "29 */2 * * *" # :29 — מחוץ-לפסים :17/:21/:23/:51/:53/:55
+
+permissions:
+  contents: read
+
+concurrency:
+  group: steem-hand-revival
+  cancel-in-progress: false
+
+jobs:
+  revive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+    steps:
+      - name: Checkout engine (private repo via PAT)
+        run: |
+          set -euo pipefail
+          git clone -q --depth 1 "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem" /home/runner/steem
+          git -C /home/runner/steem checkout -q saos-cockpit || true
+
+      - name: Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Secure the live credential (runner-only · 0600 · zero echo)
+        run: |
+          set -euo pipefail
+          cd /home/runner/steem
+          if [ -z "${STEEM_ACTIVE_WIF}" ]; then
+            echo "::error::STEEM_ACTIVE_WIF absent on runtime — revival refused, fail-honest"
+            exit 1
+          fi
+          mkdir -p .secrets
+          # פורמט-השער של המנוע: "<account> <master-password|P-key>"
+          printf 'headcorner %s\n' "${STEEM_ACTIVE_WIF}" > .secrets/headcorner.key
+          chmod 600 .secrets/headcorner.key
+          echo "credential seeded (0600, value never echoed)"
+
+      - name: Install engine deps
+        working-directory: /home/runner/steem/mini-services/saos-engine
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Selftest gate (fail-closed — honest death beats forged signing)
+        working-directory: /home/runner/steem/mini-services/saos-engine
+        run: bun selftest.mjs
+
+      - name: One doctrine-capped cycle (SENSE → DECIDE → ACT → RECORD)
+        working-directory: /home/runner/steem/mini-services/saos-engine
+        run: bun daily.mjs
+
+      - name: Publish the exec receipts (vault law — txids journaled, zero keys)
+        if: always()
+        working-directory: /home/runner/steem
+        run: |
+          set -euo pipefail
+          rm -f mini-services/saos-engine/state/*.tmp.* 2>/dev/null || true
+          git config user.name "saos-exec-bot"
+          git config user.email "saos-exec-bot@users.noreply.github.com"
+          git add mini-services/saos-engine/state 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "exec-cycle (runtime-bridge W5): doctrine-capped broadcast receipts (txids, zero keys) [skip ci]"
+            git pull --rebase origin saos-cockpit || true
+            git push origin HEAD:saos-cockpit
+          else
+            echo "no state delta this cycle"
+          fi
+
+      - name: Cycle verdict (visible in the run summary)
+        if: always()
+        working-directory: /home/runner/steem/mini-services/saos-engine
+        run: |
+          if [ -f state/cycle-run.json ]; then
+            bun -e 'const d=require("./state/cycle-run.json");console.log("revived-cycle ok:",d.ok===true,"| steps:",Object.entries(d.steps??{}).map(([k,v])=>k+"="+(v.verdict??(v.ok?"ok":"fail"))).join(" "))' || true
+          fi
