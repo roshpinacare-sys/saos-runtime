@@ -1,0 +1,73 @@
+# ghidra-lab.yml — מעבדת-Ghidra לפי-דרישה (בלי-קרון: אפס-שריפת-טוקנים, אפס-רעש-מתוזמן).
+# מה: מורידה Ghidra-PUBLIC מובנה-מראש (NSA, ריבונות-כלי-RE) + JDK-21 מלא (Temurin),
+#     מקמפלת בינארי-מעבדה דטרמיניסטי, מריצה ניתוח-headless + סקריפט-הוכחה,
+#     ומעלה את הלוג-המסונן כ-artifact.
+# למה: יכולת-RE בינארית להגנת-שרשרת-אספקה של-הריבונות — נבדקת-ומוכחת-בענן, אפס-משקל-סנדבוקס.
+# יושר: ה-verdict נקבע-רק-מה-SAOS-SMOKE-lines בלוג; דילוג-מתועד אינו-ירוק-מזויף.
+# הוכחה-חיה-בסנדבוקס 2026-10-18: Analysis succeeded · functions=18 ·
+# add(int,int)→{return param_2+param_1} · verdict-PASS (ראה coordination/GHIDRA.md).
+
+name: ghidra-lab
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  headless-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Fetch prebuilt Ghidra (NSA release) + full JDK 21 (Temurin)
+        run: |
+          mkdir -p /tmp/ghidra-lab && cd /tmp/ghidra-lab
+          curl -sL --retry 3 -o ghidra.zip \
+            https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip
+          unzip -q ghidra.zip && rm ghidra.zip
+          curl -sL --retry 3 -o jdk21.tar.gz \
+            "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk"
+          tar xzf jdk21.tar.gz && rm jdk21.tar.gz
+          JDK_DIR="$(ls -d jdk-21*)"
+          # headless can't prompt for a JDK path (no TTY) — pin it in launch.properties
+          sed -i "s|^JAVA_HOME_OVERRIDE=.*|JAVA_HOME_OVERRIDE=/tmp/ghidra-lab/${JDK_DIR}|" \
+            ghidra_12.1.4_PUBLIC/support/launch.properties
+          echo "GHIDRA_HOME=/tmp/ghidra-lab/ghidra_12.1.4_PUBLIC" >> "$GITHUB_ENV"
+
+      - name: Compile deterministic lab binary
+        run: |
+          gcc -o /tmp/ghidra-lab/hello ops/ghidra-lab/hello.c
+          file /tmp/ghidra-lab/hello
+
+      - name: Headless analyze + decompile proof
+        run: |
+          mkdir -p /tmp/ghidra-lab/proj /tmp/ghidra-lab/scripts
+          cp ops/ghidra-lab/CountFunctions.java /tmp/ghidra-lab/scripts/
+          set -o pipefail
+          timeout 600 "$GHIDRA_HOME/support/analyzeHeadless" \
+            /tmp/ghidra-lab/proj saos-lab \
+            -import /tmp/ghidra-lab/hello \
+            -scriptPath /tmp/ghidra-lab/scripts \
+            -postScript CountFunctions.java \
+            -deleteProject 2>&1 | tee /tmp/ghidra-lab/headless.log | \
+            rg "SAOS-SMOKE|Analysis succeeded|ERROR" | head -12
+
+      - name: Verdict (measured from log only)
+        run: |
+          if rg -q "SAOS-SMOKE verdict=PASS" /tmp/ghidra-lab/headless.log && \
+             rg -q "Analysis succeeded" /tmp/ghidra-lab/headless.log; then
+            echo "GHIDRA-LAB: PASS — headless RE capability proven"
+          else
+            echo "GHIDRA-LAB: FAIL — recorded honestly, never faked green"
+            tail -40 /tmp/ghidra-lab/headless.log
+            exit 1
+          fi
+
+      - name: Upload headless log artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghidra-headless-log
+          path: /tmp/ghidra-lab/headless.log
