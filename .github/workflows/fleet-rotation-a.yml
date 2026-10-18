@@ -32,6 +32,7 @@ jobs:
     timeout-minutes: 30
     env:
       STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }} # R324 mirror: chain-verified post-rotation keys (custody-recover whole-map PUT) — the archive pool alone measured 0/54
       ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
       GH_PAT: ${{ secrets.GH_PAT }}
       ROT_STEEM_DIR: ${{ github.workspace }}/steem-engine

@@ -246,6 +246,31 @@ async function matchMode(outPath) {
     } catch (e) { log({ archive: f, extract: "fail", err: String(e).slice(0, 60) }); continue; }
     P.scanDir(extDir, wifs);
   }
+  // R324 mirror (the resolve-keys.cjs lesson, measured 2026-10-18T00:49Z: archive
+  // census matched 0/54 while escrow-payroll's rot2-env source measured 24 live keys
+  // the same hour): the fleet rotated (ROT2, 2026-10-13T00:05, chain-verified
+  // receipt-A) AFTER the gen2-era archives were sealed — the archive pool is stale.
+  // ROT2_FLEET_KEYS (custody-recover whole-map PUT {rot2:{chain:{account:{role:wif}}}})
+  // arrives in the job env — same trust domain as every other env secret; WIFs never
+  // logged, never leave the job. Additive alive-wins: ROT2 candidates PREPEND, so the
+  // fresher chain-verified material wins every pool.find against a stale archive twin.
+  try {
+    const rot2Raw = process.env.ROT2_FLEET_KEYS || "";
+    if (rot2Raw) {
+      const WIF_RE = P.WIF_RE || /^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/;
+      const found = new Set();
+      (function walk(node, depth) {
+        if (!node || typeof node !== "object" || depth > 8) return;
+        for (const v of Object.values(node)) {
+          if (typeof v === "string") { if (WIF_RE.test(v)) found.add(v); }
+          else if (v && typeof v === "object") walk(v, depth + 1);
+        }
+      })(JSON.parse(rot2Raw), 0);
+      const rot2 = [...found].map((wif) => ({ source: "rot2-env", wif }));
+      wifs.unshift(...rot2);
+      log({ rot2Env: { candidates: rot2.length, note: "chain-verified ROT2 overrides stale archives (alive-wins)" } });
+    }
+  } catch (e) { log({ rot2Env: "unparsable — archive census stands alone", err: String(e).slice(0, 60) }); }
   log({ archivesOpened: opened.length, of: encFiles.length, wifCandidates: wifs.length });
   const wifsHive = wifs.slice(); // same material may feed both chains (fork-era keys)
   const rosterNames = [...new Set([...STEEM_QUADS, ...STEEM_ACT, ...HIVE_ACT])];
