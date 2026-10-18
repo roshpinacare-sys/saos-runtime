@@ -71,11 +71,14 @@ jobs:
             let w = wif.trim();
             if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
             const dec = b58dec(w);
-            if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
+            if (dec.length !== 37 && dec.length !== 38) throw new Error('wif-len-' + dec.length);
             const payload = dec.slice(0, -4);
             if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
             if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
-            const p33 = Buffer.from(secp.getPublicKey(payload.slice(1), true));
+            // 37 = uncompressed WIF (0x80+key32); 38 = compressed WIF (0x80+key32+0x01 flag) — measured: CI_ADOPT_WIF_POSTING is the 38-byte variant
+            if (dec.length === 38 && payload[33] !== 0x01) throw new Error('wif-38-without-0x01-flag');
+            const priv = dec.length === 38 ? payload.subarray(1, 33) : payload.slice(1);
+            const p33 = Buffer.from(secp.getPublicKey(priv, true));
             return 'STM' + (() => {
               const full = Buffer.concat([p33, ripemd160(p33).slice(0, 4)]);
               let n = 0n;
