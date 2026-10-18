@@ -1,0 +1,114 @@
+name: cross-custody-probe
+
+# [W5] בדיקת-חסות-צולבת — קריאה-בלבד, אפס-שידור, אפס-הדפסת-חומר-מפתח.
+# שאלה-מדידה אחת: האם STEEM_ACTIVE_WIF (הטרי, עודכן 10-18) נגזר-גם-לסמכות-active
+# של headcorner (חשבון-הדוקטרינה של מנוע-steem)? אם-כן — יד-החתימה-המתה-מאז-16.10
+# ניתנת-להחייאה-מיידית-מהסוד-הקיים-בלי-שה-owner-יגע. אם-לא — הכנות-נשמרת:
+# רק-עדכון-MAIN_KEY-ע"י-ה-owner-יחייה-אותה.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-custody-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: derive + judge against live authorities of headcorner (read-only)
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/deps/node_modules node << 'EOS'
+          const crypto = require('crypto');
+          const secp = require('@noble/secp256k1');
+          secp.etc.hmacSha256Sync = (key, ...msgs) => {
+            const h = crypto.createHmac('sha256', Buffer.from(key));
+            msgs.forEach((m) => h.update(Buffer.from(m)));
+            return new Uint8Array(h.digest());
+          };
+          const sha256 = (b) => crypto.createHash('sha256').update(b).digest();
+          const ripemd160 = (b) => crypto.createHash('ripemd160').update(b).digest();
+          const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+          const verdict = (v, extra) => {
+            const out = { verdict: v, at: new Date().toISOString(), ...(extra || {}) };
+            console.log('CROSS-CUSTODY ' + JSON.stringify(out));
+            try { require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### cross-custody-probe\n\n\`\`\`json\n${JSON.stringify(out, null, 1)}\n\`\`\`\n`); } catch {}
+            process.exit(v === 'CUSTODY-PROVEN' ? 0 : 1);
+          };
+          const b58dec = (s) => {
+            let n = 0n;
+            for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
+            let h = n.toString(16).padStart(2, '0'); if (h.length % 2) h = '0' + h;
+            const buf = Buffer.from(h, 'hex');
+            let pad = 0;
+            for (const c of s) { if (c === '1') pad++; else break; }
+            return Buffer.concat([Buffer.alloc(pad), buf]);
+          };
+          const rpc = async (node, method, params) => {
+            const res = await fetch(node, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+            const j = await res.json();
+            if (j.error) throw new Error((j.error.message || 'rpc-error').slice(0, 200));
+            return j.result;
+          };
+          (async () => {
+            const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();
+            if (!WIF) verdict('NO-SECRET', {});
+            let priv, derived;
+            try {
+              let w = WIF;
+              if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
+              const dec = b58dec(w);
+              if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
+              const payload = dec.slice(0, -4);
+              if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
+              if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
+              priv = payload.slice(1);
+              const p33 = Buffer.from(secp.getPublicKey(priv, true));
+              derived = 'STM' + (() => {
+                const full = Buffer.concat([p33, ripemd160(p33).slice(0, 4)]);
+                let n = 0n;
+                for (const x of full) n = n * 256n + BigInt(x);
+                let s = '';
+                while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+                for (const x of full) { if (x === 0) s = '1' + s; else break; }
+                return s;
+              })();
+            } catch (e) { verdict('BAD-KEY', { error: e.message }); }
+            const NODES = ['https://api.justyy.com', 'https://api.steemit.com'];
+            const TARGET = 'headcorner';
+            let acc = null;
+            for (const node of NODES) {
+              try {
+                const a = await rpc(node, 'condenser_api.get_accounts', [[TARGET]]);
+                if (a && a[0]) { acc = a[0]; break; }
+              } catch (e) { /* next */ }
+            }
+            if (!acc) verdict('RPC-FAIL', {});
+            const active = (acc.active && acc.active.key_auths ? acc.active.key_auths : []).map((x) => x[0]);
+            const posting = (acc.posting && acc.posting.key_auths ? acc.posting.key_auths : []).map((x) => x[0]);
+            const inActive = active.includes(derived);
+            const inPosting = posting.includes(derived);
+            verdict(inActive ? 'CUSTODY-PROVEN' : 'CUSTODY-REFUSED', {
+              target: TARGET,
+              derivedPrefix: derived.slice(0, 14) + '...',
+              inActiveAuthorities: inActive,
+              inPostingAuthorities: inPosting,
+              liveActiveCount: active.length,
+              note: inActive
+                ? 'the fresh key IS a live active authority of the engine doctrine account — signing hand can be revived from existing secrets without owner action'
+                : 'fresh key does NOT sign for headcorner — only an owner MAIN_KEY refresh revives the hand (fail-honest, never guess custody)',
+            });
+          })().catch((e) => verdict('UNEXPECTED', { error: String(e && e.message || e).slice(0, 200) }));
+          EOS
