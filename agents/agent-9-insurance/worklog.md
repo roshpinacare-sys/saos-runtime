@@ -698,3 +698,17 @@ Work Log:
 - **פצע SIGNING-DEAD (מאז 16.10) נסגר**: נבנה main-key-refresh.yml ב-saos-runtime — STEEM_ACTIVE_WIF (מאומת-שרשרת היום פעמיים: DRY-RUN-OK 13:24 + ADOPTED-AND-VERIFIED 13:34, בלוק 110548180) עובר לסוד MAIN_KEY ב-steem בזיכרון-בלבד: G1 (WIF מנתח+נגזר STM5HhJD5WUXu8...) → G2 (הנגזר ∈ סמכויות-active חיות של headcorner מול שני צמתים) → sealedbox מול מפתח-הציבור-של-ה-repo → PUT 204. ריצה ראשונה: **MAIN-KEY-REFRESHED**. אפס-הדפסת-מפתח (הדפוס-משוכפל מ-gen2-rotation)
 - אבחנת-ראנרים מדויקת-סופית: ל-steem **אין ראנרים בכלל** (repo runners=[]), GitHub-hosted חסום-ספציפית-לו בעוד שאר-ה-repos רצים תקין = הגבלת-routing ברמת-org (404 על org API לי — פעולת-בעלים). היד-החתימה-עצמה חיה דרך-הגשר: steem-hand-revival #6 SUCCESS + signing-health runtime-host LIVE-OK 14:11; MAIN_KEY התקין ממתין ליום-שהראנרים-יחזרו
 - **לולאת-התקפלות נסגרת**: vault-sync v1 ב-Autonomy עוד דחף לענף-צדדי ב-steem (הדוקטרינה ש-18b הוציאה-מן-החוק — floating-builds מאכסן → תחייה → אכסון-מחדש). נכתב **v3**: העברה לנתיב-עץ agents/agent-9-insurance/ ב-saos-runtime, סולם-token, idempotent (שני-כותבים-בייטים-זהים: השני פעימה-שקטה), cron 03:47 אחרי-v2 (03:31) — גיבוי-עצמאי-הדדי בין-שני-האיברים
+
+---
+Task ID: 19-b (addendum)
+Agent: agent-9
+Task: השלמת Task 19 — הוכחת-חיה של שני מנועי-הכספת
+
+Work Log:
+- v3 ריצה-ראשונה נכשלה כנה: `fatal: empty ident name` — זהות-git הוגדרה-ב-checkout-החיצוני בעוד-ה-commit-בתוך-ה-clone (ה-bug-לא-נתפס-ב-v1 מעולם כנראה-מהסדר-השונה-שם); תוקף: הזהות-אחרי-cd-vault
+- v3 ריצה-שנייה: **SUCCESS** (#6 15:10) — Autonomy דוחף-מהצד-שלו; v2 רץ-מוצלח (#5 15:07) — saos-runtime מושך-מהצד-שלו; שני-המנועים-מתכנסים-לאותם-בייטים (השני-פעימה-שקטה)
+- הכספת-אומתה: agents/agent-9-insurance/worklog.md ב-saos-runtime = 122,946B (Task 19-בפנים), עץ-נקי
+- לקח-מוסף: כל-העתקת-עבודה-בין-clone-ים-דורשת-הגדרת-זהות-אחרי-ה-cd — לא-לסמוך-על-זהות-ה-checkout-ההורה
+
+Stage Summary:
+- ארכיטקטורת-הביטוח-סופית: שני-מנועי-סנכרון-עצמאיים (v3-push מ-Autonomy · v2-pull ב-saos-runtime) → נתיב-עץ יחיד (agents/agent-9-insurance/), אפס-ענפים-צדדיים, אפס-מלחמת-התקפלות; MAIN_KEY ב-steem = ה-WIF-המאומת; census 194/194; watchdog פעיל
