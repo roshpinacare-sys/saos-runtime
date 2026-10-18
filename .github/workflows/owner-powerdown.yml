@@ -168,11 +168,17 @@ jobs:
               });
               txid = res && res.id ? res.id : null;
             } catch (e) { return fail('BROADCAST-FAIL', String(e && e.message || e).slice(0, 250)); }
-            // G6 — chain re-verification
-            let acc2 = null;
-            for (const node of NODES) { try { const a = await rpc(node, 'condenser_api.get_accounts', [[ACCOUNT]]); if (a && a[0]) { acc2 = a[0]; break; } } catch (e) { /* next */ } }
-            const ok2 = acc2 && parseFloat(acc2.to_withdraw || '0') >= targetV - 1e6; // 1 VESTS tolerance
-            if (!ok2) return fail('VERIFY-FAIL', 'post-broadcast to_withdraw does not reflect the target — honest fail');
+            // G6 — chain re-verification with settle-backoff (measured 2026-10-18:
+            // the immediate re-read raced the node's state propagation → honest
+            // VERIFY-FAIL on a SUCCESSFUL broadcast; to_withdraw reflected the
+            // target ~60s later). 3 tries × 15s — still fail-closed after that.
+            let acc2 = null, ok2 = false;
+            for (let t = 0; t < 3 && !ok2; t++) {
+              if (t > 0) await new Promise((r) => setTimeout(r, 15000));
+              for (const node of NODES) { try { const a = await rpc(node, 'condenser_api.get_accounts', [[ACCOUNT]]); if (a && a[0]) { acc2 = a[0]; break; } } catch (e) { /* next */ } }
+              ok2 = acc2 && parseFloat(acc2.to_withdraw || '0') >= targetV - 1e6; // 1 VESTS tolerance
+            }
+            if (!ok2) return fail('VERIFY-FAIL', 'post-broadcast to_withdraw does not reflect the target after 3 settle-backoff reads — honest fail');
             console.log('POWERDOWN-RECEIPT ' + JSON.stringify({ verdict: 'EXECUTED', account_ref: 'acct-00', txid, target_vests: targetV, target_sp: amt, weekly_sp: Number(weeklySp.toFixed(1)), added_to_existing: toWithdrawV > 0, at: new Date().toISOString() }));
           })().catch((e) => fail('UNEXPECTED', e && e.message || e));
           EOS
