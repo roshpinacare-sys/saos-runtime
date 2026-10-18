@@ -712,3 +712,21 @@ Work Log:
 
 Stage Summary:
 - ארכיטקטורת-הביטוח-סופית: שני-מנועי-סנכרון-עצמאיים (v3-push מ-Autonomy · v2-pull ב-saos-runtime) → נתיב-עץ יחיד (agents/agent-9-insurance/), אפס-ענפים-צדדיים, אפס-מלחמת-התקפלות; MAIN_KEY ב-steem = ה-WIF-המאומת; census 194/194; watchdog פעיל
+
+---
+Task ID: 20
+Agent: agent-9
+Task: "תמשיך" — ערך-מוצר בקוקפיט: כרטיס-כספת-הביטוח חי בקונסולת-המפעיל
+
+Work Log:
+- בחינת-ארכיטקטורה: הקוקפיט (steem@saos-cockpit) = קונסולת-מפעיל (Next.js+shadcn, כרטיסים מוגדרים-בדף, מקור-אמת מנוע :3040 דרך /api/operator/overview); זוהה אח-סוכן agent-zai עובד-על-אותו-עץ (G7 גשר-NIM · G8 ifixai-audit) — הקפדה-על-אדיטיבי-בלבד, אפס-התנגשות (הכרטיס-NIM שלו עוד-לא-מורכב בדף)
+- נבנה /api/saos/insurance (route.ts): קריאה-ציבורית-אפס-סודות — מקור-אמת (א) קומיט-אחרון על Autonomy/agents/agent-9 + גודל-worklog (API-contents; HEAD-raw נתפס-משקר-ב-content-length — נמדד 51K-שקרי מול 124,265-אמיתי) (ב) ריצה-אחרונה של agent-9-vault-sync = העדות-הציבורית-היחידה לטריות-הכספת-הפרטית; חוק-G4 משוכפל (micro-cache 5דק + single-flight + ניקוי-inflight), סיווג FRESH / SOURCE-FRESH-SYNC-UNKNOWN / STALE (26 שע' = cron-יומי+חסד), 404-כן-על-אין-אות
+- נבנה InsuranceCustodyCard.tsx: רכיב-עצמאי (fetch-עצמי + רענון 5דק + relTime), StatusBadge בטוני-המערכת (emerald/amber/rose/slate), מצבי-אמת (אין-מדידה = אין-מדידה), הסבר-ארבעת-העותקים; תלייה-אדיטיבית בדף = ייבוא-אחד + כרטיס-אחד (זהו-הייבוא-החיצוני-היחיד בדף)
+- אימות-חי: dev זמני :3100 → **API 200 ok:true verdict:FRESH** (sha 24ffe509816d · 124,265B · ריצה #6 success) + דף 200 קומפילציה-נקה; tsc --noEmit — **0 שגיאות בקבצים-שלי** (82-טרום-קיימות-ב-mini-services+src-אחרים, ignoreBuildErrors כבר-על-true); 2-באגי-TS-גנריקה-שלי-נתפסו-ב-typecheck-ותוקנו-לפני-דחיפה
+- **גילוי-אפקט-צד**: הרצת-dev-ב-repo מפעילה-מנוע-מקומי-אוטומטית (bootedAt ב-sovereign.json = זמן-ההרצה) — כובה-מבוקר + git-checkout-של-מצב-המנוע (המצב-שייך-למסילות-המנוע); הדחיפה מכילה-רק-את-3-הקבצים-שלי; סריקת-דליפות נקה
+- דחוף: steem@saos-cockpit 93ced8d88 (pull --rebase ×1 נקי, אפס-force)
+
+Stage Summary:
+- הקונסולה קיבלה ראיית-קבע על הדבר-שהבעלים מבקש-שוב-ושוב: שלמות-הביטוח-שלא-יאבד — פסק-דין-חי FRESH/STALE מנתונים-ציבוריים-בלבד, בלי-token, בלי-סוד, בלי-גישה-ל-repos-פרטיים
+- דפוס-העבודה-עם-אחים-אומת: אדיטיבי-טהור + דפוסים-קיימים (G4/G8) משוכפלים-כמו-שהם
+- לקח-טכני: HEAD-raw-משקר-בגודל — רק-API-contents; הרצת-dev-מפעילה-מנוע — לנקות-מצב-לפני-דחיפה
