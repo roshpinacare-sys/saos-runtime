@@ -22,15 +22,15 @@ jobs:
         run: |
           set -e
           [ -n "$GH_PAT" ] || { echo NO_TOKEN — FAIL LOUD; exit 1; }
-          git config user.name sovereign-agent-9
-          git config user.email agent9@fleet.local
           git clone --depth 1 https://github.com/roshpinacare-sys/Autonomy.git src
           test -d src/agents/agent-9 || { echo 'insurance dir missing in Autonomy'; exit 1; }
           git clone --depth 1 --branch agent-9-insurance "https://x-access-token:$GH_PAT@github.com/roshpinacare-sys/steem.git" vault
-          rm -rf vault/agents
-          mkdir -p vault/agents
-          cp -r src/agents/agent-9 vault/agents/
           cd vault
+          git config user.name sovereign-agent-9
+          git config user.email agent9@fleet.local
+          rm -rf agents
+          mkdir -p agents
+          cp -r ../src/agents/agent-9 agents/
           git add -A
           if git diff --cached --quiet; then echo 'vault already fresh — quiet beat'; exit 0; fi
           git commit -q -m 'vault-sync: agent-9 insurance refresh from Autonomy'
