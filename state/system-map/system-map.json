@@ -1,20 +1,78 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-17T17:02:27.620Z",
+  "builtAt": "2026-10-18T07:39:44.003Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
+      "name": "arb-grid",
+      "path": ".github/workflows/arb-grid.yml",
+      "crons": [
+        "23 * * * *",
+        "53 5,11,17,23 * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T01:37:13Z"
+      },
+      "verdict": "STALE"
+    },
+    {
       "name": "army-ladder",
       "path": ".github/workflows/army-ladder.yml",
+      "crons": [
+        "41 * * * *",
+        "11 4,10,16,22 * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T03:18:06Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "blurt-revival",
+      "path": ".github/workflows/blurt-revival.yml",
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T11:30:22Z"
+        "created_at": "2026-10-18T00:38:07Z"
       },
       "verdict": "IDLE"
+    },
+    {
+      "name": "builder-catchup",
+      "path": ".github/workflows/builder-catchup.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T05:25:44Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "custody-recover",
+      "path": ".github/workflows/custody-recover.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T07:39:36Z"
+      },
+      "verdict": "ALIVE"
     },
     {
       "name": "dex-beat",
@@ -24,12 +82,12 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T16:54:31Z"
+        "created_at": "2026-10-18T05:54:31Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "RED"
     },
     {
       "name": "directive-now",
@@ -45,6 +103,19 @@
       "verdict": "IDLE"
     },
     {
+      "name": "escrow-payroll",
+      "path": ".github/workflows/escrow-payroll.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "failure",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T05:16:04Z"
+      },
+      "verdict": "RED"
+    },
+    {
       "name": "fee-engine",
       "path": ".github/workflows/fee-engine.yml",
       "crons": [],
@@ -53,9 +124,61 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T16:16:26Z"
+        "created_at": "2026-10-18T05:08:54Z"
       },
       "verdict": "ALIVE"
+    },
+    {
+      "name": "fleet-fuel",
+      "path": ".github/workflows/fleet-fuel.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T03:16:16Z"
+      },
+      "verdict": "IDLE"
+    },
+    {
+      "name": "fleet-rotation-a",
+      "path": ".github/workflows/fleet-rotation-a.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T01:07:11Z"
+      },
+      "verdict": "IDLE"
+    },
+    {
+      "name": "gen2-rotation",
+      "path": ".github/workflows/gen2-rotation.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T00:38:18Z"
+      },
+      "verdict": "IDLE"
+    },
+    {
+      "name": "ghidra-lab",
+      "path": ".github/workflows/ghidra-lab.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T02:05:48Z"
+      },
+      "verdict": "IDLE"
     },
     {
       "name": "grid-watchdog",
@@ -63,12 +186,12 @@
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "cancelled",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T17:02:22Z"
+        "created_at": "2026-10-18T07:39:35Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "CANCELLED"
     },
     {
       "name": "hive-custody-revival",
@@ -92,7 +215,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "issues",
-        "created_at": "2026-10-17T17:02:12Z"
+        "created_at": "2026-10-18T07:39:23Z"
       },
       "verdict": "ALIVE"
     },
@@ -110,6 +233,19 @@
       "verdict": "IDLE"
     },
     {
+      "name": "owner-powerdown",
+      "path": ".github/workflows/owner-powerdown.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T05:16:06Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
       "name": "self-memory",
       "path": ".github/workflows/self-memory.yml",
       "crons": [],
@@ -123,17 +259,32 @@
       "verdict": "IDLE"
     },
     {
-      "name": "sovereign-evolution",
-      "path": ".github/workflows/sovereign-evolution.yml",
+      "name": "sovereign-builder",
+      "path": ".github/workflows/sovereign-builder.yml",
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T13:19:05Z"
+        "created_at": "2026-10-18T07:24:53Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "sovereign-evolution",
+      "path": ".github/workflows/sovereign-evolution.yml",
+      "crons": [
+        "33 5 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-17T21:09:15Z"
+      },
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-pulse",
@@ -144,7 +295,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-17T16:28:05Z"
+        "created_at": "2026-10-18T05:58:14Z"
       },
       "verdict": "ALIVE"
     },
@@ -157,7 +308,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T16:31:28Z"
+        "created_at": "2026-10-18T07:39:23Z"
       },
       "verdict": "ALIVE"
     },
@@ -170,7 +321,22 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T17:02:20Z"
+        "created_at": "2026-10-18T07:39:33Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "treasury-ladder",
+      "path": ".github/workflows/treasury-ladder.yml",
+      "crons": [
+        "47 3,9,15,21 * * *"
+      ],
+      "gapMinutes": 360,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T00:38:21Z"
       },
       "verdict": "ALIVE"
     }
@@ -178,20 +344,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-17T14:45:15Z",
-    "ageMinutes": 137,
-    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
-    "verdict": "STALE"
+    "at": "2026-10-18T07:29:27Z",
+    "ageMinutes": 10,
+    "subject": "scout-ledger: discovery memory update (2026-10-18T07:29Z) [auto]",
+    "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 7,
-    "red": 0,
-    "stale": 0,
+    "alive": 11,
+    "red": 2,
+    "stale": 2,
     "gated": 0,
-    "cancelled": 0,
+    "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 6,
-    "heartbeat": "STALE"
+    "idle": 9,
+    "heartbeat": "ALIVE"
   }
 }
