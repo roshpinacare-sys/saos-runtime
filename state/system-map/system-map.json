@@ -1,8 +1,23 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-18T07:39:44.003Z",
+  "builtAt": "2026-10-19T14:34:06.656Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
+    {
+      "name": "agent-9-vault-sync",
+      "path": ".github/workflows/agent-9-vault-sync.yml",
+      "crons": [
+        "31 3 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-19T09:10:02Z"
+      },
+      "verdict": "ALIVE"
+    },
     {
       "name": "arb-grid",
       "path": ".github/workflows/arb-grid.yml",
@@ -14,26 +29,42 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-18T01:37:13Z"
+        "event": "schedule",
+        "created_at": "2026-10-19T13:38:16Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "army-ladder",
       "path": ".github/workflows/army-ladder.yml",
       "crons": [
         "41 * * * *",
+        "11 * * * *",
         "11 4,10,16,22 * * *"
       ],
       "gapMinutes": 60,
       "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-19T14:22:27Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "arsenal-sentinel",
+      "path": ".github/workflows/arsenal-sentinel.yml",
+      "crons": [
+        "37 */6 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-18T03:18:06Z"
+        "event": "schedule",
+        "created_at": "2026-10-19T13:51:13Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "blurt-revival",
@@ -56,10 +87,23 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-18T05:25:44Z"
+        "event": "schedule",
+        "created_at": "2026-10-19T11:18:17Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
+    },
+    {
+      "name": "cross-custody-probe",
+      "path": ".github/workflows/cross-custody-probe.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-18T13:28:18Z"
+      },
+      "verdict": "IDLE"
     },
     {
       "name": "custody-recover",
@@ -70,7 +114,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T07:39:36Z"
+        "created_at": "2026-10-19T14:33:58Z"
       },
       "verdict": "ALIVE"
     },
@@ -82,12 +126,12 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "failure",
+        "status": "in_progress",
+        "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T05:54:31Z"
+        "created_at": "2026-10-19T13:54:32Z"
       },
-      "verdict": "RED"
+      "verdict": "ALIVE"
     },
     {
       "name": "directive-now",
@@ -98,7 +142,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T04:32:50Z"
+        "created_at": "2026-10-19T01:27:42Z"
       },
       "verdict": "IDLE"
     },
@@ -109,11 +153,11 @@
       "gapMinutes": null,
       "lastRun": {
         "status": "completed",
-        "conclusion": "failure",
+        "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T05:16:04Z"
+        "created_at": "2026-10-19T02:29:45Z"
       },
-      "verdict": "RED"
+      "verdict": "IDLE"
     },
     {
       "name": "fee-engine",
@@ -124,9 +168,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T05:08:54Z"
+        "created_at": "2026-10-19T11:21:25Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "fleet-fuel",
@@ -137,7 +181,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T03:16:16Z"
+        "created_at": "2026-10-19T07:55:17Z"
       },
       "verdict": "IDLE"
     },
@@ -186,12 +230,25 @@
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "cancelled",
+        "status": "in_progress",
+        "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T07:39:35Z"
+        "created_at": "2026-10-19T14:33:57Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "hive-adopt-t21",
+      "path": ".github/workflows/hive-adopt-t21.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-19T01:01:47Z"
+      },
+      "verdict": "IDLE"
     },
     {
       "name": "hive-custody-revival",
@@ -202,9 +259,24 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-17T06:16:39Z"
+        "created_at": "2026-10-19T03:12:42Z"
       },
       "verdict": "IDLE"
+    },
+    {
+      "name": "main-key-refresh",
+      "path": ".github/workflows/main-key-refresh.yml",
+      "crons": [
+        "37 4 * * 1"
+      ],
+      "gapMinutes": 10080,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-19T10:14:18Z"
+      },
+      "verdict": "ALIVE"
     },
     {
       "name": "operator-triage",
@@ -215,9 +287,39 @@
         "status": "completed",
         "conclusion": "success",
         "event": "issues",
-        "created_at": "2026-10-18T07:39:23Z"
+        "created_at": "2026-10-19T14:33:44Z"
       },
       "verdict": "ALIVE"
+    },
+    {
+      "name": "organ-guardian",
+      "path": ".github/workflows/organ-guardian.yml",
+      "crons": [
+        "41 * * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-19T11:12:08Z"
+      },
+      "verdict": "STALE"
+    },
+    {
+      "name": "organ-pacemaker",
+      "path": ".github/workflows/organ-pacemaker.yml",
+      "crons": [
+        "23 * * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-19T07:55:13Z"
+      },
+      "verdict": "STALE"
     },
     {
       "name": "owner-key-adopt",
@@ -228,7 +330,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-12T16:48:45Z"
+        "created_at": "2026-10-18T13:34:10Z"
       },
       "verdict": "IDLE"
     },
@@ -243,7 +345,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-10-18T05:16:06Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "self-memory",
@@ -253,10 +355,25 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-16T11:50:09Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-19T01:27:39Z"
       },
       "verdict": "IDLE"
+    },
+    {
+      "name": "signing-health (runtime-host)",
+      "path": ".github/workflows/signing-health.yml",
+      "crons": [
+        "43 * * * *"
+      ],
+      "gapMinutes": 60,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-19T11:15:46Z"
+      },
+      "verdict": "STALE"
     },
     {
       "name": "sovereign-builder",
@@ -266,8 +383,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-18T07:24:53Z"
+        "event": "schedule",
+        "created_at": "2026-10-19T13:24:00Z"
       },
       "verdict": "ALIVE"
     },
@@ -281,8 +398,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-17T21:09:15Z"
+        "event": "schedule",
+        "created_at": "2026-10-19T11:03:55Z"
       },
       "verdict": "ALIVE"
     },
@@ -295,9 +412,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-18T05:58:14Z"
+        "created_at": "2026-10-19T10:18:46Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -308,7 +425,22 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T07:39:23Z"
+        "created_at": "2026-10-19T14:02:55Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "steem-hand-revival",
+      "path": ".github/workflows/steem-hand-revival.yml",
+      "crons": [
+        "29 */2 * * *"
+      ],
+      "gapMinutes": 1440,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-19T13:44:50Z"
       },
       "verdict": "ALIVE"
     },
@@ -321,7 +453,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T07:39:33Z"
+        "created_at": "2026-10-19T14:33:54Z"
       },
       "verdict": "ALIVE"
     },
@@ -333,31 +465,41 @@
       ],
       "gapMinutes": 360,
       "lastRun": {
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-19T14:33:55Z"
+      },
+      "verdict": "ALIVE"
+    },
+    {
+      "name": "vault-owner-adopt",
+      "path": ".github/workflows/vault-owner-adopt.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-18T00:38:21Z"
+        "created_at": "2026-10-19T04:55:36Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     }
   ],
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-18T07:29:27Z",
-    "ageMinutes": 10,
-    "subject": "scout-ledger: discovery memory update (2026-10-18T07:29Z) [auto]",
-    "verdict": "ALIVE"
+    "verdict": "UNREACHABLE"
   },
   "summary": {
-    "alive": 11,
-    "red": 2,
-    "stale": 2,
+    "alive": 15,
+    "red": 0,
+    "stale": 3,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 9,
-    "heartbeat": "ALIVE"
+    "idle": 17,
+    "heartbeat": "UNREACHABLE"
   }
 }
