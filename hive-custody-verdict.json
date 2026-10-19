@@ -1,0 +1,21 @@
+{
+  "kind": "hive-custody-verdict",
+  "schema": 1,
+  "approved": true,
+  "approvedBy": "owner",
+  "approvedAt": "2026-10-19T02:45:00Z",
+  "approvalQuote": "מאשר שניהם כן תמשיך ודחוף",
+  "verdict": "no live HIVE posting authority in runner-held material — custody debt accepted by the owner",
+  "law": "fail-closed preserved: the judge exits 0 ONLY on an exact match of judgment below (seeds + liveHits + materialFp of the swept seed set); ANY change in runner-held material (new seeds, new eras, liveHits>0) mismatches → exit 1 loud re-opens the alarm; the engine is never disabled",
+  "judgment": {
+    "liveHits": 0,
+    "seeds": 2648,
+    "materialFp": "be739c207777b47b967e8f2ad15151d897705960a260ee4163db3cd6ba293d23"
+  },
+  "measured": {
+    "runA": "saos-runtime/hive-custody-revival #27 (2026-10-19T02:57:10Z): tree-swept seeds=2648, judged liveHits=0",
+    "eras": ["gen1", "recovery-3", "gen2"]
+  },
+  "recordedBy": "agent-9 (t26)",
+  "truthCopies": "local worklog ≡ saos-runtime agents/agent-9-insurance/worklog.md ≡ steem tag archive/agent-9-insurance"
+}

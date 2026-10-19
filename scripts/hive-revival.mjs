@@ -277,7 +277,9 @@ if (!posting) {
   // exit 1 loud. Only an exact match against a recorded owner-approved
   // verdict closes the alarm — the engine itself is never disabled, and new
   // material automatically re-opens it (different materialFp or liveHits).
-  const judgedFp = sha256(Buffer.from([...hexSeeds].sort().join("\n"), "utf8")).toString("hex");
+  // explicit Buffer hex (measured #27: bare Uint8Array.toString("hex") treats "hex"
+  // as a radix → decimal join; Buffer.from(...).toString("hex") is deterministic)
+  const judgedFp = Buffer.from(sha256(Buffer.from([...hexSeeds].sort().join("\n"), "utf8"))).toString("hex");
   const judged = { liveHits: liveHits.length, seeds: hexSeeds.size, materialFp: judgedFp };
   try {
     const v = JSON.parse(fs.readFileSync("hive-custody-verdict.json", "utf8"));
