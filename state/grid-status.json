@@ -1,6 +1,6 @@
 {
  "crossRepo": true,
- "generatedAt": "2026-10-19T14:33:40Z",
+ "generatedAt": "2026-10-19T14:34:54Z",
  "redCount": 12,
  "reds": [
   "anchor.probe",
@@ -33,11 +33,11 @@
   "hierarchyDenialsTail": null,
   "hierarchyEnforceFlags": {},
   "hierarchyGuardLastAt": null,
-  "officeScheduleAgeS": 4639,
+  "officeScheduleAgeS": 4713,
   "officeScheduleAt": "2026-10-19T13:16:19Z",
   "potentialAgeS": null,
   "potentialCommitAt": null,
-  "pulseAgeS": 1842,
+  "pulseAgeS": 1915,
   "pulseRunAt": "2026-10-19T14:02:55Z",
   "pulseRunId": 39265432473,
   "socialExecuted": null,
