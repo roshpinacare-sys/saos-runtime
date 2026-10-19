@@ -7,9 +7,18 @@ Everything an agent-9 session needs to reconstruct itself after sandbox loss:
 
 | file | purpose |
 |---|---|
-| `worklog.md` | full coordination memory — tasks 7→15, laws learned, all measurements |
 | `sandbox-tools/*.mjs` | operational CLI tools (org search, workflow enable/wait/log/dispatch, owner commits, treasury/log forensics, sandbox restore drill) |
 | `tools-manifest.md` | index of every tool — what it does, exact endpoint, how to run (read this first) |
+
+**Worklog moved private (t24, 2026-10-19):** the coordination memory no longer
+lives in this PUBLIC tree. The refs law (zero fleet names in the public surface,
+enforced fail-closed by the public-surface audits) conflicts with a public
+worklog that quotes chain account names — 3 engines ran red on that conflict
+daily. Resolution: full-truth worklog copies are PRIVATE, byte-identical:
+`saos-runtime@main → agents/agent-9-insurance/worklog.md` · steem tag
+`archive/agent-9-insurance` · sandbox-local `worklog.md`. The vault-sync
+engines (v2/v3) never mirror a worklog over the private copy. Recovery reads
+the insurance copy, not this tree.
 
 **Restore drill (one command):** `node agents/agent-9/sandbox-tools/sandbox-restore.mjs` — checks creds/token/repos/worklog/insurance integrity; add `--fix` to actively restore. Source of the PAT if `.git-creds` is gone: `/home/z/my-project/upload/pat.env` (pointer only — never commit its content).
 
