@@ -1024,6 +1024,76 @@ jobs:
           STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
           GH_PAT: ${{ secrets.GH_PAT }}
 
+      # t25 (2026-10-19) · GRID STATE LAST-MILE — the T-62 burst ticks the grid
+      # on the runner (measured 01:32Z: ticksAdvanced=27, verdict BROADCAST,
+      # booklaw txid 9d437faa) but the runner dies with the state: the push-back
+      # yields to the alive custodian and the 23-f rescue (verdicts-only) skips
+      # this file (its h40 guard sees the PUBLIC txid as key material). The
+      # artery-grid watch then reads a frozen lastTickAt and stays red while the
+      # grid is actually alive and trading. This lane lands the grid state
+      # straight via the Contents API: sha-guarded, byte-identical-guarded,
+      # 100KB cap, fail-soft, never fails the beat. Guards check REAL credential
+      # material only (ghp_/github_pat_/WIF shape) — a 40-hex txid is public
+      # chain data, published by the chain itself.
+      - name: Grid state last-mile (t25 · state must outlive the runner)
+        if: always()
+        working-directory: engine/mini-services/saos-engine
+        run: |
+          python3 - <<'PYG25'
+          import base64, json, os, re, urllib.error, urllib.request
+          tok = os.environ.get("GH_PAT", "")
+          P = "state/hyper-grid.json"
+          DEST = "mini-services/saos-engine/state/hyper-grid.json"
+          def done(msg):
+              print(msg); raise SystemExit(0)
+          if not tok:
+              done("grid last-mile skipped (no GH_PAT - honest)")
+          try:
+              raw = open(P, "rb").read()
+          except Exception as e:
+              done("grid last-mile: state unreadable (honest): " + str(e)[:80])
+          if len(raw) > 100 * 1024:
+              done("grid last-mile skipped (%d bytes > 100KB cap - honest)" % len(raw))
+          wif = re.compile(rb"[5JKL][1-9A-HJ-NP-Za-km-z]{49,51}")
+          if b"ghp_" in raw or b"github_pat_" in raw or wif.search(raw):
+              done("grid last-mile skipped (credential-material pattern - honest)")
+          try:
+              rq = urllib.request.Request("https://api.github.com/repos/roshpinacare-sys/steem/contents/" + DEST + "?ref=saos-cockpit")
+              rq.add_header("Authorization", "token " + tok)
+              rq.add_header("Accept", "application/vnd.github+json")
+              with urllib.request.urlopen(rq, timeout=30) as resp:
+                  meta = json.load(resp)
+              sha = meta.get("sha")
+              try:
+                  branch_b = base64.b64decode(meta.get("content") or "")
+              except Exception:
+                  branch_b = None
+          except urllib.error.HTTPError as ge:
+              if ge.code != 404:
+                  done("grid last-mile: GET failed http=%d (honest)" % ge.code)
+              sha = None; branch_b = None
+          except Exception as e:
+              done("grid last-mile: GET failed (honest): " + str(e)[:80])
+          if branch_b == raw:
+              done("grid last-mile: content identical to branch - nothing to land")
+          body = {"message": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
+                  "content": base64.b64encode(raw).decode(), "branch": "saos-cockpit"}
+          if sha:
+              body["sha"] = sha
+          try:
+              pq = urllib.request.Request("https://api.github.com/repos/roshpinacare-sys/steem/contents/" + DEST,
+                                          data=json.dumps(body).encode(), method="PUT")
+              pq.add_header("Authorization", "token " + tok)
+              pq.add_header("Accept", "application/vnd.github+json")
+              with urllib.request.urlopen(pq, timeout=30) as resp:
+                  out = json.load(resp)
+              print("grid last-mile OK (commit %s)" % str(out.get("commit", {}).get("sha", ""))[:12])
+          except Exception as e:
+              print("grid last-mile failed (honest, beat continues): " + str(e)[:120])
+          PYG25
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
       # Z-20-e (exec-20 · owner=active): THE HIVE BEAT — the user's standing order
       # "תמצא פתרון להזרים את הhive" closed at the WORKFLOW layer (the engine's own
       # hive modules are untouched — T-65 territory): hiveCustody unlocks the vault
