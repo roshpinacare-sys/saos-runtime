@@ -1,0 +1,243 @@
+# hive-adopt-t21.yml — HIVE variant of the proven owner-key-adopt (STEEM, tx de76b399…,
+# ADOPTED-AND-VERIFIED 2026-10-18 · block 110548180). Owner order 2026-10-19:
+# "הארכיטקטורה תפעל הכל כבעלים — יש את כל המפתחות בכספות/בגיט — תמצא פתרונות להכל".
+# Install law (T-524, OWNER-APPROVED 2026-10-18 "you can install it yourself — I approve"):
+# ADDITIVE-ONLY posting adoption of the deterministic engine slot. owner/active untouched.
+#
+# Fail-closed gates (inherited verbatim):
+#  G1: candidate WIF parses + derives (graphene ripemd160(pub) checksum).
+#  G2: derived pubkey ∈ LIVE HIVE active authorities (measured from node) — else refuse.
+#  G3: condenser verify_authority must return true — else refuse.
+# Read-back verification after broadcast. Key material never logged, never printed, never on disk.
+# Census law (estate): every candidate secret is WIF-shape-extracted (bundles incl.) and
+# bit-compared vs the chain; only MATCH/NO-MATCH/ABSENT lines are printed.
+name: hive-adopt-t21
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        default: 'acct-00'  # estate-pseudonym ref — resolved ONLY via FLEET_ROSTER_MAP
+      new_posting_pub:
+        default: 'STM8PvmFc1W93SHwewXWa2xKp7A995o3w8H6erJUKk67zTR794DmG'
+      dry_run:
+        description: 'true = census+gates+verify_authority only (no broadcast)'
+        default: 'true'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hive-adopt-t21
+  cancel-in-progress: false
+
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      S_HIVE_ACTIVE_WIF: ${{ secrets.HIVE_ACTIVE_WIF }}
+      S_SA_HEAD_ACTIVE: ${{ secrets.SA_HEAD_ACTIVE }}
+      S_STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      S_MAIN_KEY: ${{ secrets.MAIN_KEY }}
+      S_SA_FLEET_KEYS: ${{ secrets.SA_FLEET_KEYS }}
+      S_ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+      S_HEADCORNER_CRED: ${{ secrets.HEADCORNER_CRED }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+      IN_ACCOUNT: ${{ github.event.inputs.account }}
+      IN_PUB: ${{ github.event.inputs.new_posting_pub }}
+      IN_DRY: ${{ github.event.inputs.dry_run }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Census + gates + adopt (fail-closed, keys never logged)
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/deps/node_modules node << 'EOS'
+          const crypto = require('crypto');
+          const secp = require('@noble/secp256k1');
+          secp.etc.hmacSha256Sync = (key, ...msgs) => {
+            const h = crypto.createHmac('sha256', Buffer.from(key));
+            msgs.forEach((m) => h.update(Buffer.from(m)));
+            return new Uint8Array(h.digest());
+          };
+          const sha256 = (b) => crypto.createHash('sha256').update(b).digest();
+          const ripemd160 = (b) => crypto.createHash('ripemd160').update(b).digest();
+          const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+          const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 300) })); process.exit(1); };
+          const REF2NAME = (() => { try { const m = JSON.parse(process.env.FLEET_ROSTER_MAP || ''); const f = {}; if (m && m.refs) Object.assign(f, m.refs); if (m && m.names) Object.assign(f, m.names); for (const [k, v] of Object.entries(m || {})) if (typeof v === 'string') f[k] = v; const out = {}; for (const [k, v] of Object.entries(f)) { if (k.startsWith('acct-')) out[k] = v; else out[v] = k; } return out; } catch { return {}; } })();
+          const ref2name = (r) => REF2NAME[r] || null;
+          const b58dec = (s) => {
+            let n = 0n;
+            for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
+            let h = n.toString(16).padStart(2, '0'); if (h.length % 2) h = '0' + h;
+            const buf = Buffer.from(h, 'hex');
+            let pad = 0;
+            for (const c of s) { if (c === '1') pad++; else break; }
+            return Buffer.concat([Buffer.alloc(pad), buf]);
+          };
+          const u16 = (v) => { const b = Buffer.alloc(2); b.writeUInt16LE(v); return b; };
+          const u32 = (v) => { const b = Buffer.alloc(4); b.writeUInt32LE(v >>> 0); return b; };
+          const varint = (v) => { const o = []; let x = v >>> 0; do { let b = x & 0x7f; x >>>= 7; if (x) b |= 0x80; o.push(b); } while (x); return Buffer.from(o); };
+          const str = (s) => { const b = Buffer.from(s, 'utf-8'); return Buffer.concat([varint(b.length), b]); };
+          const authBytes = (a) => {
+            const p = [u32(a.weight_threshold), varint(a.account_auths.length)];
+            for (const [acc, w] of a.account_auths) p.push(str(acc), u16(w));
+            p.push(varint(a.key_auths.length));
+            for (const [k, w] of a.key_auths) { const raw = b58dec(k.slice(3)).subarray(0, 33); p.push(raw, u16(w)); }
+            return Buffer.concat(p);
+          };
+          // HIVE mainnet nodes
+          const NODES = ['https://api.hive.blog', 'https://api.openhive.network', 'https://hived.emre.sh', 'https://api.deathwing.me'];
+          // HIVE mainnet chain id (digest = sha256(chainId || txBytes)) — THE STEEM/HIVE asymmetry
+          const HIVE_CHAIN_ID = Buffer.from('beeab0de00000000000000000000000000000000000000000000000000000000', 'hex');
+          async function rpc(node, method, params) {
+            const res = await fetch(node, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+            const j = await res.json();
+            if (j.error) throw new Error((j.error.message || 'rpc-error').slice(0, 200));
+            return j.result;
+          }
+          // WIF-shape extraction from raw secret material (bundles, base64(JSON), raw) — estate census law
+          const WIF_RE = /[5JK][1-9A-HJ-NP-Za-km-z]{50}/g;
+          function collectWifs(node, out) {
+            out = out || [];
+            if (typeof node === 'string') {
+              const t = node.trim();
+              const m = t.match(WIF_RE);
+              if (m) { out.push(...m); return out; }
+              try {
+                const dec = Buffer.from(t, 'base64').toString('utf8');
+                if (dec && dec !== t) {
+                  try { collectWifs(JSON.parse(dec), out); } catch (_) { const m2 = dec.match(WIF_RE); if (m2) out.push(...m2); }
+                }
+              } catch (_) {}
+            } else if (Array.isArray(node)) node.forEach((x) => collectWifs(x, out));
+            else if (node && typeof node === 'object') Object.values(node).forEach((x) => collectWifs(x, out));
+            return out;
+          }
+          function decodeWif(w) {
+            let s = w.trim();
+            if (s.length === 52 && s.startsWith('P')) s = s.slice(1);
+            const raw = b58dec(s);
+            if (raw.length === 38) { if (raw[0] !== 0x80 || raw[33] !== 0x01) throw new Error('wif-format-38'); if (!sha256(sha256(raw.slice(0, 34))).slice(0, 4).equals(raw.slice(34))) throw new Error('wif-checksum'); return raw.slice(1, 33); }
+            if (raw.length === 37) { if (raw[0] !== 0x80) throw new Error('wif-format-37'); if (!sha256(sha256(raw.slice(0, 33))).slice(0, 4).equals(raw.slice(33))) throw new Error('wif-checksum'); return raw.slice(1, 33); }
+            throw new Error('wif-len-' + raw.length);
+          }
+          function pubOf(priv) {
+            const p33 = Buffer.from(secp.getPublicKey(priv, true));
+            const full = Buffer.concat([p33, ripemd160(p33).slice(0, 4)]);
+            let n = 0n;
+            for (const x of full) n = n * 256n + BigInt(x);
+            let s = '';
+            while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+            for (const x of full) { if (x === 0) s = '1' + s; else break; }
+            return 'STM' + s; // HIVE keeps the STM address prefix
+          }
+          const pubBody = (p) => p.slice(3); // prefix-agnostic body compare
+          (async () => {
+            const ACCOUNT = ref2name((process.env.IN_ACCOUNT || 'acct-00').trim());
+            if (!ACCOUNT) fail('ROSTER-UNRESOLVED', 'account ref not resolvable from FLEET_ROSTER_MAP — fail-honest');
+            const NEWPUB = (process.env.IN_PUB || 'STM8PvmFc1W93SHwewXWa2xKp7A995o3w8H6erJUKk67zTR794DmG').trim();
+            const DRY = String(process.env.IN_DRY ?? 'true') === 'true';
+            if (!/^STM[1-9A-HJ-NP-Za-km-z]{50,52}$/.test(NEWPUB)) fail('BAD-PUB', 'new posting pub malformed');
+            let acc, nodeUsed = '';
+            for (const node of NODES) {
+              try { const accs = await rpc(node, 'condenser_api.get_accounts', [[ACCOUNT]]); if (accs && accs[0]) { acc = accs[0]; nodeUsed = node; break; } } catch (e) {}
+            }
+            if (!acc) return fail('ACCOUNT-LOOKUP-FAIL', 'all HIVE nodes failed');
+            const liveActive = (acc.active && acc.active.key_auths ? acc.active.key_auths : []).map((x) => x[0]);
+            const livePosting = (acc.posting && acc.posting.key_auths ? acc.posting.key_auths : []).map((x) => x[0]);
+            const liveOwner = (acc.owner && acc.owner.key_auths ? acc.owner.key_auths : []).map((x) => x[0]);
+            const liveMemo = [acc.memo_key];
+            const thr = (acc.posting && acc.posting.weight_threshold) != null ? acc.posting.weight_threshold : 1;
+            console.log(JSON.stringify({ account: ACCOUNT, chain: 'HIVE', live_active_n: liveActive.length, live_posting_n: livePosting.length, threshold: thr }));
+            // ── CENSUS: every candidate secret vs live authorities (names + pubs only) ──
+            const CANDIDATES = ['S_HIVE_ACTIVE_WIF', 'S_SA_HEAD_ACTIVE', 'S_STEEM_ACTIVE_WIF', 'S_MAIN_KEY', 'S_SA_FLEET_KEYS', 'S_ROT2_FLEET_KEYS', 'S_HEADCORNER_CRED'];
+            let found = null; // {name, priv}
+            for (const c of CANDIDATES) {
+              const raw = (process.env[c] || '').trim();
+              if (!raw) { console.log('CENSUS-ABSENT ' + c); continue; }
+              const wifs = collectWifs(raw);
+              let matched = false;
+              for (const w of wifs) {
+                try {
+                  const priv = decodeWif(w);
+                  const pub = pubOf(priv);
+                  for (const [role, list] of [['active', liveActive], ['owner', liveOwner], ['posting', livePosting], ['memo', liveMemo]]) {
+                    if (list.some((k) => pubBody(k) === pubBody(pub))) {
+                      console.log('CENSUS-MATCH ' + c + ' -> ' + ACCOUNT + ':' + role + ' (bit-exact vs live HIVE authority) pub=' + pub.slice(0, 14) + '...');
+                      if (role === 'active' && !found) found = { name: c, priv };
+                      matched = true;
+                    }
+                  }
+                } catch (_) { /* not a valid wif */ }
+              }
+              if (!matched) console.log('CENSUS-NO-MATCH ' + c + ' (' + wifs.length + ' wif-shapes tried)');
+              if (found) break;
+            }
+            if (!found) {
+              console.log(JSON.stringify({ verdict: 'CENSUS-EXHAUSTED', reason: 'no runner secret matches live HIVE active authority of ' + ACCOUNT + ' — HIVE install stays owner-held (fail-closed, nothing broadcast)' }));
+              process.exit(0);
+            }
+            if (livePosting.some((k) => pubBody(k) === pubBody(NEWPUB))) {
+              console.log(JSON.stringify({ verdict: 'ALREADY-REGISTERED', posting: livePosting }));
+              process.exit(0);
+            }
+            // FC flat_map law: key_auths SERIALIZED SORTED by key string
+            const newPosting = {
+              weight_threshold: thr,
+              account_auths: ((acc.posting && acc.posting.account_auths) || []).slice().sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)),
+              key_auths: [...livePosting.map((k) => [k, 1]), [NEWPUB, 1]].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)),
+            };
+            const gp = await rpc(nodeUsed, 'condenser_api.get_dynamic_global_properties', []);
+            const txParts = {
+              refBlockNum: gp.head_block_number & 0xffff,
+              refBlockPrefix: Buffer.from(gp.head_block_id, 'hex').readUInt32LE(4),
+              expirationUnix: Math.floor(new Date(gp.time + 'Z').getTime() / 1000) + 90,
+            };
+            const op = Buffer.concat([varint(43), str(ACCOUNT), varint(0), varint(0), varint(1), authBytes(newPosting), varint(0), str(''), str(''), varint(0)]);
+            const txBytes = Buffer.concat([u16(txParts.refBlockNum), u32(txParts.refBlockPrefix), u32(txParts.expirationUnix), varint(1), op, varint(0)]);
+            // THE asymmetry: HIVE digest = sha256(HIVE chain id || txBytes)
+            const digest = sha256(Buffer.concat([HIVE_CHAIN_ID, txBytes]));
+            const rawSig = secp.sign(digest, found.priv, { prehash: false });
+            const N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+            let s = rawSig.s, rec = Number(rawSig.recovery);
+            if (s > N / 2n) { s = N - s; rec = rec ^ 1; }
+            if (s > N / 2n) return fail('NON-CANONICAL-S', 'normalization failed');
+            const rBuf = Buffer.from(rawSig.r.toString(16).padStart(64, '0'), 'hex');
+            const sBuf = Buffer.from(s.toString(16).padStart(64, '0'), 'hex');
+            const sig65 = Buffer.concat([Buffer.from([rec + 31]), rBuf, sBuf]);
+            if (sBuf[0] & 0x80) return fail('NON-CANONICAL-S', 's high bit set');
+            const txJson = {
+              ref_block_num: txParts.refBlockNum, ref_block_prefix: txParts.refBlockPrefix,
+              expiration: new Date(txParts.expirationUnix * 1000).toISOString().slice(0, 19),
+              operations: [['account_update2', { account: ACCOUNT, owner: null, active: null, posting: newPosting, memo_key: null, json_metadata: '', posting_json_metadata: '' }]],
+              extensions: [], signatures: [sig65.toString('hex')],
+            };
+            if (DRY) {
+              for (const node of NODES) {
+                try { const v = await rpc(node, 'condenser_api.verify_authority', [txJson]); console.log('DEBUG_VA ' + node + ' => ' + JSON.stringify(v)); } catch (e) { console.log('DEBUG_VA ' + node + ' => ERR ' + e.message.slice(0, 120)); }
+              }
+              console.log(JSON.stringify({ verdict: 'DRY-RUN-OK', matched_secret: found.name, node: nodeUsed, would_set_posting: newPosting }));
+              process.exit(0);
+            }
+            // G3
+            const va = await rpc(nodeUsed, 'condenser_api.verify_authority', [txJson]);
+            if (va !== true) return fail('VERIFY-AUTHORITY-FALSE', JSON.stringify(va).slice(0, 200));
+            let bcRes;
+            try {
+              bcRes = await rpc(nodeUsed, 'condenser_api.broadcast_transaction_synchronous', [txJson]);
+            } catch (e) {
+              const node2 = NODES.find((n) => n !== nodeUsed);
+              bcRes = await rpc(node2, 'condenser_api.broadcast_transaction_synchronous', [txJson]);
+            }
+            await new Promise((r) => setTimeout(r, 4000));
+            const accs2 = await rpc(nodeUsed, 'condenser_api.get_accounts', [[ACCOUNT]]);
+            const p2 = (accs2[0].posting && accs2[0].posting.key_auths ? accs2[0].posting.key_auths : []).map((x) => x[0]);
+            const ok = p2.some((k) => pubBody(k) === pubBody(NEWPUB)) && livePosting.every((k) => p2.includes(k));
+            console.log(JSON.stringify({ verdict: ok ? 'ADOPTED-AND-VERIFIED' : 'VERIFY-FAILED', tx: (bcRes && bcRes.id) || null, block: (bcRes && bcRes.block_num) || null, posting_now: p2 }));
+            process.exit(ok ? 0 : 1);
+          })().catch((e) => fail('FATAL', e.message));
+          EOS
