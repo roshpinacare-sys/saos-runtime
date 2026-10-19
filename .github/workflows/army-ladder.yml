@@ -92,7 +92,18 @@ jobs:
           set -Eeuo pipefail
           git config user.name "roshpinacare-sys"
           git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
-          git add grids/state/army-receipts.jsonl grids/state/army-public.json grids/state/one-body-receipts.jsonl grids/state/volume-verify.json grids/state/policy-ledger.jsonl grids/state/policy-gears.json 2>/dev/null || true
+          # W12 evidence fix: git add aborts ALL paths when ANY pathspec is missing
+          # (one-body-receipts.jsonl exists only when aid legs fired tonight) —
+          # "no receipt change" lied for every run since the W13 list; measured
+          # runs 39192478780/39194700284/39196836599 (02:58/03:26/03:53Z) broadcast
+          # on-chain but zero receipts landed. Per-file adds never abort the batch.
+          git add grids/state/army-receipts.jsonl 2>/dev/null || true
+          git add grids/state/army-public.json 2>/dev/null || true
+          git add grids/state/one-body-receipts.jsonl 2>/dev/null || true
+          git add grids/state/volume-verify.json 2>/dev/null || true
+          git add grids/state/policy-ledger.jsonl 2>/dev/null || true
+          git add grids/state/policy-gears.json 2>/dev/null || true
+          git status --short grids/state/ | head -8
           if git diff --cached --quiet; then
             echo "no receipt change — clean exit"
           else
