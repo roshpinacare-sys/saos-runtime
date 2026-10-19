@@ -154,7 +154,10 @@ jobs:
             const thr = (acc.posting && acc.posting.weight_threshold) != null ? acc.posting.weight_threshold : 1;
             console.log(JSON.stringify({ account: ACCOUNT, chain: 'HIVE', live_active_n: liveActive.length, live_posting_n: livePosting.length, threshold: thr }));
             // ── CENSUS: every candidate secret vs live authorities (names + pubs only) ──
+            // Form exhaustion law (estate keys-census v2): WIF shapes (37B/38B/P-prefix, raw/base64/JSON)
+            // AND password-derivation (steemit login law sha256(name+role+password), 6 seed orders).
             const CANDIDATES = ['S_HIVE_ACTIVE_WIF', 'S_SA_HEAD_ACTIVE', 'S_STEEM_ACTIVE_WIF', 'S_MAIN_KEY', 'S_SA_FLEET_KEYS', 'S_ROT2_FLEET_KEYS', 'S_HEADCORNER_CRED'];
+            const ORDERS = [(a, r, p) => a + r + p, (a, r, p) => p + r + a, (a, r, p) => a + p + r, (a, r, p) => p + a + r, (a, r, p) => r + a + p, (a, r, p) => r + p + a];
             let found = null; // {name, priv}
             for (const c of CANDIDATES) {
               const raw = (process.env[c] || '').trim();
@@ -168,13 +171,37 @@ jobs:
                   for (const [role, list] of [['active', liveActive], ['owner', liveOwner], ['posting', livePosting], ['memo', liveMemo]]) {
                     if (list.some((k) => pubBody(k) === pubBody(pub))) {
                       console.log('CENSUS-MATCH ' + c + ' -> ' + ACCOUNT + ':' + role + ' (bit-exact vs live HIVE authority) pub=' + pub.slice(0, 14) + '...');
-                      if (role === 'active' && !found) found = { name: c, priv };
+                      if ((role === 'active' || role === 'owner') && !found) found = { name: c, priv };
                       matched = true;
                     }
                   }
                 } catch (_) { /* not a valid wif */ }
               }
               if (!matched) console.log('CENSUS-NO-MATCH ' + c + ' (' + wifs.length + ' wif-shapes tried)');
+              if (!wifs.length) {
+                // safe shape diagnosis (no values): length + decodability class only
+                let cls = 'len-' + raw.length;
+                try { const dec = Buffer.from(raw, 'base64'); if (dec.length > 8 && dec.toString('utf8').match(/[\x20-\x7e]/)) cls += ' b64-decodable-len-' + dec.length; } catch (_) {}
+                console.log('CENSUS-SHAPE ' + c + ' ' + cls);
+                // steemit login law: sha256(name + role + password) — 6 seed orders × 4 roles
+                let derMatched = false;
+                for (const pw of [raw]) {
+                  for (let oi = 0; oi < ORDERS.length && !derMatched; oi++) {
+                    for (const role of ['active', 'owner', 'posting', 'memo']) {
+                      try {
+                        const pub = pubOf(sha256(Buffer.from(ORDERS[oi](ACCOUNT, role, pw), 'utf8')));
+                        const list = role === 'active' ? liveActive : role === 'owner' ? liveOwner : role === 'posting' ? livePosting : liveMemo;
+                        if (list.some((k) => pubBody(k) === pubBody(pub))) {
+                          console.log('CENSUS-DERIV ' + c + ' (seed-order o' + oi + ') -> ' + ACCOUNT + ':' + role + ' pub=' + pub.slice(0, 14) + '...');
+                          if ((role === 'active' || role === 'owner') && !found) found = { name: c, priv: sha256(Buffer.from(ORDERS[oi](ACCOUNT, role, pw), 'utf8')) };
+                          derMatched = true; matched = true;
+                        }
+                      } catch (_) {}
+                    }
+                  }
+                }
+                if (!derMatched) console.log('CENSUS-DERIV-NO-MATCH ' + c + ' (6 orders × 4 roles)');
+              }
               if (found) break;
             }
             if (!found) {
