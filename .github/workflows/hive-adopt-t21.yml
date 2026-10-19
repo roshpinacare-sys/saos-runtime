@@ -184,15 +184,18 @@ jobs:
                 try { const dec = Buffer.from(raw, 'base64'); if (dec.length > 8 && dec.toString('utf8').match(/[\x20-\x7e]/)) cls += ' b64-decodable-len-' + dec.length; } catch (_) {}
                 console.log('CENSUS-SHAPE ' + c + ' ' + cls);
                 // steemit login law: sha256(name + role + password) — 6 seed orders × 4 roles
+                // password forms: raw string AND base64-decoded printable payload (last shape)
+                let pws = [raw];
+                try { const dec = Buffer.from(raw, 'base64').toString('utf8').trim(); if (dec && dec !== raw && /^[\x20-\x7e]+$/.test(dec)) pws.push(dec); } catch (_) {}
                 let derMatched = false;
-                for (const pw of [raw]) {
+                for (const pw of pws) {
                   for (let oi = 0; oi < ORDERS.length && !derMatched; oi++) {
                     for (const role of ['active', 'owner', 'posting', 'memo']) {
                       try {
                         const pub = pubOf(sha256(Buffer.from(ORDERS[oi](ACCOUNT, role, pw), 'utf8')));
                         const list = role === 'active' ? liveActive : role === 'owner' ? liveOwner : role === 'posting' ? livePosting : liveMemo;
                         if (list.some((k) => pubBody(k) === pubBody(pub))) {
-                          console.log('CENSUS-DERIV ' + c + ' (seed-order o' + oi + ') -> ' + ACCOUNT + ':' + role + ' pub=' + pub.slice(0, 14) + '...');
+                          console.log('CENSUS-DERIV ' + c + ' (form-' + (pw === raw ? 'raw' : 'b64') + ' · seed-order o' + oi + ') -> ' + ACCOUNT + ':' + role + ' pub=' + pub.slice(0, 14) + '...');
                           if ((role === 'active' || role === 'owner') && !found) found = { name: c, priv: sha256(Buffer.from(ORDERS[oi](ACCOUNT, role, pw), 'utf8')) };
                           derMatched = true; matched = true;
                         }
