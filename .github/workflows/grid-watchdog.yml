@@ -349,10 +349,26 @@ jobs:
               live = hb.get("blurtLive")
           if btot is None and hb_ok and isinstance(hb.get("blurtTotal"), int) and not isinstance(hb.get("blurtTotal"), bool):
               btot = hb.get("blurtTotal")
+          # T29 verdict-aware law (2026-10-19, measured ×6 endpoints): the entire
+          # Blurt PUBLIC RPC infrastructure was down (saboin = HTTP-200 shell whose
+          # upstream 127.0.0.1:8091 refuses; blurt.world + 4 alternates dead) while
+          # the machine was healthy — the heartbeat honestly emitted
+          # BLURT-RPC-UNREACHABLE (live=null) and this signal stayed red, drowning
+          # the gate for a third-party outage (same false-red family as 26-c).
+          # Law: UNREACHABLE = third-party infra outage → stays LOUD in "measured"
+          # but is not a machine fault (digest COOLDOWN precedent: honest pacing
+          # state is not red). Measured faults stay red: BODIES-EMPTY (RPC
+          # reachable, 0 live bodies) and any unknown verdict (fail-closed).
+          if bv == "BLURT-RPC-UNREACHABLE":
+              bl_red = False
+          elif isinstance(live, int) and not isinstance(live, bool) and live == 0 and bv != "BLURT-BODIES-EMPTY":
+              bl_red = True   # measured zero without the EMPTY verdict — fail-closed
+          else:
+              bl_red = not (isinstance(live, int) and not isinstance(live, bool) and live >= 1)
           signals["blurt.live"] = {
               "measured": "verdict=%s live=%s/%s" % (bv, live, btot),
-              "threshold": "live>=1",
-              "red": (not (isinstance(live, int) and not isinstance(live, bool) and live >= 1)),
+              "threshold": "live>=1 measured · BLURT-RPC-UNREACHABLE = third-party infra outage (loud in measured, not machine-fault)",
+              "red": bl_red,
               "since": hb_at,
           }
           facts["blurtLive"], facts["blurtTotal"] = live, btot
