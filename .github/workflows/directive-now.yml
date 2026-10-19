@@ -37,7 +37,9 @@ jobs:
           node-version: 22
       - name: Install engine crypto deps
         working-directory: engine/mini-services/saos-engine
-        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^2.2.3 --silent
+        # W11 fix: engine bun.lock pins secp256k1 1.7.2 (signSync tuple API, cockpit be675ca52)
+        # — v2.2.3 here bricked the selftest gate (signSync removed in v2). Same class as sovereign-runtime.
+        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^1.7.2 --silent
       - name: Selftest gate (fail-closed — red run = public alarm, nothing broadcast)
         working-directory: engine/mini-services/saos-engine
         run: node selftest.mjs

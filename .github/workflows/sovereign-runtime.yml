@@ -99,7 +99,15 @@ jobs:
 
       - name: Install engine deps
         working-directory: engine/mini-services/saos-engine
-        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^2.2.3 --silent
+        # W11 ROOT-CAUSE FIX (2026-10-19, ~29+ red runs/24h): the engine's own
+        # bun.lock pins @noble/secp256k1 1.7.2 and cockpit commit be675ca52 makes
+        # steemtx.mjs signDigest use the v1.7.2 signSync tuple API. Installing
+        # v2.2.3 here (copied from the ROOT package.json at workflow birth)
+        # shadowed the engine's resolution with a version whose API REMOVED
+        # signSync → selftest gate TypeError → fail-closed red → every post-gate
+        # step skipped, every beat, since birth. Root scripts (hive-revival etc.)
+        # keep their own v2 env in the repo root /tmp prefixes — untouched.
+        run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^1.7.2 --silent
 
       - name: Selftest gate (fail-closed — red run = public alarm)
         working-directory: engine/mini-services/saos-engine
@@ -1406,6 +1414,7 @@ jobs:
         if: always()
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+          HB_RESULT: ${{ needs.heartbeat.result }}
         run: |
           # [W1.6 agent-zai 17.10] sleep 900→120 — MEASURED ROOT CAUSE of the 2×
           # cadence divergence the W1.5 watchdog fix flagged: the design assumed
@@ -1417,7 +1426,22 @@ jobs:
           # runner-hours/day of pure sleep stop being billed. The 20-25min design
           # is reachable only by parallelizing the probes — an architectural call
           # that stays with the owner (this diff changes ONE number, honest).
-          sleep 120
+          #
+          # [W11 zai 19.10] RUNAWAY DAMPING — MEASURED: when the heartbeat dies
+          # EARLY (selftest gate red, e.g. the secp-v2 brick) the whole run
+          # finishes in ~90s and sleep 120 turned the 30-min heartbeat into a
+          # ~2.5-MIN RED FIREHOSE (43 runs in ~1.8h, ~29+ failed/24h, every one
+          # billing a runner). A red engine is an ALARM, not an amplifier: on
+          # any non-success heartbeat result, back off 1800s so red cadence
+          # stays ≤ ~30min — the alarm stays visible (per-30min red run), the
+          # firehose and its bill are gone. Green keeps the W1.6 120s catch-up
+          # (work grows back to ~27min ≈ 30min cadence).
+          if [ "$HB_RESULT" != "success" ]; then
+            echo "heartbeat result: ${HB_RESULT:-unknown} → damping sleep 1800s (red = alarm, not amplifier)"
+            sleep 1800
+          else
+            sleep 120
+          fi
           # T-22c hardening (grid-never-down): one transient dispatch failure must not kill
           # the pulse chain — 3 attempts with backoff before the beat reports dead. The hourly
           # cron backstop remains the final revive for infra/billing deaths where NOTHING runs.

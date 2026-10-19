@@ -44,6 +44,11 @@ async function unwrap(buf, tag, depth, found) {
     }
     if (isTar) {
       fs.writeFileSync(`${t0}/a.tar`, b);
+      // W11 fix (measured 2026-10-19, ×8 red/24h): tar does NOT auto-create the
+      // -C target (unzip -d does) → "tar: /tmp/uw-*/o: Cannot open" → every .tar
+      // bundle (KEYS-BACKUP-2026-09-09.tar.enc) silently skipped → "no live hive
+      // posting authority" false alarm. One line, mechanical, no semantics change.
+      fs.mkdirSync(`${t0}/o`, { recursive: true });
       execFileSync("tar", ["-xf", `${t0}/a.tar`, "-C", `${t0}/o`]);
       const walk = (p) => { for (const e of fs.readdirSync(p, { withFileTypes: true })) { const f2 = p + "/" + e.name; if (e.isDirectory()) walk(f2); else found.push([`${tag}>${e.name}`, fs.readFileSync(f2).toString("latin1")]); } };
       walk(`${t0}/o`);

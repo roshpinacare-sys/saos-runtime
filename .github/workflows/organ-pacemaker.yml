@@ -32,12 +32,30 @@ jobs:
           GH = "https://api.github.com"
           REPO = "roshpinacare-sys/saos-runtime"
           TOK = os.environ["GH_TOKEN"]
-          # organ → (workflow file, fresh-window seconds, grace seconds)
+          # organ → (workflow file, fresh-window seconds, grace seconds, dispatch inputs)
+          # [W11 zai 19.10] full-coverage round — owner order: "הארכיטקטורה הריבונית
+          # תדע להשתמש ולתפעל את הכל ברמה הכי גבוהה". 5 organs joined:
+          #   army-ladder    — hourly :41 cron but GitHub DROPS slots on busy repos
+          #                    (measured: last success 2.1h with hourly cron) → healed here;
+          #   self-memory,
+          #   system-map     — dispatch-only since birth, never run (לא-נצפה on the board);
+          #   escrow-payroll — dispatch-only; canary payroll, owner mandate R30 full-lift
+          #                    (dust amounts, hard caps in code, chain-idempotent, confirm=ESCROW);
+          #   directive-now  — dispatch-only; default task health-probe (read-only broadcast).
+          # dispatch inputs passed only where the workflow defines them (GitHub 422s
+          # on unknown inputs). Anti-spam law added: a never-succeeded organ is
+          # dispatched at most once per fresh+grace window (was: EVERY hourly tick
+          # — an hourly red loop waiting to happen on a 93600s-window organ).
           ORGANS = {
-              "fleet-fuel":      ("fleet-fuel.yml",      7200,  3600),
-              "treasury-ladder": ("treasury-ladder.yml", 25200, 3600),
-              "sovereign-pulse": ("sovereign-pulse.yml", 23400, 3600),
-              "grid-watchdog":   ("grid-watchdog.yml",   5400,  3600),
+              "fleet-fuel":      ("fleet-fuel.yml",      7200,  3600, {}),
+              "treasury-ladder": ("treasury-ladder.yml", 25200, 3600, {}),
+              "sovereign-pulse": ("sovereign-pulse.yml", 23400, 3600, {}),
+              "grid-watchdog":   ("grid-watchdog.yml",   5400,  3600, {}),
+              "army-ladder":     ("army-ladder.yml",     5400,  3600, {}),
+              "self-memory":     ("self-memory.yml",    93600,  3600, {}),
+              "system-map":      ("system-map.yml",     93600,  3600, {}),
+              "escrow-payroll":  ("escrow-payroll.yml", 93600,  3600, {"confirm": "ESCROW"}),
+              "directive-now":   ("directive-now.yml",  93600,  3600, {}),
           }
 
           def api(path, method="GET", body=None):
@@ -51,20 +69,38 @@ jobs:
               with urllib.request.urlopen(req, timeout=30) as r:
                   return json.loads(r.read().decode() or "{}")
 
+          def dispatch(wfile, inputs):
+              body = {"ref": "main"}
+              if inputs:
+                  body["inputs"] = inputs
+              api(f"/repos/{REPO}/actions/workflows/{wfile}/dispatches", "POST", body)
+
           receipts = []
-          for name, (wfile, fresh, grace) in ORGANS.items():
+          for name, (wfile, fresh, grace, inputs) in ORGANS.items():
               try:
                   runs = api(f"/repos/{REPO}/actions/workflows/{wfile}/runs?per_page=10").get("workflow_runs", [])
                   ok = [r for r in runs if r["conclusion"] == "success"]
                   if not ok:
-                      receipts.append({"organ": name, "verdict": "NEVER-SUCCEEDED", "dispatched": True})
-                      api(f"/repos/{REPO}/actions/workflows/{wfile}/dispatches", "POST", {"ref": "main"})
+                      # never succeeded (maybe never ran): dispatch, but at most once
+                      # per window — a recent failed attempt means the verdict is
+                      # already loud on the board; spamming it hourly heals nothing.
+                      if runs:
+                          last_any = time.time() - time.mktime(time.strptime(runs[0]["created_at"], "%Y-%m-%dT%H:%M:%SZ")) - time.timezone
+                      else:
+                          last_any = None
+                      if last_any is None or last_any > fresh + grace:
+                          dispatch(wfile, inputs)
+                          receipts.append({"organ": name, "verdict": "NEVER-RUN-DISPATCHED" if last_any is None else "NEVER-SUCCEEDED-DISPATCHED",
+                                           "lastAnyAgeSec": last_any is not None and int(last_any), "dispatched": True})
+                      else:
+                          receipts.append({"organ": name, "verdict": "ATTEMPT-PENDING",
+                                           "lastAnyAgeSec": int(last_any), "dispatched": False})
                       continue
                   age = time.time() - time.mktime(time.strptime(ok[0]["created_at"], "%Y-%m-%dT%H:%M:%SZ")) - time.timezone
                   limit = fresh + grace
                   stale = age > limit
                   if stale:
-                      api(f"/repos/{REPO}/actions/workflows/{wfile}/dispatches", "POST", {"ref": "main"})
+                      dispatch(wfile, inputs)
                   receipts.append({"organ": name, "verdict": "STALE-DISPATCHED" if stale else "FRESH",
                                    "ageSec": int(age), "limitSec": limit, "dispatched": stale})
               except Exception as e:
