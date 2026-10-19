@@ -208,7 +208,41 @@ jobs:
               if (found) break;
             }
             if (!found) {
-              console.log(JSON.stringify({ verdict: 'CENSUS-EXHAUSTED', reason: 'no runner secret matches live HIVE active authority of ' + ACCOUNT + ' — HIVE install stays owner-held (fail-closed, nothing broadcast)' }));
+              console.log(JSON.stringify({ verdict: 'CENSUS-EXHAUSTED-HEAD', reason: 'no runner secret matches live HIVE active authority of ' + ACCOUNT + ' — install stays owner-held (fail-closed, nothing broadcast)' }));
+              // ── ESTATE-WIDE CENSUS (informational): which roster refs DO we hold on HIVE? ──
+              // This answers: can the HIVE army rails ignite from existing custody?
+              const REFS = [];
+              for (let i = 0; i < 20; i++) { const n = ref2name('acct-' + String(i).padStart(2, '0')); if (n) REFS.push('acct-' + String(i).padStart(2, '0')); }
+              const allWifs = [];
+              for (const c of CANDIDATES) {
+                const raw = (process.env[c] || '').trim();
+                if (raw) for (const w of collectWifs(raw)) allWifs.push({ c, w });
+              }
+              console.log('ESTATE-CENSUS refs=' + REFS.length + ' wifs=' + allWifs.length);
+              let held = 0;
+              for (const ref of REFS) {
+                const name = ref2name(ref);
+                let acc2 = null;
+                for (const node of NODES) { try { const rs = await rpc(node, 'condenser_api.get_accounts', [[name]]); if (rs && rs[0]) { acc2 = rs[0]; break; } } catch (e) {} }
+                if (!acc2) { console.log('ESTATE ' + ref + ' -> absent-on-chain'); continue; }
+                const auths = {
+                  owner: (acc2.owner?.key_auths || []).map((x) => x[0]),
+                  active: (acc2.active?.key_auths || []).map((x) => x[0]),
+                  posting: (acc2.posting?.key_auths || []).map((x) => x[0]),
+                  memo: [acc2.memo_key],
+                };
+                const roles = [];
+                for (const { c, w } of allWifs) {
+                  try {
+                    const pub = pubOf(decodeWif(w));
+                    for (const role of ['owner', 'active', 'posting', 'memo']) {
+                      if (auths[role].some((k) => pubBody(k) === pubBody(pub))) { roles.push(role + '←' + c); held++; }
+                    }
+                  } catch (_) {}
+                }
+                console.log('ESTATE ' + ref + ' -> ' + (roles.length ? 'HELD ' + roles.join(',') : 'no-custody') + ' (posting_n=' + auths.posting.length + ')');
+              }
+              console.log(JSON.stringify({ verdict: 'ESTATE-CENSUS-DONE', held_authorities: held }));
               process.exit(0);
             }
             if (livePosting.some((k) => pubBody(k) === pubBody(NEWPUB))) {
