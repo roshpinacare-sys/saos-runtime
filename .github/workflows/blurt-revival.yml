@@ -17,6 +17,8 @@ on:
       mode:
         description: 'health | dry | post'
         default: 'health'
+  schedule:
+    - cron: "23 * * * *"   # hourly self-healing health probe (the designed cadence, was dispatch-only — t40 closes the gap); all-nodes-down = honest GREEN per the law above, zero email noise
 
 permissions:
   contents: write
