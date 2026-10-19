@@ -41,6 +41,11 @@ jobs:
       # fresh source for resolve-keys. Without it the GEN-2 zip (pre-ROT2 payload) matched
       # 0 across 0 → KEYLESS-STASIS green-sleep. One line, additive, alive-wins.
       ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+      # W12c lane self-funding: the refill leg signs a dust transfer FROM the
+      # treasury (headcorner) — loadKeys maps STEEM_ACTIVE_WIF → headcorner as
+      # the env fallback when the roster file lacks the head account. Key-gated
+      # against the LIVE active authority like every other leg.
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
     steps:
       - uses: actions/checkout@v5
         with: { fetch-depth: 1 }
