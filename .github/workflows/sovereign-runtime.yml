@@ -66,7 +66,11 @@ concurrency:
 jobs:
   heartbeat:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # W11b: 30 -> 45 — MEASURED (run 39179869461, post-secp-fix): the real beat
+    # (gate→ignition→rail→anchor→posting→TruthRail→Hyper-grid burst→exec29) ran
+    # 26-31min in the healthy era and was CANCELLED exactly at the 30:00 cap —
+    # commit-state-back never ran. 45 gives the measured work +15min runner variance.
+    timeout-minutes: 45
     env:
       # R-VAULTPASS-1 (2026-10-11, zai-code-3): the GEN-1/ROT4 vault unlock
       # keys left the steem repo — the sealed bundle arrives as a secret.
@@ -1359,7 +1363,10 @@ jobs:
     needs: heartbeat
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    # W11b: 18 -> 40 — the W11 red-damping sleeps 1800s in this job; under the old
+    # cap the job would die at 18min BEFORE dispatching the next heartbeat (the
+    # chain would halt on every red). 40 = 30min damping + relay work + retries.
+    timeout-minutes: 40
     steps:
       - name: Fleet relay — guarded dispatch to closer + decider + THE GRID + evolution (T-65 grid-never-down, fail-soft)
         env:
