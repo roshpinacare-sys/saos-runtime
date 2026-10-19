@@ -1,14 +1,23 @@
-# vault-owner-adopt.yml — T24: installs the OWNER'S VAULT KEY onto headcorner's three authorities.
+# vault-owner-adopt.yml — T24: installs the OWNER'S VAULT KEY onto headcorner's
+# ACTIVE + POSTING authorities (the engine-held powers).
 #
 # OWNER VERDICT THAT COMMANDED THIS (2026-10-19): the owner's vault key
 # (headcorner.txt — "the key without the name") was rejected by every login
 # ("מפתח לא מאומת"). Measured root cause: the vault master's role-derived
 # public keys were NEVER installed on the chain — any login check against
 # live authorities fails by construction. The fix is ON-CHAIN, append-only:
-# derive the three role pubs from the vault master law
+# derive the role pubs from the vault master law
 #   priv(role) = sha256(account + role + master)   [canonical Steemit law]
-# and APPEND them to owner/active/posting key_auths (nothing is ever removed,
+# and APPEND them to active/posting key_auths (nothing is ever removed,
 # thresholds and account_auths preserved verbatim).
+#
+# MEASURED CHAIN LAW (dry run 2026-10-19, run 39201599845): an account_update2
+# that sets the OWNER authority requires an OWNER signature — verify_authority
+# refused with "missing required owner authority" on both nodes. Therefore the
+# OWNER authority is NEVER touched by this engine (zero-touch law — and the
+# single-key owner authority is correct security design). The owner can add
+# the owner-role pub himself in-browser (the wallet's attach flow signs
+# account_update2 with his own owner key).
 #
 # The three pubs are PUBLIC KEYS (zero exposure). The signing secret is the
 # engine-held STEEM_ACTIVE_WIF (proven live on-chain in T21, tx de76b399).
@@ -36,9 +45,6 @@ on:
       expected_owner_pub:
         description: 'identity pin: the target account MUST hold this owner pub'
         default: 'STM5aUKyd9LzENnMti5tS478Zu1SLJW51VHyu2gvSNGKhwfyMFpvv'
-      owner_pub:
-        description: 'vault-master owner-role pub to append'
-        default: 'STM71cyH4V73zBfex7vK5PMJ2qqMLGhsah26bR4JHXjPYycm7bmBr'
       active_pub:
         description: 'vault-master active-role pub to append'
         default: 'STM8JguPj5iZ7yANWWx6UfAp9Zx1En8uss978E2baP3upZBpHQ7CE'
@@ -65,7 +71,6 @@ jobs:
       FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
       IN_ACCOUNT: ${{ github.event.inputs.account }}
       IN_EXPECTED_OWNER: ${{ github.event.inputs.expected_owner_pub }}
-      IN_OWNER_PUB: ${{ github.event.inputs.owner_pub }}
       IN_ACTIVE_PUB: ${{ github.event.inputs.active_pub }}
       IN_POSTING_PUB: ${{ github.event.inputs.posting_pub }}
       IN_DRY: ${{ github.event.inputs.dry_run }}
@@ -124,7 +129,9 @@ jobs:
             const ACCOUNT = ref2name((process.env.IN_ACCOUNT || 'acct-00').trim());
             if (!ACCOUNT) fail('ROSTER-UNRESOLVED', 'account ref not resolvable from FLEET_ROSTER_MAP — fail-honest (never fabricate)');
             const EXPECTED_OWNER = (process.env.IN_EXPECTED_OWNER || '').trim();
-            const NEWPUBS = { owner: (process.env.IN_OWNER_PUB || '').trim(), active: (process.env.IN_ACTIVE_PUB || '').trim(), posting: (process.env.IN_POSTING_PUB || '').trim() };
+            // ENGINE-INSTALLABLE = active + posting ONLY. Owner authority requires an owner
+            // signature (measured law above) and is never touched by this engine.
+            const NEWPUBS = { active: (process.env.IN_ACTIVE_PUB || '').trim(), posting: (process.env.IN_POSTING_PUB || '').trim() };
             const DRY = String(process.env.IN_DRY ?? 'true') === 'true';
             const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();
             for (const [r, p] of Object.entries(NEWPUBS)) if (!PUBRE.test(p)) fail('BAD-PUB', r + ' pub malformed');
@@ -185,9 +192,9 @@ jobs:
                 },
               };
             };
-            const merged = { owner: mergeAuth('owner'), active: mergeAuth('active'), posting: mergeAuth('posting') };
-            if (!merged.owner.changed && !merged.active.changed && !merged.posting.changed) {
-              console.log(JSON.stringify({ verdict: 'ALREADY-ADOPTED', account: ACCOUNT, owner: liveOf('owner'), active: liveOf('active'), posting: liveOf('posting') }));
+            const merged = { active: mergeAuth('active'), posting: mergeAuth('posting') };
+            if (!merged.active.changed && !merged.posting.changed) {
+              console.log(JSON.stringify({ verdict: 'ALREADY-ADOPTED', account: ACCOUNT, active: liveOf('active'), posting: liveOf('posting') }));
               process.exit(0);
             }
             const gp = await rpc(nodeUsed, 'condenser_api.get_dynamic_global_properties', []);
@@ -199,7 +206,8 @@ jobs:
             // account_update2 wire: account, owner(flag+auth), active(flag+auth), posting(flag+auth), memo_key(flag), json_metadata, posting_json_metadata, extensions
             const opParts = [varint(43), str(ACCOUNT)];
             const opJson = { account: ACCOUNT, memo_key: null, json_metadata: '', posting_json_metadata: '' };
-            for (const r of ['owner', 'active', 'posting']) {
+            opParts.push(varint(0)); // owner: ALWAYS absent here (owner signature is required to set it — measured law; zero-touch)
+            for (const r of ['active', 'posting']) {
               const m = merged[r];
               if (m.changed) { opParts.push(varint(1), authBytes(m.auth)); opJson[r] = m.auth; }
               else opParts.push(varint(0));
@@ -233,8 +241,8 @@ jobs:
               }
               console.log(JSON.stringify({
                 verdict: 'DRY-RUN-OK', account: ACCOUNT, node: nodeUsed,
-                would_add: { owner: merged.owner.changed ? NEWPUBS.owner : null, active: merged.active.changed ? NEWPUBS.active : null, posting: merged.posting.changed ? NEWPUBS.posting : null },
-                preserved: { owner: merged.owner.live, active: merged.active.live, posting: merged.posting.live },
+                would_add: { active: merged.active.changed ? NEWPUBS.active : null, posting: merged.posting.changed ? NEWPUBS.posting : null },
+                preserved: { active: merged.active.live, posting: merged.posting.live },
               }));
               process.exit(0);
             }
@@ -252,7 +260,7 @@ jobs:
             const accs2 = await rpc(nodeUsed, 'condenser_api.get_accounts', [[ACCOUNT]]);
             const nowOf = (r) => (accs2[0][r] && accs2[0][r].key_auths ? accs2[0][r].key_auths : []).map((x) => x[0]);
             const checks = {};
-            for (const r of ['owner', 'active', 'posting']) {
+            for (const r of ['active', 'posting']) {
               const m = merged[r];
               if (!m.changed) { checks[r] = 'PRESERVED'; continue; }
               const now = nowOf(r);
