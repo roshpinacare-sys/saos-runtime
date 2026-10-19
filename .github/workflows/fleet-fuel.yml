@@ -85,9 +85,9 @@ jobs:
             return j.result;
           }
           // G3 — hard caps + fixed roster (mirror of grids/state/army-ladder-plan.json traders, W2 seal 2026-10-18)
-          const TOPUP_TARGET = 1.8;   // W4 raise (owner "תמשיך ודחוף" volume mandate; היה 0.6 W2)
-          const MAX_PER_RECIPIENT = 1.2;   // W4 raise (היה 0.5)
-          const RUN_TOTAL_CAP = 14.4;   // W4 raise (12 × 1.2; היה 10)
+          const TOPUP_TARGET = 6.0;   // W5 raise (owner W13 mandate 2026-10-19: 'הפעלה מרבית של כל הצי... הרבה יותר ווליום'; היה 1.8 W4, 0.6 W2)
+          const MAX_PER_RECIPIENT = 4.2;   // W5 raise (היה 1.2 W4)
+          const RUN_TOTAL_CAP = 36.0;   // W5 raise (12 × 3.0 ממוצע; היה 14.4 W4) — ≤5.6% מהנזילות-הנמדדת-של-האחוזה (644.852 STEEM, 2026-10-19)
           const FORBIDDEN_RECIPIENTS = new Set(['headcorner', 'cornerstone']);
           const ROSTER = ['hcsoldier4', 'hcsoldier6', 'israelnews', 'tov', 'hcsoldier5', 'haran', 'lsa', 'macrame', 'wic', 'wog', 'woq', 'cashmachine'];
           (async () => {

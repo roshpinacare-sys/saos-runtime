@@ -16,6 +16,8 @@ on:
     - cron: "41 * * * *"           # W2 hourly :41 — the 12-account maker book breathes
                                    # continuously (was dispatch-only: runs every ~11-13h
                                    # when an agent remembered — measured from receipts)
+    - cron: "11 * * * *"           # W13 hourly :11 — ~30min maker cadence (owner volume
+                                   # mandate 2026-10-19: much more volume; the book never sleeps)
     - cron: "11 4,10,16,22 * * *"  # catch-up beats (resilience law, wave-7): GitHub
                                    # silently DROPS scheduled runs on busy repos.
   workflow_dispatch: {}
@@ -57,6 +59,7 @@ jobs:
           set -Eeuo pipefail
           npm install --omit=dev --no-audit --no-fund --loglevel=error bs58 steem@0.7.11 @noble/hashes @noble/curves
           NODE_PATH=/tmp/steemjs/node_modules node grids/army-ladder.mjs --selftest
+          NODE_PATH=/tmp/steemjs/node_modules node grids/one-body.mjs --selftest
           NODE_PATH=/tmp/steemjs/node_modules node grids/volume-verify.mjs --selftest
 
       - name: Resolve live fleet keys from the sealed ROT2 bundle (in-run, 0600, never logged)
@@ -89,7 +92,7 @@ jobs:
           set -Eeuo pipefail
           git config user.name "roshpinacare-sys"
           git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
-          git add grids/state/army-receipts.jsonl grids/state/army-public.json grids/state/volume-verify.json grids/state/policy-ledger.jsonl grids/state/policy-gears.json 2>/dev/null || true
+          git add grids/state/army-receipts.jsonl grids/state/army-public.json grids/state/one-body-receipts.jsonl grids/state/volume-verify.json grids/state/policy-ledger.jsonl grids/state/policy-gears.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no receipt change — clean exit"
           else
@@ -99,3 +102,40 @@ jobs:
               git pull --rebase -X theirs --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; git checkout -- . 2>/dev/null || true; }
             done
           fi
+
+  # W13 SELF-PULSE (R280 law, proven on sovereign-runtime + dex-beat): GitHub's
+  # scheduler silently drops slots on busy repos (measured: army last success 00:28Z,
+  # next slot vanished for 2.2h+). After EVERY army job (success OR failure) the
+  # pulse re-arms the clock itself — ~30min maker cadence, self-sustaining.
+  # Damping law (W11): red → sleep 1800 (alarm stays visible, no firehose);
+  # green → 1500 (~30min cadence). Pulse timeout 40 fits any damping sleep (W11b).
+  pulse:
+    needs: army
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: damp on red, breathe on green, re-arm the clock
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          HB_RESULT: ${{ needs.army.result }}
+        run: |
+          set -Eeuo pipefail
+          if [ "$HB_RESULT" != "success" ]; then
+            echo "army ended red ($HB_RESULT) — damping 30min (alarm visible, no firehose)"
+            sleep 1800
+          else
+            echo "army green — ~30min maker cadence"
+            sleep 1500
+          fi
+          for i in 1 2 3; do
+            CODE=$(curl -s -o /tmp/dispatch.out -w '%{http_code}' -X POST \
+              -H "Authorization: token ${GH_PAT}" -H "Accept: application/vnd.github+json" \
+              -H "Content-Type: application/json" \
+              "https://api.github.com/repos/roshpinacare-sys/saos-runtime/actions/workflows/army-ladder.yml/dispatches" \
+              -d '{"ref":"main"}')
+            echo "dispatch attempt $i → HTTP $CODE"
+            [ "$CODE" = "204" ] && break
+            sleep $((i*10))
+          done
+          [ "$CODE" = "204" ] || { echo "DISPATCH-FAILED after retries (HTTP $CODE) — the :11/:41 crons + pacemaker remain the backstops"; exit 1; }
