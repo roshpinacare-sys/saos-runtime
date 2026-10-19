@@ -64,6 +64,14 @@ jobs:
                   method=method,
                   headers={"Authorization": "Bearer " + TOK,
                            "Accept": "application/vnd.github+json",
+                           # W12 ROOT-CAUSE (measured 01:27Z): without an explicit
+                           # Content-Type, GitHub parsed {"ref":"main"} (dispatch
+                           # created, 204) but DROPPED the "inputs" — escrow-payroll
+                           # ran with confirm empty → CONFIRM-REFUSED hard-fail on
+                           # every pacemaker dispatch. application/json fixes it
+                           # (verified live: same dispatch with the header passed
+                           # the Confirm friction gate for the first time).
+                           "Content-Type": "application/json",
                            "User-Agent": "organ-pacemaker"},
                   data=json.dumps(body).encode() if body else None)
               with urllib.request.urlopen(req, timeout=30) as r:
