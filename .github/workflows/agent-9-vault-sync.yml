@@ -25,12 +25,18 @@ jobs:
           git config user.email agent9@fleet.local
           git clone --depth 1 https://github.com/roshpinacare-sys/Autonomy.git src
           test -d src/agents/agent-9 || { echo INSURANCE_DIR_MISSING; exit 1; }
+          # t24 law: the insurance worklog.md is FULL TRUTH written by agent-9
+          # sessions (private copies only — refs law keeps the public tree
+          # worklog-free). Never mirror a worklog over it: preserve across the rm.
+          [ -f agents/agent-9-insurance/worklog.md ] && cp agents/agent-9-insurance/worklog.md /tmp/ins-worklog.md || true
           rm -rf agents/agent-9-insurance
           mkdir -p agents/agent-9-insurance
           cp -r src/agents/agent-9/. agents/agent-9-insurance/
+          rm -f agents/agent-9-insurance/worklog.md
+          [ -f /tmp/ins-worklog.md ] && cp /tmp/ins-worklog.md agents/agent-9-insurance/worklog.md || true
           git add agents/agent-9-insurance
           if git diff --cached --quiet; then echo "vault fresh — quiet beat"; exit 0; fi
-          git commit -q -m "vault-sync: agent-9 insurance snapshot (worklog+tools+manifest)"
+          git commit -q -m "vault-sync: agent-9 insurance snapshot (tools+manifest; worklog preserved per t24)"
           for i in 1 2 3; do
             git pull --rebase origin main -q || true
             git push origin HEAD:main -q && { echo VAULT_SYNCED_OK; exit 0; }
