@@ -1,23 +1,23 @@
 # Grid status
 
-Generated 2026-10-19T12:31:16Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-19T14:33:40Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=34m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-10-19T11:56:48.004Z |
-| anchor.probe | verdict=OK age=34m src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-19T11:56:47Z |
-| custody.coverage | verified=14/total=14 | verified>=14 | GREEN | 2026-10-19T11:56:48.004Z |
-| social.verdict | verdict=SOCIAL-STANDBY executed=None refused=None | verdict in green set (WAIT = designed gate state) | WAIT (designed) | 2026-10-19T11:56:48.004Z |
-| content.verdict | verdict=QUEUED draftsQueued=None | verdict in green set (anything else red) | GREEN | 2026-10-19T11:56:48.004Z |
-| dex.anchor | verdict=TAKEOVER-EXECUTED anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed | WAIT (designed) | 2026-10-19T11:56:48.004Z |
-| blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 | GREEN | 2026-10-19T11:56:48.004Z |
-| delegation.verdict | verdict=ALREADY-TODAY ops=0 | verdict in green set (WAIT = custody gate refusal is the brake working) | GREEN | 2026-10-19T11:56:48.004Z |
-| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-19T11:56:48.004Z |
-| pulse.fresh | age=35m conclusion=status=in_progress run=39248251482 | red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight | GREEN | 2026-10-19T11:56:14Z |
-| potential.fresh | age=13.1h path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-18T23:23:57Z |
-| fleetdigest.fresh | age=66m path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-19T11:24:50Z |
-| office.schedule | age=13.1h conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-18T23:23:33Z |
-| billing.block | no billing-block annotation (0 failed run(s) of 0 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
+| heartbeat.fresh | src=steem@saos-cockpit:mini-services/saos-engine/state/ci-last-heartbeat.json age=unavailable http=403 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | UNAVAILABLE | unavailable |
+| anchor.probe | verdict=unavailable age=unavailable src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | UNAVAILABLE | unavailable |
+| custody.coverage | verified=None/total=None | verified>=14 | RED | unavailable |
+| social.verdict | verdict=None executed=None refused=None | verdict in green set (WAIT = designed gate state) | RED | unavailable |
+| content.verdict | verdict=None draftsQueued=None | verdict in green set (anything else red) | RED | unavailable |
+| dex.anchor | verdict=None anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed | UNAVAILABLE | unavailable |
+| blurt.live | verdict=None live=None/None | live>=1 | RED | unavailable |
+| delegation.verdict | verdict=None ops=None | verdict in green set (WAIT = custody gate refusal is the brake working) | RED | unavailable |
+| digest.verdict | verdict=None slot=None | verdict in green set (COOLDOWN is normal pacing) | RED | unavailable |
+| pulse.fresh | age=31m conclusion=status=in_progress run=39265432473 | red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight | GREEN | 2026-10-19T14:02:55Z |
+| potential.fresh | unavailable: potential.json not found (branches searched: main; tree codes: main:403) | age<=93600s (26h) | UNAVAILABLE | unavailable |
+| fleetdigest.fresh | unavailable: digest.json not found (branches searched: main; tree codes: main:403) | age<=93600s (26h) | UNAVAILABLE | unavailable |
+| office.schedule | age=77m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-19T13:16:19Z |
+| billing.block | unavailable: recent runs not readable (http=403) | no 'payments have failed'/'spending limit' annotations on recent failed runs | UNAVAILABLE | unavailable |
 
 Legend:
 - RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.
