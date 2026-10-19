@@ -1,1 +1,1 @@
-{"keyFit":"NO","at":"2026-10-19T15:58:30.411Z","dripVerdict":{"verdict":"NO-GEN-FITS-CHAIN","reason":"[{\"era\":\"GEN-2\",\"skipped\":\"meta-absent\"},{\"era\":\"GEN-1\",\"skipped\":\"meta-absent\"}]"},"note":"owner key rotation pending — machine refuses by law; run honest-green with this marker"}
+{"keyFit":"PASS","at":"2026-10-19T22:56:40.743Z"}
