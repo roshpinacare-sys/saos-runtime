@@ -270,7 +270,28 @@ log({ step: "judged", liveHits: liveHits.length });
 for (const h of liveHits) log({ hit: h.role, tag: h.tag, pubFp: fp2(h.pub) });
 
 const posting = liveHits.find((h) => h.role === "posting");
-if (!posting) { log({ ok: false, error: "no live hive posting authority in runner-held material" }); process.exit(1); }
+if (!posting) {
+  // ── owner-approved verdict closure (t26, owner "מאשר שניהם" 2026-10-19) ──
+  // fail-closed stays the default: NO verdict file, or ANY drift between the
+  // recorded judgment and this scan (seed-set fingerprint / hit count) →
+  // exit 1 loud. Only an exact match against a recorded owner-approved
+  // verdict closes the alarm — the engine itself is never disabled, and new
+  // material automatically re-opens it (different materialFp or liveHits).
+  const judgedFp = sha256(Buffer.from([...hexSeeds].sort().join("\n"), "utf8")).toString("hex");
+  const judged = { liveHits: liveHits.length, seeds: hexSeeds.size, materialFp: judgedFp };
+  try {
+    const v = JSON.parse(fs.readFileSync("hive-custody-verdict.json", "utf8"));
+    const j = v.judgment ?? {};
+    const match = v.approved === true && j.liveHits === judged.liveHits && j.seeds === judged.seeds && String(j.materialFp ?? "") === judged.materialFp;
+    if (match) {
+      log({ ok: true, verdict: "recorded", approvedAt: v.approvedAt, approvedBy: v.approvedBy ?? "owner", seeds: judged.seeds, materialFp: judged.materialFp, note: "owner-approved custody verdict, state unchanged since approval — alarm closed, engine alive, new material re-opens it" });
+      process.exit(0);
+    }
+    log({ step: "verdict-mismatch", recorded: { seeds: j.seeds, liveHits: j.liveHits }, judged: { seeds: judged.seeds, liveHits: judged.liveHits } });
+  } catch { /* no verdict file — fail loud as always */ }
+  log({ ok: false, error: "no live hive posting authority in runner-held material", judgment: { seeds: judged.seeds, materialFp: judged.materialFp }, note: "commit an owner-approved hive-custody-verdict.json binding this materialFp to close the alarm" });
+  process.exit(1);
+}
 log({ step: "hive-custody-verified", via: posting.tag, pubFp: fp2(posting.pub) });
 
 const dgpo = await rpc("condenser_api.get_dynamic_global_properties", []);

@@ -46,6 +46,9 @@ jobs:
           set -o pipefail
           mkdir -p /tmp/hr
           cp scripts/hive-revival.mjs /tmp/hr/
+          # t26: owner-approved verdict state (if committed) travels with the judge —
+          # matching fingerprint closes the alarm; no file or drift keeps fail-closed.
+          cp hive-custody-verdict.json /tmp/hr/ 2>/dev/null || echo "no verdict file — fail-closed default"
           cd /tmp/hr && bun init -y >/dev/null 2>&1 || true
           bun add @noble/secp256k1@2 @noble/hashes@1 bs58@6 >/dev/null
           cp "$GITHUB_WORKSPACE/gen1.zip.enc" /tmp/hr/gen1.zip.enc
