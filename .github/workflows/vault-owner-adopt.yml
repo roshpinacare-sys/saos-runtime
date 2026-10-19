@@ -1,0 +1,268 @@
+# vault-owner-adopt.yml — T24: installs the OWNER'S VAULT KEY onto headcorner's three authorities.
+#
+# OWNER VERDICT THAT COMMANDED THIS (2026-10-19): the owner's vault key
+# (headcorner.txt — "the key without the name") was rejected by every login
+# ("מפתח לא מאומת"). Measured root cause: the vault master's role-derived
+# public keys were NEVER installed on the chain — any login check against
+# live authorities fails by construction. The fix is ON-CHAIN, append-only:
+# derive the three role pubs from the vault master law
+#   priv(role) = sha256(account + role + master)   [canonical Steemit law]
+# and APPEND them to owner/active/posting key_auths (nothing is ever removed,
+# thresholds and account_auths preserved verbatim).
+#
+# The three pubs are PUBLIC KEYS (zero exposure). The signing secret is the
+# engine-held STEEM_ACTIVE_WIF (proven live on-chain in T21, tx de76b399).
+#
+# Law: fail-closed at every gate:
+#  G0: target account's live OWNER authority must contain EXPECTED_OWNER_PUB
+#      (identity pin — an unresolved/wrong roster ref refuses before anything).
+#  G1: secret WIF parses (graphene ripemd160(pub) checksum).
+#  G2: derived pubkey ∈ LIVE active authorities — else refuse.
+#  G3: idempotence — a pub already present in its authority is skipped;
+#      all three already present ⇒ ALREADY-ADOPTED, exit 0.
+#  G4: condenser verify_authority with the SIGNED tx must return true — else refuse.
+# Only then: broadcast_transaction_synchronous + independent chain re-verification
+# (each authority must contain ALL pre-existing keys AND the new pub).
+# FC flat_map law: key_auths are SERIALIZED SORTED by key string in every authority.
+# The key is never logged, never printed, never written to disk.
+name: vault-owner-adopt
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: 'fleet ref (resolved via FLEET_ROSTER_MAP)'
+        default: 'acct-00'
+      expected_owner_pub:
+        description: 'identity pin: the target account MUST hold this owner pub'
+        default: 'STM5aUKyd9LzENnMti5tS478Zu1SLJW51VHyu2gvSNGKhwfyMFpvv'
+      owner_pub:
+        description: 'vault-master owner-role pub to append'
+        default: 'STM71cyH4V73zBfex7vK5PMJ2qqMLGhsah26bR4JHXjPYycm7bmBr'
+      active_pub:
+        description: 'vault-master active-role pub to append'
+        default: 'STM8JguPj5iZ7yANWWx6UfAp9Zx1En8uss978E2baP3upZBpHQ7CE'
+      posting_pub:
+        description: 'vault-master posting-role pub to append'
+        default: 'STM5dA9H3rtRy73GFR8MbTBKRTXPocGxNbkYmB5eeaMxigq8cVFvU'
+      dry_run:
+        description: 'true = gates+verify_authority only (no broadcast)'
+        default: 'true'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vault-owner-adopt
+  cancel-in-progress: false
+
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      STEEM_ACTIVE_WIF: ${{ secrets.STEEM_ACTIVE_WIF }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+      IN_ACCOUNT: ${{ github.event.inputs.account }}
+      IN_EXPECTED_OWNER: ${{ github.event.inputs.expected_owner_pub }}
+      IN_OWNER_PUB: ${{ github.event.inputs.owner_pub }}
+      IN_ACTIVE_PUB: ${{ github.event.inputs.active_pub }}
+      IN_POSTING_PUB: ${{ github.event.inputs.posting_pub }}
+      IN_DRY: ${{ github.event.inputs.dry_run }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Gates + adopt (fail-closed, key never logged)
+        run: |
+          set -Eeuo pipefail
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/deps/node_modules node << 'EOS'
+          const crypto = require('crypto');
+          const secp = require('@noble/secp256k1');
+          secp.etc.hmacSha256Sync = (key, ...msgs) => {
+            const h = crypto.createHmac('sha256', Buffer.from(key));
+            msgs.forEach((m) => h.update(Buffer.from(m)));
+            return new Uint8Array(h.digest());
+          };
+          const sha256 = (b) => crypto.createHash('sha256').update(b).digest();
+          const ripemd160 = (b) => crypto.createHash('ripemd160').update(b).digest();
+          const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+          const fail = (v, r) => { console.log(JSON.stringify({ verdict: v, reason: String(r).slice(0, 300) })); process.exit(1); };
+          // refs layer (estate-pseudonym law): IN_ACCOUNT carries a REF resolved via FLEET_ROSTER_MAP.
+          const REF2NAME = (() => { try { const m = JSON.parse(process.env.FLEET_ROSTER_MAP || ''); const f = {}; if (m && m.refs) Object.assign(f, m.refs); if (m && m.names) Object.assign(f, m.names); for (const [k, v] of Object.entries(m || {})) if (typeof v === 'string') f[k] = v; const out = {}; for (const [k, v] of Object.entries(f)) { if (k.startsWith('acct-')) out[k] = v; else out[v] = k; } return out; } catch { return {}; } })();
+          const ref2name = (r) => REF2NAME[r] || null;
+          const b58dec = (s) => {
+            let n = 0n;
+            for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error('bad-b58'); n = n * 58n + BigInt(i); }
+            let h = n.toString(16).padStart(2, '0'); if (h.length % 2) h = '0' + h;
+            const buf = Buffer.from(h, 'hex');
+            let pad = 0;
+            for (const c of s) { if (c === '1') pad++; else break; }
+            return Buffer.concat([Buffer.alloc(pad), buf]);
+          };
+          const u16 = (v) => { const b = Buffer.alloc(2); b.writeUInt16LE(v); return b; };
+          const u32 = (v) => { const b = Buffer.alloc(4); b.writeUInt32LE(v >>> 0); return b; };
+          const varint = (v) => { const o = []; let x = v >>> 0; do { let b = x & 0x7f; x >>>= 7; if (x) b |= 0x80; o.push(b); } while (x); return Buffer.from(o); };
+          const str = (s) => { const b = Buffer.from(s, 'utf-8'); return Buffer.concat([varint(b.length), b]); };
+          const authBytes = (a) => {
+            const p = [u32(a.weight_threshold), varint(a.account_auths.length)];
+            for (const [acc, w] of a.account_auths) p.push(str(acc), u16(w));
+            p.push(varint(a.key_auths.length));
+            for (const [k, w] of a.key_auths) { const raw = b58dec(k.slice(3)).subarray(0, 33); p.push(raw, u16(w)); }
+            return Buffer.concat(p);
+          };
+          const NODES = ['https://api.justyy.com', 'https://api.steemit.com'];
+          async function rpc(node, method, params) {
+            const res = await fetch(node, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+            const j = await res.json();
+            if (j.error) throw new Error((j.error.message || 'rpc-error').slice(0, 200));
+            return j.result;
+          }
+          const PUBRE = /^STM[1-9A-HJ-NP-Za-km-z]{50,52}$/;
+          (async () => {
+            const ACCOUNT = ref2name((process.env.IN_ACCOUNT || 'acct-00').trim());
+            if (!ACCOUNT) fail('ROSTER-UNRESOLVED', 'account ref not resolvable from FLEET_ROSTER_MAP — fail-honest (never fabricate)');
+            const EXPECTED_OWNER = (process.env.IN_EXPECTED_OWNER || '').trim();
+            const NEWPUBS = { owner: (process.env.IN_OWNER_PUB || '').trim(), active: (process.env.IN_ACTIVE_PUB || '').trim(), posting: (process.env.IN_POSTING_PUB || '').trim() };
+            const DRY = String(process.env.IN_DRY ?? 'true') === 'true';
+            const WIF = (process.env.STEEM_ACTIVE_WIF || '').trim();
+            for (const [r, p] of Object.entries(NEWPUBS)) if (!PUBRE.test(p)) fail('BAD-PUB', r + ' pub malformed');
+            if (!PUBRE.test(EXPECTED_OWNER)) fail('BAD-PUB', 'expected_owner_pub malformed');
+            if (!WIF) fail('NO-SECRET', 'STEEM_ACTIVE_WIF missing');
+            // G1: WIF parse
+            let priv, derived;
+            try {
+              let w = WIF;
+              if (w.length === 52 && w.startsWith('P')) w = w.slice(1);
+              const dec = b58dec(w);
+              if (dec.length !== 37) throw new Error('wif-len-' + dec.length);
+              const payload = dec.slice(0, -4);
+              if (!sha256(sha256(payload)).slice(0, 4).equals(dec.slice(-4))) throw new Error('wif-checksum');
+              if (payload[0] !== 0x80) throw new Error('wif-version-' + payload[0]);
+              priv = payload.slice(1);
+              const p33 = Buffer.from(secp.getPublicKey(priv, true));
+              derived = 'STM' + (() => {
+                const full = Buffer.concat([p33, ripemd160(p33).slice(0, 4)]);
+                let n = 0n;
+                for (const x of full) n = n * 256n + BigInt(x);
+                let s = '';
+                while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+                for (const x of full) { if (x === 0) s = '1' + s; else break; }
+                return s;
+              })();
+            } catch (e) { return fail('BAD-WIF', e.message); }
+            let acc, nodeUsed = '';
+            for (const node of NODES) {
+              try {
+                const accs = await rpc(node, 'condenser_api.get_accounts', [[ACCOUNT]]);
+                if (accs && accs[0]) { acc = accs[0]; nodeUsed = node; break; }
+              } catch (e) { /* next node */ }
+            }
+            if (!acc) return fail('ACCOUNT-LOOKUP-FAIL', 'all nodes failed');
+            const liveOf = (r) => (acc[r] && acc[r].key_auths ? acc[r].key_auths : []).map((x) => x[0]);
+            // G0: identity pin — the target account MUST be the one holding EXPECTED_OWNER.
+            if (!liveOf('owner').includes(EXPECTED_OWNER)) {
+              return fail('IDENTITY-PIN-FAIL', 'live owner of ' + ACCOUNT + ' does not hold the expected owner pub — refusing to touch any other account');
+            }
+            // G2: the signing WIF must be a LIVE active authority of this exact account.
+            if (!liveOf('active').includes(derived)) {
+              return fail('ACTIVE-AUTHORITY-MISMATCH', 'derived ' + derived.slice(0, 14) + '... not in live active of ' + ACCOUNT + ' — refused, nothing broadcast');
+            }
+            // G3: idempotence — merge per authority, append-only, preserve everything.
+            const mergeAuth = (r) => {
+              const live = liveOf(r);
+              const add = NEWPUBS[r];
+              if (live.includes(add)) return { changed: false, auth: null, live };
+              const a = acc[r];
+              return {
+                changed: true,
+                live,
+                auth: {
+                  weight_threshold: (a && a.weight_threshold) != null ? a.weight_threshold : 1,
+                  account_auths: ((a && a.account_auths) || []).slice().sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0)),
+                  key_auths: [...live.map((k) => [k, 1]), [add, 1]].sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0)),
+                },
+              };
+            };
+            const merged = { owner: mergeAuth('owner'), active: mergeAuth('active'), posting: mergeAuth('posting') };
+            if (!merged.owner.changed && !merged.active.changed && !merged.posting.changed) {
+              console.log(JSON.stringify({ verdict: 'ALREADY-ADOPTED', account: ACCOUNT, owner: liveOf('owner'), active: liveOf('active'), posting: liveOf('posting') }));
+              process.exit(0);
+            }
+            const gp = await rpc(nodeUsed, 'condenser_api.get_dynamic_global_properties', []);
+            const txParts = {
+              refBlockNum: gp.head_block_number & 0xffff,
+              refBlockPrefix: Buffer.from(gp.head_block_id, 'hex').readUInt32LE(4),
+              expirationUnix: Math.floor(new Date(gp.time + 'Z').getTime() / 1000) + 90,
+            };
+            // account_update2 wire: account, owner(flag+auth), active(flag+auth), posting(flag+auth), memo_key(flag), json_metadata, posting_json_metadata, extensions
+            const opParts = [varint(43), str(ACCOUNT)];
+            const opJson = { account: ACCOUNT, memo_key: null, json_metadata: '', posting_json_metadata: '' };
+            for (const r of ['owner', 'active', 'posting']) {
+              const m = merged[r];
+              if (m.changed) { opParts.push(varint(1), authBytes(m.auth)); opJson[r] = m.auth; }
+              else opParts.push(varint(0));
+            }
+            opParts.push(varint(0), str(''), str(''), varint(0));
+            const op = Buffer.concat(opParts);
+            const txBytes = Buffer.concat([u16(txParts.refBlockNum), u32(txParts.refBlockPrefix), u32(txParts.expirationUnix), varint(1), op, varint(0)]);
+            const digest = sha256(Buffer.concat([Buffer.alloc(32, 0), txBytes]));
+            const raw = secp.sign(digest, priv, { prehash: false });
+            // Manual canonical low-S normalization (FC law) — no library-behavior dependence
+            const N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+            let s = raw.s, rec = Number(raw.recovery);
+            if (s > N / 2n) { s = N - s; rec = rec ^ 1; }
+            if (s > N / 2n) return fail('NON-CANONICAL-S', 'normalization failed');
+            const rBuf = Buffer.from(raw.r.toString(16).padStart(64, '0'), 'hex');
+            const sBuf = Buffer.from(s.toString(16).padStart(64, '0'), 'hex');
+            const sig65 = Buffer.concat([Buffer.from([rec + 31]), rBuf, sBuf]);
+            if (sBuf[0] & 0x80) return fail('NON-CANONICAL-S', 's high bit set');
+            const txJson = {
+              ref_block_num: txParts.refBlockNum, ref_block_prefix: txParts.refBlockPrefix,
+              expiration: new Date(txParts.expirationUnix * 1000).toISOString().slice(0, 19),
+              operations: [['account_update2', opJson]],
+              extensions: [], signatures: [sig65.toString('hex')],
+            };
+            if (DRY) {
+              for (const node of NODES) {
+                try {
+                  const v = await rpc(node, 'condenser_api.verify_authority', [txJson]);
+                  console.log('VA ' + node + ' => ' + JSON.stringify(v));
+                } catch (e) { console.log('VA ' + node + ' => ERR ' + e.message.slice(0, 120)); }
+              }
+              console.log(JSON.stringify({
+                verdict: 'DRY-RUN-OK', account: ACCOUNT, node: nodeUsed,
+                would_add: { owner: merged.owner.changed ? NEWPUBS.owner : null, active: merged.active.changed ? NEWPUBS.active : null, posting: merged.posting.changed ? NEWPUBS.posting : null },
+                preserved: { owner: merged.owner.live, active: merged.active.live, posting: merged.posting.live },
+              }));
+              process.exit(0);
+            }
+            // G4: the node itself must confirm the sigs satisfy the required authorities
+            const va = await rpc(nodeUsed, 'condenser_api.verify_authority', [txJson]);
+            if (va !== true) return fail('VERIFY-AUTHORITY-FALSE', JSON.stringify(va).slice(0, 200));
+            let bcRes;
+            try {
+              bcRes = await rpc(nodeUsed, 'condenser_api.broadcast_transaction_synchronous', [txJson]);
+            } catch (e) {
+              const node2 = NODES.find((n) => n !== nodeUsed);
+              bcRes = await rpc(node2, 'condenser_api.broadcast_transaction_synchronous', [txJson]);
+            }
+            await new Promise((r) => setTimeout(r, 4000));
+            const accs2 = await rpc(nodeUsed, 'condenser_api.get_accounts', [[ACCOUNT]]);
+            const nowOf = (r) => (accs2[0][r] && accs2[0][r].key_auths ? accs2[0][r].key_auths : []).map((x) => x[0]);
+            const checks = {};
+            for (const r of ['owner', 'active', 'posting']) {
+              const m = merged[r];
+              if (!m.changed) { checks[r] = 'PRESERVED'; continue; }
+              const now = nowOf(r);
+              checks[r] = now.includes(NEWPUBS[r]) && m.live.every((k) => now.includes(k)) ? 'ADOPTED' : 'VERIFY-FAILED';
+            }
+            const ok = Object.values(checks).every((v) => v !== 'VERIFY-FAILED');
+            console.log(JSON.stringify({ verdict: ok ? 'ADOPTED-AND-VERIFIED' : 'VERIFY-FAILED', tx: (bcRes && bcRes.id) || null, block: (bcRes && bcRes.block_num) || null, account: ACCOUNT, checks }));
+            process.exit(ok ? 0 : 1);
+          })().catch((e) => fail('UNEXPECTED', e.message));
+          EOS
+      - name: Always-report
+        if: always()
+        run: echo "vault-owner-adopt finished"
