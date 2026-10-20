@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-19T01:27:45.362Z",
+  "builtAt": "2026-10-20T06:08:15.059Z",
   "config": {
     "longTermExtractionEnabled": true,
     "longTermConfidenceThreshold": 0.55,
@@ -8,9 +8,9 @@
     "consolidationMaxAgeDays": 30
   },
   "stats": {
-    "candidates": 18,
-    "added": 12,
-    "reinforced": 6,
+    "candidates": 22,
+    "added": 10,
+    "reinforced": 12,
     "rejected": 0,
     "burned": 0
   },
@@ -37,8 +37,8 @@
         "heartbeat": "ALIVE"
       },
       "createdAt": "2026-10-14T00:24:49.632Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.361Z",
-      "accessCount": 12,
+      "lastAccessedAt": "2026-10-20T06:08:15.055Z",
+      "accessCount": 13,
       "_tok": {}
     },
     {
@@ -52,8 +52,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-16T11:50:16.646Z",
-      "accessCount": 11,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 12,
       "_tok": {}
     },
     {
@@ -67,8 +67,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 12,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 13,
       "_tok": {}
     },
     {
@@ -82,8 +82,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 12,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 13,
       "_tok": {}
     },
     {
@@ -97,8 +97,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 12,
+      "lastAccessedAt": "2026-10-20T06:08:15.058Z",
+      "accessCount": 13,
       "_tok": {}
     },
     {
@@ -145,8 +145,8 @@
         "at": "2026-10-13T14:34:22.683Z"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 12,
+      "lastAccessedAt": "2026-10-20T06:08:15.059Z",
+      "accessCount": 13,
       "_tok": {}
     },
     {
@@ -261,8 +261,8 @@
         ]
       },
       "createdAt": "2026-10-15T17:18:07.848Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 5,
+      "lastAccessedAt": "2026-10-20T06:08:15.059Z",
+      "accessCount": 6,
       "_tok": {}
     },
     {
@@ -366,8 +366,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -396,8 +396,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -411,8 +411,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -441,8 +441,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -513,7 +513,157 @@
         ]
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.059Z",
+      "accessCount": 2,
+      "_tok": {}
+    },
+    {
+      "id": "7dec881aae7219ca",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: blurt-revival · פסק STALE · ריצה-אחרונה success @ 2026-10-20T01:56:20Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "blurt-revival",
+        "verdict": "STALE"
+      },
+      "createdAt": "2026-10-20T06:08:15.055Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.055Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "ca00e84f2372f823",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: cross-custody-probe · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T13:28:18Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "cross-custody-probe",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-20T06:08:15.055Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.055Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "1d9516267e55de7d",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: hive-adopt-t21 · פסק IDLE · ריצה-אחרונה success @ 2026-10-19T01:01:47Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "hive-adopt-t21",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-20T06:08:15.056Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.056Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "10d12d7299796a11",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: organ-guardian · פסק STALE · ריצה-אחרונה success @ 2026-10-20T01:13:29Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "organ-guardian",
+        "verdict": "STALE"
+      },
+      "createdAt": "2026-10-20T06:08:15.057Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.057Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "e753223dd9a8dcb3",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: organ-pacemaker · פסק STALE · ריצה-אחרונה success @ 2026-10-20T00:26:45Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "organ-pacemaker",
+        "verdict": "STALE"
+      },
+      "createdAt": "2026-10-20T06:08:15.057Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.057Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "8f6d3af15f32666b",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: owner-powerdown · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T05:16:06Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "owner-powerdown",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-20T06:08:15.058Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.058Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "448ffdc480804dda",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: self-memory · פסק IDLE · ריצה-אחרונה success @ 2026-10-19T01:27:39Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "self-memory",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-20T06:08:15.058Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.058Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "2860bfebfeaffab5",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: signing-health (runtime-host) · פסק STALE · ריצה-אחרונה success @ 2026-10-20T01:16:25Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "signing-health (runtime-host)",
+        "verdict": "STALE"
+      },
+      "createdAt": "2026-10-20T06:08:15.058Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.058Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "c44e10b42c4b866e",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: sovereign-pulse · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T01:17:06Z (schedule)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "sovereign-pulse",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-20T06:08:15.058Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.058Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "324324d6150809f6",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: vault-owner-adopt · פסק IDLE · ריצה-אחרונה success @ 2026-10-19T17:51:21Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "vault-owner-adopt",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-20T06:08:15.058Z",
+      "lastAccessedAt": "2026-10-20T06:08:15.058Z",
       "accessCount": 1,
       "_tok": {}
     }
