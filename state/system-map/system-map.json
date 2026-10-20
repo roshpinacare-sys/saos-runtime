@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-19T14:35:14.757Z",
+  "builtAt": "2026-10-20T05:49:06.993Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T13:38:16Z"
+        "created_at": "2026-10-20T05:00:20Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T14:22:27Z"
+        "created_at": "2026-10-20T05:37:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,22 +62,24 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T13:51:13Z"
+        "created_at": "2026-10-20T05:10:24Z"
       },
       "verdict": "ALIVE"
     },
     {
       "name": "blurt-revival",
       "path": ".github/workflows/blurt-revival.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "23 * * * *"
+      ],
+      "gapMinutes": 60,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-18T00:38:07Z"
+        "event": "schedule",
+        "created_at": "2026-10-20T01:56:20Z"
       },
-      "verdict": "IDLE"
+      "verdict": "STALE"
     },
     {
       "name": "builder-catchup",
@@ -88,9 +90,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T11:18:17Z"
+        "created_at": "2026-10-20T05:23:21Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "cross-custody-probe",
@@ -114,7 +116,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T14:35:08Z"
+        "created_at": "2026-10-20T05:49:02Z"
       },
       "verdict": "ALIVE"
     },
@@ -129,7 +131,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T13:54:32Z"
+        "created_at": "2026-10-20T04:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -168,9 +170,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T11:21:25Z"
+        "created_at": "2026-10-20T05:17:02Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "fleet-fuel",
@@ -181,7 +183,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T07:55:17Z"
+        "created_at": "2026-10-20T00:26:50Z"
       },
       "verdict": "IDLE"
     },
@@ -230,10 +232,10 @@
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T14:35:07Z"
+        "created_at": "2026-10-20T05:48:37Z"
       },
       "verdict": "ALIVE"
     },
@@ -287,7 +289,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "issues",
-        "created_at": "2026-10-19T14:34:57Z"
+        "created_at": "2026-10-20T05:48:54Z"
       },
       "verdict": "ALIVE"
     },
@@ -302,7 +304,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T11:12:08Z"
+        "created_at": "2026-10-20T01:13:29Z"
       },
       "verdict": "STALE"
     },
@@ -317,7 +319,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T07:55:13Z"
+        "created_at": "2026-10-20T00:26:45Z"
       },
       "verdict": "STALE"
     },
@@ -371,7 +373,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T11:15:46Z"
+        "created_at": "2026-10-20T01:16:25Z"
       },
       "verdict": "STALE"
     },
@@ -383,8 +385,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-19T13:24:00Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-20T05:23:26Z"
       },
       "verdict": "ALIVE"
     },
@@ -412,7 +414,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T10:18:46Z"
+        "created_at": "2026-10-20T01:17:06Z"
       },
       "verdict": "IDLE"
     },
@@ -425,7 +427,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T14:02:55Z"
+        "created_at": "2026-10-20T05:19:03Z"
       },
       "verdict": "ALIVE"
     },
@@ -440,7 +442,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-19T13:44:50Z"
+        "created_at": "2026-10-20T05:04:09Z"
       },
       "verdict": "ALIVE"
     },
@@ -453,7 +455,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T14:35:04Z"
+        "created_at": "2026-10-20T05:49:00Z"
       },
       "verdict": "ALIVE"
     },
@@ -465,10 +467,10 @@
       ],
       "gapMinutes": 360,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-19T14:35:05Z"
+        "status": "completed",
+        "conclusion": "success",
+        "event": "schedule",
+        "created_at": "2026-10-20T00:42:11Z"
       },
       "verdict": "ALIVE"
     },
@@ -481,7 +483,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-19T04:55:36Z"
+        "created_at": "2026-10-19T17:51:21Z"
       },
       "verdict": "IDLE"
     }
@@ -489,17 +491,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "verdict": "UNREACHABLE"
+    "at": "2026-10-20T05:48:53Z",
+    "ageMinutes": 0,
+    "subject": "W19-b: full live-state sync (engine running auto-cycles during seal)",
+    "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 15,
+    "alive": 17,
     "red": 0,
-    "stale": 3,
+    "stale": 4,
     "gated": 0,
     "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 17,
-    "heartbeat": "UNREACHABLE"
+    "idle": 14,
+    "heartbeat": "ALIVE"
   }
 }
