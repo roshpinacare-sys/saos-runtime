@@ -51,7 +51,7 @@ jobs:
             method: 'PUT', headers: { ...H, 'Content-Type': 'application/json' },
             body: JSON.stringify({ encrypted_value: sealed, key_id: pk.key_id }),
           });
-          console.log(JSON.stringify({ verdict: put.status === 204 ? 'RELAYED' : 'PUT-FAIL', http: put.status, target: `${OWNER}/${REPO}`, secret: 'CI_ADOPT_WIF_ACTIVE', note: 'value sealed in memory, never echoed' }));
-          process.exit(put.status === 204 ? 0 : 1);
+          console.log(JSON.stringify({ verdict: [200,201,204].includes(put.status) ? 'RELAYED' : 'PUT-FAIL', http: put.status, target: `${OWNER}/${REPO}`, secret: 'CI_ADOPT_WIF_ACTIVE', note: 'value sealed in memory, never echoed' }));
+          process.exit([200,201,204].includes(put.status) ? 0 : 1);
           })().catch(e => { console.log(JSON.stringify({verdict:'THROW', note:String(e && e.message || e).slice(0,120)})); process.exit(1); });
           EOS
