@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-20T17:42:34.693Z",
+  "builtAt": "2026-10-21T23:30:15.809Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T08:45:12Z"
+        "created_at": "2026-10-21T08:45:49Z"
       },
       "verdict": "ALIVE"
     },
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T15:54:14Z"
+        "created_at": "2026-10-21T22:27:25Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T17:20:17Z"
+        "created_at": "2026-10-21T23:02:42Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T17:27:51Z"
+        "created_at": "2026-10-21T21:56:12Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,9 +77,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T13:41:41Z"
+        "created_at": "2026-10-21T22:30:45Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "builder-catchup",
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T15:23:46Z"
+        "created_at": "2026-10-21T20:54:53Z"
       },
       "verdict": "ALIVE"
     },
@@ -113,12 +113,12 @@
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "event": "workflow_dispatch",
         "created_at": "2026-10-20T17:42:18Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "dex-beat",
@@ -131,7 +131,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T16:54:32Z"
+        "created_at": "2026-10-21T22:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -144,7 +144,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T06:08:12Z"
+        "created_at": "2026-10-21T10:18:54Z"
       },
       "verdict": "IDLE"
     },
@@ -157,7 +157,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T06:08:11Z"
+        "created_at": "2026-10-21T02:30:50Z"
       },
       "verdict": "IDLE"
     },
@@ -170,7 +170,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T13:49:24Z"
+        "created_at": "2026-10-21T20:24:05Z"
       },
       "verdict": "IDLE"
     },
@@ -183,7 +183,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T17:20:36Z"
+        "created_at": "2026-10-21T23:28:17Z"
       },
       "verdict": "ALIVE"
     },
@@ -235,7 +235,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T17:41:50Z"
+        "created_at": "2026-10-21T22:41:11Z"
       },
       "verdict": "ALIVE"
     },
@@ -266,6 +266,19 @@
       "verdict": "IDLE"
     },
     {
+      "name": "key-relay-to-autonomy",
+      "path": ".github/workflows/key-relay-to-autonomy.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-21T02:48:01Z"
+      },
+      "verdict": "IDLE"
+    },
+    {
       "name": "main-key-refresh",
       "path": ".github/workflows/main-key-refresh.yml",
       "crons": [
@@ -291,7 +304,7 @@
         "event": "issues",
         "created_at": "2026-10-20T17:42:07Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "organ-guardian",
@@ -304,7 +317,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T17:29:24Z"
+        "created_at": "2026-10-21T22:41:33Z"
       },
       "verdict": "ALIVE"
     },
@@ -319,7 +332,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T17:20:30Z"
+        "created_at": "2026-10-21T23:27:19Z"
       },
       "verdict": "ALIVE"
     },
@@ -358,7 +371,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T06:08:08Z"
+        "created_at": "2026-10-21T10:18:52Z"
       },
       "verdict": "IDLE"
     },
@@ -373,7 +386,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T17:31:49Z"
+        "created_at": "2026-10-21T22:44:56Z"
       },
       "verdict": "ALIVE"
     },
@@ -386,9 +399,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T14:20:23Z"
+        "created_at": "2026-10-21T21:45:57Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-evolution",
@@ -401,7 +414,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T10:17:19Z"
+        "created_at": "2026-10-21T10:26:14Z"
       },
       "verdict": "ALIVE"
     },
@@ -414,7 +427,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T15:22:54Z"
+        "created_at": "2026-10-21T22:21:10Z"
       },
       "verdict": "ALIVE"
     },
@@ -427,7 +440,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T16:59:51Z"
+        "created_at": "2026-10-21T23:12:22Z"
       },
       "verdict": "ALIVE"
     },
@@ -439,10 +452,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
+        "status": "in_progress",
+        "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-20T17:24:04Z"
+        "created_at": "2026-10-21T23:29:04Z"
       },
       "verdict": "ALIVE"
     },
@@ -455,9 +468,22 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T17:42:17Z"
+        "created_at": "2026-10-21T23:28:21Z"
       },
       "verdict": "ALIVE"
+    },
+    {
+      "name": "treasury-consolidation",
+      "path": ".github/workflows/treasury-consolidation.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-21T02:51:26Z"
+      },
+      "verdict": "IDLE"
     },
     {
       "name": "treasury-ladder",
@@ -470,7 +496,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-20T14:30:44Z"
+        "created_at": "2026-10-21T19:40:04Z"
       },
       "verdict": "ALIVE"
     },
@@ -491,20 +517,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-20T17:42:22Z",
-    "ageMinutes": 0,
-    "subject": "merge: self-reconcile with origin/saos-cockpit (union ledgers · alive-wins state · R312)",
+    "at": "2026-10-21T23:21:59Z",
+    "ageMinutes": 9,
+    "subject": "vault-seal [seal-host]: 11 files — כלום לא מת עם הסנדבוקס (גל-98 · R319-custody)",
     "verdict": "ALIVE"
   },
   "summary": {
     "alive": 20,
     "red": 0,
-    "stale": 1,
+    "stale": 0,
     "gated": 0,
     "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 14,
+    "idle": 17,
     "heartbeat": "ALIVE"
   }
 }
