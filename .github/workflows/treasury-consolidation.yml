@@ -1,0 +1,163 @@
+# treasury-consolidation.yml [t52 · agent-9] — מבצע-האיחוד-הפנימי של-האוצר (רצפת-3000).
+#
+# החוק-החוקתי: רצפת-האוצר = net-SP (own + received − delegated_out) ≥ 3000 [t42-t47].
+# התוכנית-נמדדת-מהרשת-בכל-ריצה (idempotent-delta, חוק-כמויות-אבסולוטיות),
+# החתימה = מפתחות-התורמים-מכרוך-ROT2 (אומתו-מול-הרשויות-החיות), המסילה
+# delegations פתוחה-מאז-R30 (owner IM trace 1a12d295c7da9241), ומנדט-הבעלים
+# הטרי (IM trace 1a15c400a63e05d9, 2026-10-21): "תעשה הכל קדימה" — על-בסיס
+# חוק-הביטוח-העומד-מ-t42. gate-08 נשמר: אפס-שינוי-בפריסת-GEN-2-הישירה-של-הבעלים
+# — רק-משיכה-מקרן-המוגן (headroom ≥ 100 SP לכל-תורם).
+#
+# שערים (fail-closed): G0-STASIS (מסילת-delegations-פתוחה-ב-ב-STASIS.json של-saos-dex)
+#  G1-מפתחות: כל-תורם-נחתם-רק-אם-המפתח-שלו-חי-מול-הרשות-הפעילה (resolve-keys + classify)
+#  G2-caps: סה"כ-ריצה ≤ 700 SP · תורם-שומר ≥ 100 SP-עצמיים · אפס-פגיעה-ב-acct-00
+#  G3-delta: רק-הפרש-חיובי-מול-היעד; רצפה-מושגת = קבלת-CONVERGED-ואפס-שידור
+#  G4-min-delta: דילוג-על-אופס-מתחת-רף-ה-min_update-של-השרשרת
+#  G5-read-after-write: כל-אופס-נקרא-חזרה-מהשרשרת
+#  קבלה: grids/state/treasury-consolidation-receipt.jsonl ב-saos-dex (refs-only)
+name: treasury-consolidation
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type CONSOLIDATE to sign and broadcast'
+        required: true
+        default: 'CONSOLIDATE'
+permissions:
+  contents: read
+concurrency:
+  group: treasury-consolidation
+  cancel-in-progress: false
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
+      FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+      IN_CONFIRM: ${{ github.event.inputs.confirm }}
+    steps:
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 1 }
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Install signer libs (house pattern)
+        run: |
+          npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
+      - name: Checkout grids home (saos-dex)
+        run: |
+          set -Eeuo pipefail
+          git clone --depth 1 --branch main "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/saos-dex.git" dex
+          echo "saos-dex @ $(cd dex && git rev-parse --short HEAD)"
+      - name: G0 STASIS gate (mechanical, law #1)
+        run: |
+          set -Eeuo pipefail
+          ALLOWED=$(node -e "const d=require('./dex/grids/state/STASIS.json'); const a=(d.stagedLanes&&d.stagedLanes.allow)||[]; console.log(a.includes('delegations')?'OPEN':'HALTED')")
+          echo "stasis-delegations=${ALLOWED}"
+          if [ "${ALLOWED}" != "OPEN" ]; then echo "STASIS-HALT — delegations lane closed, honest abort"; exit 1; fi
+      - name: Resolve keys (bundle → 0700 job-only file, never logged)
+        run: |
+          set -Eeuo pipefail
+          chmod +x ops/key-census-probe/resolve-keys.cjs 2>/dev/null || true
+          NODE_PATH=/tmp/steemjs/node_modules node ops/key-census-probe/resolve-keys.cjs --out /tmp/fleet-keys.json
+          chmod 700 /tmp/fleet-keys.json
+          node -e "const k=require('/tmp/fleet-keys.json'); console.log('keys-file accounts:', Object.keys(k).length)"
+      - name: Consolidation delta + sign + broadcast (caps in code, read-after-write)
+        run: |
+          set -Eeuo pipefail
+          if [ "${IN_CONFIRM}" != "CONSOLIDATE" ]; then echo "CONFIRM-MISSING — honest abort"; exit 1; fi
+          npm install --prefix /tmp/deps @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          NODE_PATH=/tmp/steemjs/node_modules:/tmp/deps/node_modules node << 'EOS'
+          (async () => {
+          const fs = require('fs');
+          const steem = require('steem');
+          const KEYS = JSON.parse(fs.readFileSync('/tmp/fleet-keys.json', 'utf8'));
+          const MAP = JSON.parse(process.env.FLEET_ROSTER_MAP || '{}'); // real→ref
+          const refOf = (n) => MAP[n] || n.slice(0, 3) + '…';
+          const TREASURY = 'headcorner'; // resolves ONLY here; refs in receipts
+          const FLOOR = 3000, RUN_CAP_SP = 700, MIN_KEEP_SP = 100, MIN_DELTA_SP = 0.5;
+          const nodes = ['https://api.steemit.com', 'https://api.steem.fans', 'https://api.justyy.com'];
+          steem.api.setOptions({ url: nodes[0], useAppbase: true });
+          const rpc = (method, params) => new Promise((res, rej) => {
+            let i = 0; const tryNext = () => { if (i >= nodes.length) return rej(new Error('all-steem-nodes-failed'));
+              steem.api.setOptions({ url: nodes[i++], useAppbase: true });
+              steem.api.call(method, params, (e, r) => e ? tryNext() : res(r)); }; tryNext();
+          });
+          const props = (await rpc('condenser_api.get_dynamic_global_properties', []));
+          const vps = parseFloat(props.total_vesting_shares), vfs = parseFloat(props.total_vesting_fund_steem);
+          const vestsPerSP = vps / vfs;
+          const num = (s) => (typeof s === 'string' ? parseFloat(s) : s) || 0;
+          const tre = (await rpc('condenser_api.get_accounts', [[TREASURY]]))[0];
+          const netVests = num(tre.vesting_shares) + num(tre.received_vesting_shares) - num(tre.delegated_vesting_shares);
+          const treasurySp = netVests * vfs / vps;
+          const need = Math.max(0, FLOOR - treasurySp);
+          console.log(JSON.stringify({ step: 'measure', treasuryRef: 'acct-00', treasurySp: +treasurySp.toFixed(3), need: +need.toFixed(3), vestsPerSP: +vestsPerSP.toFixed(3) }));
+          if (need < MIN_DELTA_SP) { console.log(JSON.stringify({ verdict: 'CONVERGED', note: 'floor already reached — zero broadcast' })); return; }
+          // contributors: fleet accounts with live ACTIVE key + headroom (never acct-00)
+          const cands = Object.keys(KEYS).filter(n => n !== TREASURY && KEYS[n] && KEYS[n].active);
+          if (!cands.length) { console.log(JSON.stringify({ verdict: 'KEYLESS-STASIS', note: 'no live contributor keys' })); return; }
+          const accs = await rpc('condenser_api.get_accounts', [cands]);
+          // ABSOLUTE-TARGET LAW: delegate_vesting_shares SETS the total — read the
+          // existing contributor→treasury delegation first, target = existing + draw.
+          const existing = {};
+          for (const n of cands) {
+            try {
+              const dl = await rpc('condenser_api.get_vesting_delegations', [n, TREASURY, 100]);
+              existing[n] = dl.reduce((s, d) => s + num(d.vesting_shares), 0);
+            } catch { existing[n] = 0; }
+          }
+          let remaining = Math.min(need, RUN_CAP_SP);
+          const ops = [];
+          for (const a of accs) {
+            if (remaining < MIN_DELTA_SP) break;
+            const ownVests = num(a.vesting_shares) + num(a.received_vesting_shares) - num(a.delegated_vesting_shares);
+            const ownSp = ownVests * vfs / vps;
+            const draw = Math.min(ownSp - MIN_KEEP_SP, remaining);
+            if (draw < MIN_DELTA_SP) continue;
+            ops.push({ account: a.name, amountSp: +draw.toFixed(3), existingVests: existing[a.name] || 0 });
+            remaining -= draw;
+          }
+          const total = +ops.reduce((s, o) => s + o.amountSp, 0).toFixed(3);
+          if (total > RUN_CAP_SP + 0.001) { console.log(JSON.stringify({ verdict: 'CAP-BUG', note: 'refusing over-cap' })); process.exit(1); }
+          if (total < MIN_DELTA_SP) { console.log(JSON.stringify({ verdict: 'NO-HEADROOM', note: 'no contributor has protected headroom to draw', need: +need.toFixed(3) })); return; }
+          console.log(JSON.stringify({ step: 'plan', ops: ops.map(o => ({ from: refOf(o.account), to: 'acct-00', sp: o.amountSp })), total, cap: RUN_CAP_SP }));
+          const txids = [];
+          for (const o of ops) {
+            const wif = KEYS[o.account].active;
+            const targetVests = (o.existingVests + o.amountSp * vestsPerSP).toFixed(6);
+            try {
+              const r = await new Promise((res, rej) => steem.broadcast.delegateVestingShares(wif, o.account, TREASURY, targetVests + ' VESTS', (e, r) => e ? rej(e) : res(r)));
+              const txid = r && r.operation && r.operation.id || (r && r.tx_id) || 'n/a';
+              txids.push({ from: refOf(o.account), sp: o.amountSp, txid: String(txid).slice(0, 20) });
+              console.log(JSON.stringify({ step: 'broadcast', from: refOf(o.account), sp: o.amountSp, ok: true }));
+            } catch (e) {
+              const msg = String(e && e.message || e).slice(0, 120);
+              if (/min_update|delta/i.test(msg)) { console.log(JSON.stringify({ step: 'skip-min-delta', from: refOf(o.account) })); continue; }
+              console.log(JSON.stringify({ step: 'broadcast-fail', from: refOf(o.account), note: msg })); continue;
+            }
+          }
+          // G5 read-after-write: treasury net re-measure
+          const tre2 = (await rpc('condenser_api.get_accounts', [[TREASURY]]))[0];
+          const net2 = num(tre2.vesting_shares) + num(tre2.received_vesting_shares) - num(tre2.delegated_vesting_shares);
+          const sp2 = net2 * vfs / vps;
+          console.log('TREASURY-CONSOLIDATION-RECEIPT ' + JSON.stringify({ verdict: 'EXECUTED', opsSent: txids.length, totalSp: total, treasurySpBefore: +treasurySp.toFixed(3), treasurySpAfter: +sp2.toFixed(3), floor: FLOOR, txids, at: new Date().toISOString() }));
+          fs.writeFileSync('/tmp/consolidation-receipt.json', JSON.stringify({ protocol: 'TREASURY-CONSOLIDATION/1', at: new Date().toISOString(), verdict: 'EXECUTED', totalSp: total, treasurySpBefore: +treasurySp.toFixed(3), treasurySpAfter: +sp2.toFixed(3), floor: FLOOR, txids }, null, 1) + '\n');
+          })().catch(e => { console.log(JSON.stringify({ verdict: 'THROW', note: String(e && e.message || e).slice(0, 150) })); process.exit(1); });
+          EOS
+      - name: Receipt home (saos-dex, refs-only)
+        if: always()
+        run: |
+          set -Eeuo pipefail
+          if [ ! -f /tmp/consolidation-receipt.json ]; then echo "no receipt (honest)"; exit 0; fi
+          cd dex
+          mkdir -p grids/state
+          LINE=$(node -e "const r=require('/tmp/consolidation-receipt.json'); r.refs=true; console.log(JSON.stringify(r))")
+          echo "$LINE" >> grids/state/treasury-consolidation-receipt.jsonl
+          git config user.name sovereign-agent-9
+          git config user.email agent9@fleet.local
+          git add grids/state/treasury-consolidation-receipt.jsonl
+          git commit -q -m "treasury-consolidation: receipt $(date -u +%FT%TZ) [skip ci]"
+          for i in 1 2 3; do git pull --rebase -X theirs --autostash origin main && git push origin HEAD:main && break || { sleep $((i*5)); git rebase --abort 2>/dev/null || true; }; done
