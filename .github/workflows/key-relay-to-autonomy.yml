@@ -29,7 +29,7 @@ jobs:
       - name: Relay CI_ADOPT_WIF_ACTIVE → Autonomy (sealed, memory-only)
         run: |
           set -Eeuo pipefail
-          npm install --prefix /tmp/nacl tweetnacl@1.1.1 blake2b@2.4.2 --omit=dev --no-audit --no-fund --loglevel=error
+          npm install --prefix /tmp/nacl tweetnacl@1.0.3 blake2b@2.1.4 --omit=dev --no-audit --no-fund --loglevel=error
           NODE_PATH=/tmp/nacl/node_modules node << 'EOS'
           (async () => {
           const nacl = require('tweetnacl');
