@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-22T18:33:54.360Z",
+  "builtAt": "2026-10-22T21:56:31.522Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T16:09:03Z"
+        "created_at": "2026-10-22T20:54:24Z"
       },
       "verdict": "ALIVE"
     },
@@ -44,10 +44,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T18:19:03Z"
+        "created_at": "2026-10-22T21:56:04Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T17:32:29Z"
+        "created_at": "2026-10-22T21:52:38Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T13:56:37Z"
+        "created_at": "2026-10-22T18:39:52Z"
       },
       "verdict": "STALE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T15:41:10Z"
+        "created_at": "2026-10-22T19:32:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -130,10 +130,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T17:54:32Z"
+        "created_at": "2026-10-22T21:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-22T18:22:54Z"
+        "event": "schedule",
+        "created_at": "2026-10-22T20:11:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,9 +187,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T15:23:49Z"
+        "created_at": "2026-10-22T20:13:00Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "fleet-rotation-a",
@@ -238,12 +238,12 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "cancelled",
+        "status": "queued",
+        "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-22T18:29:55Z"
+        "created_at": "2026-10-22T21:54:57Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -325,7 +325,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T14:03:59Z"
+        "created_at": "2026-10-22T18:46:02Z"
       },
       "verdict": "STALE"
     },
@@ -340,9 +340,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T15:23:42Z"
+        "created_at": "2026-10-22T20:12:55Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "owner-key-adopt",
@@ -381,7 +381,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T17:36:02Z"
+        "created_at": "2026-10-22T21:54:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -396,7 +396,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T14:06:06Z"
+        "created_at": "2026-10-22T18:49:06Z"
       },
       "verdict": "STALE"
     },
@@ -409,7 +409,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T17:14:07Z"
+        "created_at": "2026-10-22T21:39:54Z"
       },
       "verdict": "ALIVE"
     },
@@ -437,7 +437,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T17:58:26Z"
+        "created_at": "2026-10-22T20:18:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -449,10 +449,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T18:24:57Z"
+        "created_at": "2026-10-22T21:30:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -464,10 +464,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
+        "status": "in_progress",
+        "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-22T17:25:53Z"
+        "created_at": "2026-10-22T21:47:55Z"
       },
       "verdict": "ALIVE"
     },
@@ -482,7 +482,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-22T18:33:17Z"
+        "created_at": "2026-10-22T21:55:46Z"
       },
       "verdict": "ALIVE"
     },
@@ -510,7 +510,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T14:41:56Z"
+        "created_at": "2026-10-22T19:32:30Z"
       },
       "verdict": "ALIVE"
     },
@@ -531,20 +531,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-22T18:22:33Z",
-    "ageMinutes": 12,
+    "at": "2026-10-22T21:56:28Z",
+    "ageMinutes": 0,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 18,
+    "alive": 21,
     "red": 0,
-    "stale": 4,
+    "stale": 3,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 14,
+    "idle": 13,
     "heartbeat": "ALIVE"
   }
 }
