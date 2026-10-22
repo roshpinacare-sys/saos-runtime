@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-21T23:30:15.809Z",
+  "builtAt": "2026-10-22T13:48:50.030Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T08:45:49Z"
+        "created_at": "2026-10-22T08:47:50Z"
       },
       "verdict": "ALIVE"
     },
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T22:27:25Z"
+        "created_at": "2026-10-22T10:44:07Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-ladder",
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-21T23:02:42Z"
+        "created_at": "2026-10-22T13:40:25Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T21:56:12Z"
+        "created_at": "2026-10-22T12:17:11Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,9 +77,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T22:30:45Z"
+        "created_at": "2026-10-22T07:46:04Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "builder-catchup",
@@ -90,9 +90,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T20:54:53Z"
+        "created_at": "2026-10-22T10:40:31Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "cross-custody-probe",
@@ -110,15 +110,17 @@
     {
       "name": "custody-recover",
       "path": ".github/workflows/custody-recover.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "41 3 * * *"
+      ],
+      "gapMinutes": 1440,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
         "created_at": "2026-10-20T17:42:18Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "dex-beat",
@@ -131,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-21T22:54:31Z"
+        "created_at": "2026-10-22T12:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -157,22 +159,24 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-21T02:30:50Z"
+        "created_at": "2026-10-22T05:30:47Z"
       },
       "verdict": "IDLE"
     },
     {
       "name": "fee-engine",
       "path": ".github/workflows/fee-engine.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "23 */4 * * *"
+      ],
+      "gapMinutes": 1440,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-21T20:24:05Z"
+        "created_at": "2026-10-22T13:39:21Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "fleet-fuel",
@@ -183,9 +187,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-21T23:28:17Z"
+        "created_at": "2026-10-22T10:19:13Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "fleet-rotation-a",
@@ -229,15 +233,17 @@
     {
       "name": "grid-watchdog",
       "path": ".github/workflows/grid-watchdog.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "13,43 * * * *"
+      ],
+      "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-21T22:41:11Z"
+        "conclusion": "cancelled",
+        "event": "schedule",
+        "created_at": "2026-10-22T13:44:43Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "CANCELLED"
     },
     {
       "name": "hive-adopt-t21",
@@ -296,15 +302,17 @@
     {
       "name": "operator-triage",
       "path": ".github/workflows/operator-triage.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "4 9 * * *"
+      ],
+      "gapMinutes": 1440,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
         "event": "issues",
         "created_at": "2026-10-20T17:42:07Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "organ-guardian",
@@ -317,9 +325,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T22:41:33Z"
+        "created_at": "2026-10-22T07:55:00Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "organ-pacemaker",
@@ -332,9 +340,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T23:27:19Z"
+        "created_at": "2026-10-22T10:19:07Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "owner-key-adopt",
@@ -365,15 +373,17 @@
     {
       "name": "self-memory",
       "path": ".github/workflows/self-memory.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "37 */6 * * *"
+      ],
+      "gapMinutes": 1440,
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-21T10:18:52Z"
+        "event": "schedule",
+        "created_at": "2026-10-22T12:21:00Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "signing-health (runtime-host)",
@@ -386,9 +396,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T22:44:56Z"
+        "created_at": "2026-10-22T07:57:31Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "sovereign-builder",
@@ -399,7 +409,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T21:45:57Z"
+        "created_at": "2026-10-22T11:57:57Z"
       },
       "verdict": "ALIVE"
     },
@@ -414,7 +424,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T10:26:14Z"
+        "created_at": "2026-10-22T10:25:51Z"
       },
       "verdict": "ALIVE"
     },
@@ -427,20 +437,22 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T22:21:10Z"
+        "created_at": "2026-10-22T12:58:04Z"
       },
       "verdict": "ALIVE"
     },
     {
       "name": "sovereign-runtime",
       "path": ".github/workflows/sovereign-runtime.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "23 * * * *"
+      ],
+      "gapMinutes": 60,
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-21T23:12:22Z"
+        "created_at": "2026-10-22T13:41:25Z"
       },
       "verdict": "ALIVE"
     },
@@ -452,23 +464,25 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "in_progress",
-        "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-21T23:29:04Z"
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-22T12:45:58Z"
       },
       "verdict": "ALIVE"
     },
     {
       "name": "system-map",
       "path": ".github/workflows/system-map.yml",
-      "crons": [],
-      "gapMinutes": null,
+      "crons": [
+        "17,47 * * * *"
+      ],
+      "gapMinutes": 30,
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-21T23:28:21Z"
+        "event": "schedule",
+        "created_at": "2026-10-22T13:48:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -496,7 +510,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-21T19:40:04Z"
+        "created_at": "2026-10-22T08:56:27Z"
       },
       "verdict": "ALIVE"
     },
@@ -517,20 +531,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-21T23:21:59Z",
-    "ageMinutes": 9,
-    "subject": "vault-seal [seal-host]: 11 files — כלום לא מת עם הסנדבוקס (גל-98 · R319-custody)",
+    "at": "2026-10-22T13:39:07Z",
+    "ageMinutes": 10,
+    "subject": "beat verdict: state via API last-mile (survives reconcile races)",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 20,
+    "alive": 16,
     "red": 0,
-    "stale": 0,
+    "stale": 5,
     "gated": 0,
-    "cancelled": 0,
+    "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 17,
+    "idle": 15,
     "heartbeat": "ALIVE"
   }
 }
