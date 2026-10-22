@@ -11,6 +11,8 @@ name: fee-engine
 on:
   workflow_dispatch: {}
 
+  schedule:
+    - cron: "23 */4 * * *"
 permissions:
   contents: read
 

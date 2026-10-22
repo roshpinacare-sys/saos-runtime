@@ -11,6 +11,9 @@ on:
   issues:
     types: [opened]
   workflow_dispatch: {}
+  schedule:
+    # daily sweep — off-peak minute, after the map has had a full night of cycles
+    - cron: "4 9 * * *"
 permissions:
   contents: read
   issues: write

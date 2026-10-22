@@ -29,6 +29,8 @@ name: custody-recover
 
 on:
   workflow_dispatch: {}
+  schedule:
+    - cron: "41 3 * * *" # daily 03:41Z — self-disarming after a PASS (no-holes = no-op)
 permissions:
   contents: write
 
