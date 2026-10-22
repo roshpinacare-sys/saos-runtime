@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-21T10:19:01.694Z",
+  "builtAt": "2026-10-22T12:21:08.026Z",
   "config": {
     "longTermExtractionEnabled": true,
     "longTermConfidenceThreshold": 0.55,
@@ -8,8 +8,8 @@
     "consolidationMaxAgeDays": 30
   },
   "stats": {
-    "candidates": 19,
-    "added": 3,
+    "candidates": 21,
+    "added": 5,
     "reinforced": 16,
     "rejected": 0,
     "burned": 0
@@ -37,8 +37,8 @@
         "heartbeat": "ALIVE"
       },
       "createdAt": "2026-10-14T00:24:49.632Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.690Z",
-      "accessCount": 14,
+      "lastAccessedAt": "2026-10-22T12:21:08.022Z",
+      "accessCount": 15,
       "_tok": {}
     },
     {
@@ -52,8 +52,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.691Z",
-      "accessCount": 13,
+      "lastAccessedAt": "2026-10-22T12:21:08.023Z",
+      "accessCount": 14,
       "_tok": {}
     },
     {
@@ -67,8 +67,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.692Z",
-      "accessCount": 14,
+      "lastAccessedAt": "2026-10-22T12:21:08.024Z",
+      "accessCount": 15,
       "_tok": {}
     },
     {
@@ -82,8 +82,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.692Z",
-      "accessCount": 14,
+      "lastAccessedAt": "2026-10-22T12:21:08.024Z",
+      "accessCount": 15,
       "_tok": {}
     },
     {
@@ -97,8 +97,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.693Z",
-      "accessCount": 14,
+      "lastAccessedAt": "2026-10-22T12:21:08.025Z",
+      "accessCount": 15,
       "_tok": {}
     },
     {
@@ -261,8 +261,8 @@
         ]
       },
       "createdAt": "2026-10-15T17:18:07.848Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.693Z",
-      "accessCount": 7,
+      "lastAccessedAt": "2026-10-22T12:21:08.026Z",
+      "accessCount": 8,
       "_tok": {}
     },
     {
@@ -366,8 +366,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.691Z",
-      "accessCount": 3,
+      "lastAccessedAt": "2026-10-22T12:21:08.023Z",
+      "accessCount": 4,
       "_tok": {}
     },
     {
@@ -411,8 +411,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.692Z",
-      "accessCount": 3,
+      "lastAccessedAt": "2026-10-22T12:21:08.024Z",
+      "accessCount": 4,
       "_tok": {}
     },
     {
@@ -441,8 +441,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.693Z",
-      "accessCount": 3,
+      "lastAccessedAt": "2026-10-22T12:21:08.025Z",
+      "accessCount": 4,
       "_tok": {}
     },
     {
@@ -513,8 +513,8 @@
         ]
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.694Z",
-      "accessCount": 3,
+      "lastAccessedAt": "2026-10-22T12:21:08.026Z",
+      "accessCount": 4,
       "_tok": {}
     },
     {
@@ -543,8 +543,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.055Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.691Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-10-22T12:21:08.023Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -558,8 +558,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.056Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.692Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-10-22T12:21:08.024Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -603,8 +603,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.693Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-10-22T12:21:08.025Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -618,8 +618,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.693Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-10-22T12:21:08.026Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -663,8 +663,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.693Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-10-22T12:21:08.026Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -678,8 +678,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-21T10:19:01.691Z",
-      "lastAccessedAt": "2026-10-21T10:19:01.691Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-10-22T12:21:08.023Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -709,6 +709,81 @@
       },
       "createdAt": "2026-10-21T10:19:01.694Z",
       "lastAccessedAt": "2026-10-21T10:19:01.694Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "a778f85ad9fc912d",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: custody-recover · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T17:42:18Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "custody-recover",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-22T12:21:08.023Z",
+      "lastAccessedAt": "2026-10-22T12:21:08.023Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "33e43f7e5b92f224",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: key-relay-to-autonomy · פסק IDLE · ריצה-אחרונה success @ 2026-10-21T02:48:01Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "key-relay-to-autonomy",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-22T12:21:08.025Z",
+      "lastAccessedAt": "2026-10-22T12:21:08.025Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "425dbb3d492aee31",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: operator-triage · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T17:42:07Z (issues)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "operator-triage",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-22T12:21:08.025Z",
+      "lastAccessedAt": "2026-10-22T12:21:08.025Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "e2fc5b15aca19342",
+      "category": "EPISODIC",
+      "content": "זרימה-לא-חיה: treasury-consolidation · פסק IDLE · ריצה-אחרונה success @ 2026-10-21T02:51:26Z (workflow_dispatch)",
+      "confidence": 0.85,
+      "source": "state/system-map/system-map.json",
+      "metadata": {
+        "flow": "treasury-consolidation",
+        "verdict": "IDLE"
+      },
+      "createdAt": "2026-10-22T12:21:08.026Z",
+      "lastAccessedAt": "2026-10-22T12:21:08.026Z",
+      "accessCount": 1,
+      "_tok": {}
+    },
+    {
+      "id": "66d7badf2a1c1752",
+      "category": "SEMANTIC",
+      "content": "ידע-על-הצי (חלון 2026-10-21→2026-10-22): Domain: 94 ירוק / 3 אדום / 1 בוטלים מתוך 2500 · Console: 76 ירוק / 0 אדום / 24 בוטלים מתוך 733 · Sandbox: 96 ירוק / 2 אדום / 0 בוטלים מתוך 766 · saos-runtime: 89 ירוק / 1 אדום / 5 בוטלים מתוך 371",
+      "confidence": 0.75,
+      "source": "learning/evolution-2026-10-22.json",
+      "metadata": {
+        "file": "evolution-2026-10-22.json",
+        "at": "2026-10-22T10:25:57.098Z"
+      },
+      "createdAt": "2026-10-22T12:21:08.026Z",
+      "lastAccessedAt": "2026-10-22T12:21:08.026Z",
       "accessCount": 1,
       "_tok": {}
     }
