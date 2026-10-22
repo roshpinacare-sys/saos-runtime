@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-22T13:48:50.030Z",
+  "builtAt": "2026-10-22T14:24:35.713Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T10:44:07Z"
+        "created_at": "2026-10-22T13:54:09Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "army-ladder",
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T13:40:25Z"
+        "created_at": "2026-10-22T14:07:19Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,9 +77,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T07:46:04Z"
+        "created_at": "2026-10-22T13:56:37Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "builder-catchup",
@@ -115,10 +115,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
+        "status": "queued",
+        "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-20T17:42:18Z"
+        "created_at": "2026-10-22T14:24:16Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T12:54:31Z"
+        "created_at": "2026-10-22T13:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-22T13:39:21Z"
+        "event": "schedule",
+        "created_at": "2026-10-22T13:52:37Z"
       },
       "verdict": "ALIVE"
     },
@@ -238,12 +238,12 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-10-22T13:44:43Z"
+        "status": "queued",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-22T14:23:45Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -307,10 +307,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
+        "status": "queued",
+        "conclusion": null,
         "event": "issues",
-        "created_at": "2026-10-20T17:42:07Z"
+        "created_at": "2026-10-22T14:24:08Z"
       },
       "verdict": "ALIVE"
     },
@@ -325,9 +325,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T07:55:00Z"
+        "created_at": "2026-10-22T14:03:59Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "organ-pacemaker",
@@ -396,9 +396,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-22T07:57:31Z"
+        "created_at": "2026-10-22T14:06:06Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-builder",
@@ -452,7 +452,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T13:41:25Z"
+        "created_at": "2026-10-22T14:09:14Z"
       },
       "verdict": "ALIVE"
     },
@@ -479,10 +479,10 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-22T13:48:29Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-22T14:24:15Z"
       },
       "verdict": "ALIVE"
     },
@@ -531,17 +531,17 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-22T13:39:07Z",
-    "ageMinutes": 10,
+    "at": "2026-10-22T14:23:29Z",
+    "ageMinutes": 1,
     "subject": "beat verdict: state via API last-mile (survives reconcile races)",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 16,
+    "alive": 21,
     "red": 0,
-    "stale": 5,
+    "stale": 1,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
     "idle": 15,
