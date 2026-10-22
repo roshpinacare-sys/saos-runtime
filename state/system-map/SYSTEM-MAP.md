@@ -1,6 +1,6 @@
 # מפת-המשרד החיה — הרשת רואה את עצמה
 
-נבנתה אוטונומית: **2026-10-22T14:24:35.713Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
+נבנתה אוטונומית: **2026-10-22T14:29:23.358Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
 
 ## פסק-על
 - **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 1 דק** — ALIVE
@@ -20,18 +20,18 @@
 | 🟢 ALIVE | custody-recover | כל 1 יום | 2026-10-22T14:24:16Z · workflow_dispatch · queued |
 | 🟢 ALIVE | dex-beat | כל 1 שע | 2026-10-22T13:54:31Z · workflow_dispatch · in_progress |
 | 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-22T13:52:37Z · schedule · success |
-| 🟢 ALIVE | grid-watchdog | כל 30 דק | 2026-10-22T14:23:45Z · workflow_dispatch · queued |
+| 🟢 ALIVE | grid-watchdog | כל 30 דק | 2026-10-22T14:29:02Z · workflow_dispatch · queued |
 | 🟢 ALIVE | main-key-refresh | כל 7 יום | 2026-10-19T10:14:18Z · schedule · success |
-| 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-22T14:24:08Z · issues · queued |
+| 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-22T14:28:40Z · issues · queued |
 | 🟢 ALIVE | organ-guardian | כל 1 שע | 2026-10-22T14:03:59Z · schedule · success |
 | 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-22T12:21:00Z · schedule · success |
 | 🟢 ALIVE | signing-health (runtime-host) | כל 1 שע | 2026-10-22T14:06:06Z · schedule · success |
 | 🟢 ALIVE | sovereign-builder | dispatch-בלבד | 2026-10-22T11:57:57Z · schedule · success |
 | 🟢 ALIVE | sovereign-evolution | כל 1 יום | 2026-10-22T10:25:51Z · schedule · success |
 | 🟢 ALIVE | sovereign-pulse | dispatch-בלבד | 2026-10-22T12:58:04Z · schedule · success |
-| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-22T14:09:14Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-22T14:25:47Z · workflow_dispatch · queued |
 | 🟢 ALIVE | steem-hand-revival | כל 1 יום | 2026-10-22T12:45:58Z · workflow_dispatch · success |
-| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-22T14:24:15Z · workflow_dispatch · queued |
+| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-22T14:29:01Z · workflow_dispatch · queued |
 | 🟢 ALIVE | treasury-ladder | כל 6 שע | 2026-10-22T08:56:27Z · schedule · success |
 | 🔵 IDLE | builder-catchup | dispatch-בלבד | 2026-10-22T10:40:31Z · schedule · success |
 | 🔵 IDLE | cross-custody-probe | dispatch-בלבד | 2026-10-18T13:28:18Z · workflow_dispatch · success |

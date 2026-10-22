@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-22T14:24:35.713Z",
+  "builtAt": "2026-10-22T14:29:23.358Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -241,7 +241,7 @@
         "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T14:23:45Z"
+        "created_at": "2026-10-22T14:29:02Z"
       },
       "verdict": "ALIVE"
     },
@@ -310,7 +310,7 @@
         "status": "queued",
         "conclusion": null,
         "event": "issues",
-        "created_at": "2026-10-22T14:24:08Z"
+        "created_at": "2026-10-22T14:28:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -449,10 +449,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T14:09:14Z"
+        "created_at": "2026-10-22T14:25:47Z"
       },
       "verdict": "ALIVE"
     },
@@ -482,7 +482,7 @@
         "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-22T14:24:15Z"
+        "created_at": "2026-10-22T14:29:01Z"
       },
       "verdict": "ALIVE"
     },
@@ -531,7 +531,7 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-22T14:23:29Z",
+    "at": "2026-10-22T14:28:49Z",
     "ageMinutes": 1,
     "subject": "beat verdict: state via API last-mile (survives reconcile races)",
     "verdict": "ALIVE"
