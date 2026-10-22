@@ -1,23 +1,23 @@
 # Grid status
 
-Generated 2026-10-22T12:11:12Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-22T12:58:59Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=24m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-10-22T11:47:21.303Z |
-| anchor.probe | verdict=OK age=51m src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-22T11:20:28Z |
-| custody.coverage | verified=14/total=14 | verified>=14 | GREEN | 2026-10-22T11:47:21.303Z |
-| social.verdict | verdict=SOCIAL-IDLE executed=None refused=None | verdict in green set (WAIT = designed gate state) | RED | 2026-10-22T11:47:21.303Z |
-| content.verdict | verdict=QUEUED draftsQueued=None | verdict in green set (anything else red) | GREEN | 2026-10-22T11:47:21.303Z |
-| dex.anchor | verdict=STANDBY anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed | WAIT (designed) | 2026-10-22T11:47:21.303Z |
-| blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 measured · BLURT-RPC-UNREACHABLE = third-party infra outage (loud in measured, not machine-fault) | GREEN | 2026-10-22T11:47:21.303Z |
-| delegation.verdict | verdict=ALREADY-TODAY ops=0 | verdict in green set (WAIT = custody gate refusal is the brake working) | GREEN | 2026-10-22T11:47:21.303Z |
-| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-22T11:47:21.303Z |
-| pulse.fresh | age=25m conclusion=status=in_progress run=39773091182 | red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight | GREEN | 2026-10-22T11:46:16Z |
-| potential.fresh | age=19m path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-22T11:52:28Z |
-| fleetdigest.fresh | age=19m path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-22T11:52:28Z |
-| office.schedule | age=20m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-22T11:51:09Z |
-| billing.block | no billing-block annotation (0 failed run(s) of 0 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
+| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=18m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-10-22T12:40:56.197Z |
+| anchor.probe | verdict=OK age=1.6h src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-10-22T11:20:28Z |
+| custody.coverage | verified=14/total=14 | verified>=14 | GREEN | 2026-10-22T12:40:56.197Z |
+| social.verdict | verdict=SOCIAL-IDLE executed=None refused=None | verdict in green set (WAIT = designed gate state) | RED | 2026-10-22T12:40:56.197Z |
+| content.verdict | verdict=QUEUED draftsQueued=None | verdict in green set (anything else red) | GREEN | 2026-10-22T12:40:56.197Z |
+| dex.anchor | verdict=STANDBY anchorAgeMs=unavailable | anchorAgeMs<=86400000 (24h); WAIT = engine-standby is designed | WAIT (designed) | 2026-10-22T12:40:56.197Z |
+| blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 measured · BLURT-RPC-UNREACHABLE = third-party infra outage (loud in measured, not machine-fault) | GREEN | 2026-10-22T12:40:56.197Z |
+| delegation.verdict | verdict=ALREADY-TODAY ops=0 | verdict in green set (WAIT = custody gate refusal is the brake working) | GREEN | 2026-10-22T12:40:56.197Z |
+| digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-22T12:40:56.197Z |
+| pulse.fresh | age=19m conclusion=status=in_progress run=39780238625 | red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight | GREEN | 2026-10-22T12:40:09Z |
+| potential.fresh | age=66m path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-22T11:52:28Z |
+| fleetdigest.fresh | age=5m path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-22T12:54:04Z |
+| office.schedule | age=68m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-22T11:51:09Z |
+| billing.block | no billing-block annotation (1 failed run(s) of 1 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
 
 Legend:
 - RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.
