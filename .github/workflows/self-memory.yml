@@ -7,6 +7,9 @@ name: self-memory
 
 on:
   workflow_dispatch: {}
+  schedule:
+    # every 6 hours, off-peak minute 37 — MemoryConfig.longTermExtractionIntervalHours (re-armed W38 trace 1a161df230405141: de-schedule reason (private-minutes quota) obsolete — all org repos measured public)
+    - cron: "37 */6 * * *"
 permissions:
   contents: write
 
