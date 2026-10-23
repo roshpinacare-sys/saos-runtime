@@ -76,6 +76,13 @@ jobs:
         with:
           persist-credentials: false
 
+      # G69 · THE VOCABULARY CONTRACT — the instrument refuses to paint when
+      # its verdict vocabulary drifts from the producing organs (27-a family:
+      # SOCIAL-EXECUTED/SOCIAL-IDLE were painted red on lawful states).
+      # Fail-loud BEFORE observe: a broken instrument must not paint.
+      - name: Vocabulary contract (producer verdicts ⊆ green∪wait)
+        run: node scripts/test-grid-vocabulary.mjs
+
       - name: Due gate — full observe only when due
         env:
           WD_RUN_ID: ${{ github.run_id }}
@@ -265,7 +272,7 @@ jobs:
 
           # verdict signals (verdict strings + counts only; never account names or identifiers)
           GREEN = {
-              "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY"],
+              "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY", "SOCIAL-IDLE", "SOCIAL-EXECUTED"],
               "content": ["OK", "GREEN", "PUBLISHED", "DRAFTS-QUEUED", "IDLE", "QUEUED", "READY"],
               "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY", "DIGEST-READY"],
               "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY", "DELEGATED", "ALREADY-TODAY"],
@@ -309,14 +316,23 @@ jobs:
           }
           sv = hb.get("social") if hb_ok else None
           so = steps.get("social", {}) if hb_ok else {}
+          # G69 flat-heartbeat fallback (measured 2026-10-23): the canonical beat
+          # file (state/beat/ci-last-heartbeat.json · 26-b) is FLAT — no steps
+          # dict — so reading only steps.social measured permanent nulls
+          # (socialExecuted=null · socialRefused=null) while the producer
+          # carried real numbers at top level. Fallback ladder: steps.social
+          # first (rich), flat heartbeat second (canonical), None last (honest
+          # absence). Contract test: scripts/test-grid-vocabulary.mjs.
+          so_exec = so.get("executed", hb.get("socialExecuted"))
+          so_ref = so.get("refused", hb.get("socialRefused"))
           signals["social.verdict"] = {
-              "measured": "verdict=%s executed=%s refused=%s" % (sv, so.get("executed"), so.get("refused")),
+              "measured": "verdict=%s executed=%s refused=%s" % (sv, so_exec, so_ref),
               "threshold": "verdict in green set (WAIT = designed gate state)",
               "red": (sv not in GREEN["social"]) and (sv not in WAIT["social"]),
               "wait": sv in WAIT["social"],
               "since": hb_at,
           }
-          facts["socialExecuted"], facts["socialRefused"] = so.get("executed"), so.get("refused")
+          facts["socialExecuted"], facts["socialRefused"] = so_exec, so_ref
 
           cv = hb.get("content") if hb_ok else None
           co = steps.get("content", {}) if hb_ok else {}
@@ -682,10 +698,10 @@ jobs:
               "office.schedule.maxAgeS": 93600,
               "dispatch.cooldownS": 21600,
               "verdict.green": {
-                  "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY"],
+                  "social": ["OK", "GREEN", "HEALTHY", "PASS", "COMPLETE", "IDLE", "READY", "SOCIAL-IDLE", "SOCIAL-EXECUTED"],
                   "content": ["OK", "GREEN", "PUBLISHED", "DRAFTS-QUEUED", "IDLE", "QUEUED", "READY"],
-                  "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY"],
-                  "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY"]
+                  "digest": ["OK", "GREEN", "PUBLISHED", "COOLDOWN", "SKIPPED", "IDLE", "READY", "DIGEST-READY"],
+                  "delegation": ["OK", "GREEN", "EXECUTED", "COMPLETE", "IDLE", "READY", "DELEGATED", "ALREADY-TODAY"]
               }
           }
 
