@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-24T19:50:33.553Z",
+  "builtAt": "2026-10-24T21:10:55.184Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-24T18:13:56Z"
+        "created_at": "2026-10-24T20:58:13Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-24T19:37:00Z"
+        "created_at": "2026-10-24T21:06:25Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-24T16:11:34Z"
+        "created_at": "2026-10-24T21:07:01Z"
       },
       "verdict": "ALIVE"
     },
@@ -115,10 +115,10 @@
       ],
       "gapMinutes": 1440,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-24T08:22:08Z"
+        "status": "queued",
+        "conclusion": null,
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-24T21:10:47Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-24T18:54:31Z"
+        "created_at": "2026-10-24T20:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -238,10 +238,10 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "queued",
+        "status": "in_progress",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-24T19:46:46Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-24T21:10:46Z"
       },
       "verdict": "ALIVE"
     },
@@ -309,8 +309,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-24T13:15:40Z"
+        "event": "issues",
+        "created_at": "2026-10-24T21:10:24Z"
       },
       "verdict": "ALIVE"
     },
@@ -381,7 +381,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-24T16:13:21Z"
+        "created_at": "2026-10-24T21:09:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -409,9 +409,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-24T15:59:42Z"
+        "created_at": "2026-10-24T20:53:35Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-evolution",
@@ -451,8 +451,8 @@
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-24T19:35:45Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-24T21:09:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -481,8 +481,8 @@
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-10-24T19:49:25Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-24T21:10:45Z"
       },
       "verdict": "ALIVE"
     },
@@ -532,19 +532,19 @@
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
     "at": "2026-10-24T19:29:17Z",
-    "ageMinutes": 21,
+    "ageMinutes": 102,
     "subject": "vault-sync [seal-host]: union-resolved — איחוד-ללא-מחיקות",
-    "verdict": "ALIVE"
+    "verdict": "STALE"
   },
   "summary": {
-    "alive": 22,
+    "alive": 23,
     "red": 1,
     "stale": 0,
     "gated": 0,
     "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 14,
-    "heartbeat": "ALIVE"
+    "idle": 13,
+    "heartbeat": "STALE"
   }
 }

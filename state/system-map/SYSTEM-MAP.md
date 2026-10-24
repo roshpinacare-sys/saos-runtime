@@ -1,11 +1,11 @@
 # מפת-המשרד החיה — הרשת רואה את עצמה
 
-נבנתה אוטונומית: **2026-10-24T19:50:33.553Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
+נבנתה אוטונומית: **2026-10-24T21:10:55.184Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
 
 ## פסק-על
-- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 21 דק** — ALIVE
+- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 102 דק** — STALE
   - «vault-sync [seal-host]: union-resolved — איחוד-ללא-מחיקות»
-- **איברים**: 🟢 חיים 22 · 🔴 אדומים 1 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 14 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
+- **איברים**: 🟢 חיים 23 · 🔴 אדומים 1 · 🟡 נעדרי-דופק 0 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 13 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
 - **פסק המשרד**: 🟠/🔴 1 איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)
 
 ## טבלת-החיים
@@ -13,26 +13,27 @@
 |---|---|---|---|
 | 🔴 RED | escrow-payroll | dispatch-בלבד | 2026-10-24T19:34:52Z · workflow_dispatch · failure |
 | 🟢 ALIVE | agent-9-vault-sync | כל 1 יום | 2026-10-24T08:18:26Z · schedule · success |
-| 🟢 ALIVE | arb-grid | כל 1 שע | 2026-10-24T18:13:56Z · schedule · success |
-| 🟢 ALIVE | army-ladder | כל 1 שע | 2026-10-24T19:37:00Z · workflow_dispatch · in_progress |
-| 🟢 ALIVE | arsenal-sentinel | כל 1 יום | 2026-10-24T16:11:34Z · schedule · success |
+| 🟢 ALIVE | arb-grid | כל 1 שע | 2026-10-24T20:58:13Z · schedule · success |
+| 🟢 ALIVE | army-ladder | כל 1 שע | 2026-10-24T21:06:25Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | arsenal-sentinel | כל 1 יום | 2026-10-24T21:07:01Z · schedule · success |
 | 🟢 ALIVE | blurt-revival | כל 1 שע | 2026-10-24T19:35:10Z · schedule · success |
 | 🟢 ALIVE | builder-catchup | dispatch-בלבד | 2026-10-24T19:03:51Z · schedule · success |
-| 🟢 ALIVE | custody-recover | כל 1 יום | 2026-10-24T08:22:08Z · schedule · success |
-| 🟢 ALIVE | dex-beat | כל 1 שע | 2026-10-24T18:54:31Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | custody-recover | כל 1 יום | 2026-10-24T21:10:47Z · workflow_dispatch · queued |
+| 🟢 ALIVE | dex-beat | כל 1 שע | 2026-10-24T20:54:31Z · workflow_dispatch · in_progress |
 | 🟢 ALIVE | fee-engine | כל 1 יום | 2026-10-24T18:50:02Z · schedule · success |
-| 🟢 ALIVE | grid-watchdog | כל 30 דק | 2026-10-24T19:46:46Z · schedule · queued |
+| 🟢 ALIVE | grid-watchdog | כל 30 דק | 2026-10-24T21:10:46Z · workflow_dispatch · in_progress |
 | 🟢 ALIVE | main-key-refresh | כל 7 יום | 2026-10-19T10:14:18Z · schedule · success |
-| 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-24T13:15:40Z · schedule · success |
+| 🟢 ALIVE | operator-triage | כל 1 יום | 2026-10-24T21:10:24Z · issues · success |
 | 🟢 ALIVE | organ-guardian | כל 1 שע | 2026-10-24T19:43:37Z · schedule · success |
 | 🟢 ALIVE | organ-pacemaker | כל 1 שע | 2026-10-24T19:34:12Z · schedule · success |
-| 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-24T16:13:21Z · schedule · success |
+| 🟢 ALIVE | self-memory | כל 1 יום | 2026-10-24T21:09:44Z · schedule · success |
 | 🟢 ALIVE | signing-health (runtime-host) | כל 1 שע | 2026-10-24T18:21:48Z · schedule · success |
+| 🟢 ALIVE | sovereign-builder | dispatch-בלבד | 2026-10-24T20:53:35Z · schedule · success |
 | 🟢 ALIVE | sovereign-evolution | כל 1 יום | 2026-10-24T09:43:22Z · schedule · success |
 | 🟢 ALIVE | sovereign-pulse | dispatch-בלבד | 2026-10-24T19:01:25Z · schedule · success |
-| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-24T19:35:45Z · schedule · in_progress |
+| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-10-24T21:09:32Z · workflow_dispatch · in_progress |
 | 🟢 ALIVE | steem-hand-revival | כל 1 יום | 2026-10-24T18:54:32Z · schedule · success |
-| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-24T19:49:25Z · schedule · in_progress |
+| 🟢 ALIVE | system-map | כל 30 דק | 2026-10-24T21:10:45Z · workflow_dispatch · in_progress |
 | 🟢 ALIVE | treasury-ladder | כל 6 שע | 2026-10-24T18:22:29Z · schedule · success |
 | 🔵 IDLE | cross-custody-probe | dispatch-בלבד | 2026-10-18T13:28:18Z · workflow_dispatch · success |
 | 🔵 IDLE | directive-now | dispatch-בלבד | 2026-10-23T19:20:59Z · workflow_dispatch · success |
@@ -45,7 +46,6 @@
 | 🔵 IDLE | key-relay-to-autonomy | dispatch-בלבד | 2026-10-21T02:48:01Z · workflow_dispatch · success |
 | 🔵 IDLE | owner-key-adopt | dispatch-בלבד | 2026-10-18T13:34:10Z · workflow_dispatch · success |
 | 🔵 IDLE | owner-powerdown | dispatch-בלבד | 2026-10-18T05:16:06Z · workflow_dispatch · success |
-| 🔵 IDLE | sovereign-builder | dispatch-בלבד | 2026-10-24T15:59:42Z · schedule · success |
 | 🔵 IDLE | treasury-consolidation | dispatch-בלבד | 2026-10-21T02:51:26Z · workflow_dispatch · success |
 | 🔵 IDLE | vault-owner-adopt | dispatch-בלבד | 2026-10-19T17:51:21Z · workflow_dispatch · success |
 
