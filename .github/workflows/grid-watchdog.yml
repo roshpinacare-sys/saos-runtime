@@ -253,6 +253,40 @@ jobs:
           facts["heartbeatAt"], facts["heartbeatAgeS"], facts["heartbeatHttp"] = hb_at, hb_age, hb_code
           facts["heartbeatSource"], facts["runtimeInFlightSince"] = hb_src, rt_inflight
 
+          # ---- G76-g wounded-engine law (measured 2026-10-26T13:34Z red set) ----
+          # seal-host commit 4b1cd2ed8 (2026-10-24T19:16:26Z) wiped the engine source
+          # from the cockpit tree; the fail-closed selftest gate then killed every beat
+          # BEFORE a verdict was written — heartbeat.fresh starved (42h+) and
+          # anchor.probe went unavailable, while 8 other lanes painted green on the
+          # STALE heartbeat (green-on-stale = the quiet lie). The beat now publishes an
+          # honest wounded verdict (engine=ENGINE-SOURCE-MISSING, sovereign-runtime.yml
+          # "Wounded-engine verdict" step) and this watchdog classifies it:
+          #   · the wound itself = RED under the new engine.source signal (below);
+          #   · lanes reading a wounded heartbeat = WOUNDED (carried) — visible amber,
+          #     never silent, never double-red (26-c precedent: counting the
+          #     consequence red too is double-counting noise).
+          # The fail-loud laws (5400/2400 heartbeat, verified>=14, probe OK) are
+          # UNCHANGED — byte-locked by scripts/test-watchdog-reds.mjs.
+          wounded = hb_ok and hb.get("engine") == "ENGINE-SOURCE-MISSING"
+          if wounded:
+              print("heartbeat: engine=ENGINE-SOURCE-MISSING — beat voice alive, wound carried by engine.source")
+
+          # ---- engine.source: the wound gets a name (G76-g) ----
+          # Direct measurement, independent of the beat: the engine source must be
+          # readable on the cockpit tree. Absent = red — the beat's gates cannot run
+          # (measured: runs 40292421398→40334352334 all dying at "Cannot find module
+          # .../selftest.mjs"). Present = green; the moment the source returns, the
+          # beat's own ≤30min pulse retry chain recovers the grid zero-touch.
+          esrc, esrc_code = jget("/repos/%s/steem/contents/mini-services/saos-engine/selftest.mjs?ref=saos-cockpit" % OWNER, "enginesrc", True)
+          esrc_present = isinstance(esrc, dict) and esrc.get("encoding") == "base64"
+          signals["engine.source"] = {
+              "measured": "selftest.mjs http=%s src=steem@saos-cockpit:mini-services/saos-engine (%s)" % (esrc_code, "engine source present" if esrc_present else "ENGINE SOURCE ABSENT — the beat gates cannot run"),
+              "threshold": "engine source readable on the cockpit tree (selftest.mjs); absent = red (wiped 2026-10-24T19:16Z by seal-host 4b1cd2ed8 — restoring the engine tree is the cure)",
+              "red": not esrc_present,
+              "since": None,
+          }
+          facts["engineSourceHttp"] = esrc_code
+
           # custody
           cust = steps.get("custody", {}) if hb_ok else {}
           verified, total = cust.get("verified"), cust.get("total")
@@ -268,6 +302,10 @@ jobs:
               "red": (not isinstance(verified, int)) or verified < 14,
               "since": hb_at,
           }
+          if wounded and verified is None:
+              signals["custody.coverage"]["measured"] = "verified=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["custody.coverage"]["red"] = False
+              signals["custody.coverage"]["wounded"] = True
           facts["custodyVerified"], facts["custodyTotal"] = verified, total
 
           # verdict signals (verdict strings + counts only; never account names or identifiers)
@@ -332,6 +370,10 @@ jobs:
               "wait": sv in WAIT["social"],
               "since": hb_at,
           }
+          if wounded and sv is None:
+              signals["social.verdict"]["measured"] = "verdict=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["social.verdict"]["red"] = False
+              signals["social.verdict"]["wounded"] = True
           facts["socialExecuted"], facts["socialRefused"] = so_exec, so_ref
 
           cv = hb.get("content") if hb_ok else None
@@ -342,6 +384,10 @@ jobs:
               "red": (cv not in GREEN["content"]),
               "since": hb_at,
           }
+          if wounded and cv is None:
+              signals["content.verdict"]["measured"] = "verdict=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["content.verdict"]["red"] = False
+              signals["content.verdict"]["wounded"] = True
 
           dxv = hb.get("dex") if hb_ok else None
           dx = steps.get("dex", {}) if hb_ok else {}
@@ -354,6 +400,10 @@ jobs:
               "wait": dxv in WAIT["dex"],
               "since": hb_at,
           }
+          if wounded and dxv is None:
+              signals["dex.anchor"]["measured"] = "verdict=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["dex.anchor"]["red"] = False
+              signals["dex.anchor"]["wounded"] = True
           facts["dexAnchorAgeMs"] = int(anchor) if anchor_ok else None
 
           bv = hb.get("blurt") if hb_ok else None
@@ -389,6 +439,10 @@ jobs:
               "red": bl_red,
               "since": hb_at,
           }
+          if wounded and live is None:
+              signals["blurt.live"]["measured"] = "verdict=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["blurt.live"]["red"] = False
+              signals["blurt.live"]["wounded"] = True
           facts["blurtLive"], facts["blurtTotal"] = live, btot
 
           dgv = hb.get("digest") if hb_ok else None
@@ -399,6 +453,10 @@ jobs:
               "red": (dgv not in GREEN["digest"]),
               "since": hb_at,
           }
+          if wounded and dgv is None:
+              signals["digest.verdict"]["measured"] = "verdict=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["digest.verdict"]["red"] = False
+              signals["digest.verdict"]["wounded"] = True
 
           dlv = hb.get("delegation") if hb_ok else None
           dl = steps.get("delegation", {}) if hb_ok else {}
@@ -416,6 +474,10 @@ jobs:
               "wait": dlv in WAIT["delegation"],
               "since": hb_at,
           }
+          if wounded and dlv is None:
+              signals["delegation.verdict"]["measured"] = "verdict=UNMEASURED (ENGINE-WOUNDED — carried by engine.source)"
+              signals["delegation.verdict"]["red"] = False
+              signals["delegation.verdict"]["wounded"] = True
           facts["delegationOps"] = dlops
 
           # ---- b) last saos-runtime sovereign-runtime run ----
@@ -594,6 +656,14 @@ jobs:
               "red": ap_red,
               "since": ap.get("at") if isinstance(ap, dict) else None,
           }
+          # G76-g wounded-carried law: while the fresh heartbeat declares the engine
+          # wound, a probe that could not RUN (file absent / script absent) is a
+          # consequence, not a second fault — engine.source holds the single red. A
+          # probe that RAN and FAILED stays red (real fault, never silenced).
+          if wounded and (ap_v is None or ap_v == "PROBE-SCRIPT-ABSENT"):
+              signals["anchor.probe"]["measured"] = signals["anchor.probe"]["measured"] + " (ENGINE-WOUNDED — carried by engine.source)"
+              signals["anchor.probe"]["red"] = False
+              signals["anchor.probe"]["wounded"] = True
           facts["anchorProbeVerdict"] = ap_v
 
           # ---- R-CMDHIER enforcement telemetry (public verifiability) ----
@@ -921,6 +991,7 @@ jobs:
                   "heartbeatAt": f.get("heartbeatAt"),
                   "heartbeatAgeS": num(f.get("heartbeatAgeS")),
                   "heartbeatSource": f.get("heartbeatSource"),
+                  "engineSourceHttp": f.get("engineSourceHttp"),
                   "custodyVerified": num(f.get("custodyVerified")),
                   "custodyTotal": num(f.get("custodyTotal")),
                   "socialExecuted": num(f.get("socialExecuted")),
@@ -954,13 +1025,15 @@ jobs:
 
           # ---- STATUS.md (human: one table + 3-line legend; no emoji, no chat phrases) ----
           sig = obs.get("signals", {})
-          order = ["heartbeat.fresh", "anchor.probe", "custody.coverage", "social.verdict", "content.verdict",
+          order = ["heartbeat.fresh", "engine.source", "anchor.probe", "custody.coverage", "social.verdict", "content.verdict",
                    "dex.anchor", "blurt.live", "delegation.verdict", "digest.verdict",
                    "pulse.fresh", "potential.fresh", "fleetdigest.fresh", "office.schedule", "billing.block"]
 
           def status_word(s):
               if s["red"] and "unavailable" in str(s["measured"]).lower():
                   return "UNAVAILABLE"
+              if s.get("wounded") and not s["red"]:
+                  return "WOUNDED (carried)"
               if s.get("wait") and not s["red"]:
                   return "WAIT (designed)"
               return "RED" if s["red"] else "GREEN"
@@ -983,6 +1056,7 @@ jobs:
           lines.append("Legend:")
           lines.append("- RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.")
           lines.append("- GREEN: within threshold. WAIT (designed): a designed gate/standby state — visible, not alarmed, not silenced.")
+          lines.append("- WOUNDED (carried): the lane is unmeasured because the engine is wounded; the wound itself is RED under engine.source — visible, not alarmed twice, not silenced.")
           lines.append("- UNAVAILABLE: the signal could not be measured and is treated as RED until proven otherwise.")
           lines.append("- Auto-managed by grid-watchdog; machine state in state/grid-status.json. Telemetry only — no keys, no account identifiers.")
           with open(os.path.join(REPO_DIR, "STATUS.md"), "w") as fh:

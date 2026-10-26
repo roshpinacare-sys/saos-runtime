@@ -116,8 +116,39 @@ jobs:
         run: npm i --no-save @noble/hashes@^1.5.0 @noble/secp256k1@^1.7.2 --silent
 
       - name: Selftest gate (fail-closed — red run = public alarm)
+        id: selftest_gate
         working-directory: engine/mini-services/saos-engine
         run: node selftest.mjs
+
+      # G76-g cure (measured 2026-10-26): seal-host commit 4b1cd2ed8 (2026-10-24T19:16Z)
+      # wiped the engine source from the cockpit tree (mini-services/saos-engine now holds
+      # only receipts/+state/). The fail-closed gate then killed every beat BEFORE any
+      # verdict was written — the 26-b canonical home starved (heartbeat.fresh red 42h+,
+      # runs 40292421398→40334352334 all dying at "Cannot find module .../selftest.mjs")
+      # and anchor.probe went unavailable. LAW (26-b preserved): publish only a verdict
+      # produced by THIS run — and this step IS a measurement made by this run: "the
+      # engine tree is absent". The verdict is FRESH (new `at` every run), HONEST
+      # (engine=ENGINE-SOURCE-MISSING — zero fabricated lane verdicts, no inherited copy
+      # republished), carries no key material (the 26-b verdicts-only scrub still guards
+      # the canonical PUT downstream). The gate stays fail-closed: the run itself remains
+      # red and the W11 damping law caps red cadence at ~30min. The WOUND is carried
+      # loud-red by grid-watchdog's engine.source signal; the beat's voice returns so the
+      # grid MEASURES instead of starves. When the engine source returns, this step is a
+      # no-op (gate green) and the beat's own ≤30min retry chain recovers the grid
+      # zero-touch. Contract: scripts/test-watchdog-reds.mjs.
+      - name: Wounded-engine verdict (26-b law — the beat keeps its voice, honest, fresh, produced by THIS run)
+        if: always()
+        working-directory: engine
+        run: |
+          if [ ! -f mini-services/saos-engine/selftest.mjs ]; then
+            AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            mkdir -p mini-services/saos-engine/state/beat
+            printf '{"at": "%s", "engine": "ENGINE-SOURCE-MISSING", "selftest": "MODULE-ABSENT", "note": "engine source absent from the cockpit tree - the beat measures its own wound; engine.source carries the red; no lane verdicts fabricated"}\n' "$AT" > mini-services/saos-engine/state/beat/ci-last-heartbeat.json
+            echo "wounded verdict written (engine source absent, at=$AT): the beat keeps its voice, the wound stays loud under engine.source"
+          else
+            echo "engine source present — no wounded verdict (gate outcome: ${{ steps.selftest_gate.outcome }})"
+          fi
+
       # R-VAULTPASS-2 (exec-20 · owner=active): completes the loop R-VAULTPASS-1
       # left open — the passes left the repo into STEEM_VAULT_PASSES, but the
       # engine's own revival never consumed the secret (measured 02:12Z:
@@ -909,7 +940,13 @@ jobs:
           # always lands, no machine-death cascade.
           mkdir -p mini-services/saos-engine/state
           V="OK"; NOTE="anchor in HEAD lineage"
-          if ! node scripts/chain-anchor-probe.mjs; then
+          if [ ! -f scripts/chain-anchor-probe.mjs ]; then
+            # G76-g: an absent probe script is a DIFFERENT truth than a failed probe —
+            # record it honestly instead of a false FAILED (the watchdog's wounded law
+            # carries it amber while engine.source holds the tree wound red).
+            V="PROBE-SCRIPT-ABSENT"; NOTE="probe script absent from the engine tree - the anchor cannot be measured; engine.source carries the tree wound; heartbeat still lands"
+            echo "::warning::chain-anchor-probe.mjs absent — honest PROBE-SCRIPT-ABSENT verdict recorded; the beat continues (12:15 cascade law)"
+          elif ! node scripts/chain-anchor-probe.mjs; then
             echo "first probe failed — one retry (public nodes wobble)"
             sleep 10
             if ! node scripts/chain-anchor-probe.mjs; then
