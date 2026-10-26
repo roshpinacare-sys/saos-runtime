@@ -31,6 +31,20 @@
  *      ~30min cadence, damping 1800s on red) — the beat keeps knocking until
  *      the engine source returns, then recovery is zero-touch.
  *
+ * G77-g EXTENSION (2026-10-26 ~16:00Z, measured run 40346411998): after the
+ * engine-restore (96a84b5a2) the gate STILL died — selftest.mjs present but
+ * `ERR_MODULE_NOT_FOUND engine/scripts/saos-setup.mjs` (the wipe took the
+ * cockpit ROOT scripts/+src/; the restore covered only mini-services). Cure
+ * contract adds:
+ *   6. dependency-heal — the clone step restores the measured absent deps
+ *      from the repo's own estate/engine-code lineage (restore-only, never
+ *      overwrites, fail-honest on lineage absence);
+ *   7. wound class 2 — gate failed while source present ⇒ fresh honest
+ *      verdict ENGINE-SELFTEST-UNRUNNABLE/GATE-FAILED on the canonical path
+ *      (no more silent starvation between red run and canonical home);
+ *   8. the watchdog's wounded-carried law keys off BOTH named wounds;
+ *   9. the chain anchor probe retries with measured escalation (10s, 25s).
+ *
  * Deterministic: no network, no state, no clock. Fail-loud on any drift.
  */
 import { readFileSync } from "node:fs";
@@ -129,6 +143,65 @@ t("[wounded-verdict] no-op when the engine source is present (healthy era untouc
     "wounded step must be an explicit no-op when the engine source exists");
 });
 
+/* ── 3b · G77-g beat recovery — the second measured wound class ──────────
+ * MEASURED (run 40346411998 @ 2026-10-26T15:08:51Z, after engine-restore
+ * 96a84b5a2): selftest.mjs PRESENT but the gate died
+ * `ERR_MODULE_NOT_FOUND .../engine/scripts/saos-setup.mjs` — the seal-host
+ * wipe removed the cockpit ROOT scripts/+src/ while the restore brought back
+ * only mini-services/saos-engine. Module-present + gate-failed wrote NO
+ * verdict → the canonical home starved again (heartbeat frozen at
+ * 2026-10-24T19:00:27Z despite a red run). The beat keeps its voice under
+ * BOTH wound classes, and the workflow heals the measured missing deps from
+ * the cockpit clone's own lineage so the gate can actually run. */
+
+t("[heal] clone step restores the measured absent selftest deps from the cockpit clone's OWN lineage", () => {
+  const i = RT.indexOf("name: Clone the private engine tree");
+  const step = RT.slice(i, RT.indexOf("- name:", i + 10));
+  for (const f of ["scripts/saos-setup.mjs", "scripts/worklog-analytics.mjs", "src/lib/llm-chain.ts"]) {
+    assert.ok(step.includes(`"${f}"`), `heal must cover the measured missing dep: ${f}`);
+  }
+  assert.ok(step.includes('[ ! -s "$F" ]'),
+    "heal is restore-only: a non-empty cockpit file is NEVER overwritten (absent or zero-byte wipe residue heals)");
+  assert.ok(step.includes('git rev-list -8 HEAD -- "$F"'),
+    "heal walks the clone's own history (rev-list) — no external branch dependency");
+  assert.ok(step.includes('git cat-file -e "$CAND:$F"'),
+    "heal restores only a version verified present in lineage (cat-file -e), never fabricates content");
+  assert.ok(step.includes('git cat-file blob "$CAND:$F" > "$F"'),
+    "heal extracts the exact lineage bytes (cat-file blob), blob OID echoed as the receipt");
+});
+
+t("[heal] heal is fail-honest: unrecoverable lineage is reported, never fabricated, gate still runs", () => {
+  const i = RT.indexOf("name: Clone the private engine tree");
+  const step = RT.slice(i, RT.indexOf("- name:", i + 10));
+  assert.ok(step.includes("NOT recoverable from the clone's lineage — heal limited, wound will be named honestly"),
+    "a file absent from lineage must degrade honestly (echo), the gate still runs and the wound gets named");
+});
+
+t("[wounded-verdict] second wound class: gate failed while source present writes ENGINE-SELFTEST-UNRUNNABLE (fresh, honest)", () => {
+  const i = RT.indexOf("name: Wounded-engine verdict");
+  const step = RT.slice(i, RT.indexOf("- name:", i + 10));
+  assert.ok(step.includes("ENGINE-SELFTEST-UNRUNNABLE"),
+    "module-present + gate-failed must write the honest unrunnable-class verdict (no silent starvation)");
+  assert.ok(step.includes("steps.selftest_gate.outcome"),
+    "the unrunnable branch must be conditioned on the measured gate outcome");
+  assert.ok(step.includes("mini-services/saos-engine/state/beat/ci-last-heartbeat.json"),
+    "the unrunnable verdict must land on the same 26-b canonical engine-tree path");
+});
+
+function woundedVerdictJsons() {
+  const i = RT.indexOf("name: Wounded-engine verdict");
+  const step = RT.slice(i, RT.indexOf("- name:", i + 10));
+  const out = [];
+  for (const m of step.matchAll(/printf '(\{[^']*?\})\\n'/g)) {
+    const fmt = m[1].replace(/\\n$/, "");
+    assert.equal((fmt.match(/%s/g) || []).length, 1,
+      "wounded verdict format must take exactly one %s (the timestamp)");
+    out.push(JSON.parse(fmt.replace("%s", "2026-10-26T13:34:12Z")));
+  }
+  assert.ok(out.length >= 2, "expected both wound-class verdict writers (module-absent + gate-failed)");
+  return out;
+}
+
 /* ── 4 · wounded verdict schema (extracted from the workflow itself) ───── */
 
 function woundedVerdictJson() {
@@ -160,6 +233,23 @@ t("[schema] wounded verdict: parseable ISO-8601 `at` and clean of key-material (
   assert.ok(!new RegExp("[1-9A-HJ-NP-Za-km-z]{50}").test(raw), "verdicts-only scrub: no base58(50) pattern");
   assert.ok(!new RegExp("[0-9a-fA-F]{40}").test(raw), "verdicts-only scrub: no hex(40) pattern");
   assert.ok(!raw.includes("ghp_") && !raw.includes("github_pat_"), "verdicts-only scrub: no token prefixes");
+});
+
+t("[schema] BOTH wound-class verdicts: exact keys {at, engine, selftest, note} + scrub-clean (G77-g class 2 measured)", () => {
+  const vs = woundedVerdictJsons();
+  const engines = vs.map((v) => v.engine);
+  assert.ok(engines.includes("ENGINE-SOURCE-MISSING"), "class 1 (module absent) verdict must exist");
+  assert.ok(engines.includes("ENGINE-SELFTEST-UNRUNNABLE"), "class 2 (gate failed, source present) verdict must exist");
+  for (const v of vs) {
+    assert.deepEqual(Object.keys(v).sort(), ["at", "engine", "note", "selftest"],
+      "every wound-class verdict carries ONLY the beat's own measurement");
+    const raw = JSON.stringify(v);
+    assert.ok(!new RegExp("[1-9A-HJ-NP-Za-km-z]{50}").test(raw), "scrub: no base58(50)");
+    assert.ok(!new RegExp("[0-9a-fA-F]{40}").test(raw), "scrub: no hex(40)");
+    assert.ok(!raw.includes("ghp_") && !raw.includes("github_pat_"), "scrub: no token prefixes");
+  }
+  const v2 = vs.find((v) => v.engine === "ENGINE-SELFTEST-UNRUNNABLE");
+  assert.equal(v2.selftest, "GATE-FAILED", "class 2 must name the measured gate failure, never a fabricated pass");
 });
 
 /* ── 5 · wounded-carried law — consequences amber, the wound red ───────── */
@@ -210,11 +300,21 @@ t("[carried] STATUS renders WOUNDED (carried) and the legend documents it", () =
   );
 });
 
-t("[carried] wounded guard derives ONLY from a fresh heartbeat declaring the wound", () => {
+t("[carried] wounded guard derives ONLY from a fresh heartbeat declaring the wound (G77-g: both honest wound names)", () => {
   assert.ok(
-    WD.includes('wounded = hb_ok and hb.get("engine") == "ENGINE-SOURCE-MISSING"'),
-    "the wounded law must key off the heartbeat's own honest verdict, nothing else",
+    WD.includes('wounded = hb_ok and hb.get("engine") in ("ENGINE-SOURCE-MISSING", "ENGINE-SELFTEST-UNRUNNABLE")'),
+    "the wounded law must key off the heartbeat's own honest engine verdict — now the full set of named wounds " +
+      "(module-absent G76-g + selftest-unrunnable G77-g). Never keyed off anything but the heartbeat verdict itself",
   );
+});
+
+t("[probe] measured RPC backoff: public nodes wobble — probe retries escalate 10s then 25s (3 attempts)", () => {
+  const i = RT.indexOf("name: Chain anchor probe");
+  const step = RT.slice(i, RT.indexOf("- name:", i + 10));
+  assert.ok(/sleep 10/.test(step) && /sleep 25/.test(step),
+    "probe backoff must be measured escalation (10s first retry, 25s second) — not a bare single retry");
+  const attempts = (step.match(/node scripts\/chain-anchor-probe.mjs/g) || []).length;
+  assert.ok(attempts >= 3, `probe must be attempted up to 3 times, found ${attempts}`);
 });
 
 /* ── 6 · the automated retry path (the beat keeps knocking) ────────────── */
