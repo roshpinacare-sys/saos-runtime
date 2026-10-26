@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-25T23:19:48.268Z",
+  "builtAt": "2026-10-26T01:19:54.368Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -27,10 +27,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
+        "status": "queued",
+        "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-25T22:38:57Z"
+        "created_at": "2026-10-26T01:18:53Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-25T23:00:20Z"
+        "created_at": "2026-10-26T00:51:15Z"
       },
       "verdict": "ALIVE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-25T21:15:53Z"
+        "created_at": "2026-10-25T23:35:53Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-25T22:54:31Z"
+        "created_at": "2026-10-26T00:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-25T23:12:53Z"
+        "created_at": "2026-10-26T01:12:32Z"
       },
       "verdict": "CANCELLED"
     },
@@ -437,7 +437,7 @@
         "status": "completed",
         "conclusion": "failure",
         "event": "schedule",
-        "created_at": "2026-10-25T21:47:07Z"
+        "created_at": "2026-10-26T00:43:37Z"
       },
       "verdict": "RED"
     },
@@ -452,7 +452,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-25T23:01:08Z"
+        "created_at": "2026-10-26T01:05:42Z"
       },
       "verdict": "ALIVE"
     },
@@ -467,7 +467,7 @@
         "status": "completed",
         "conclusion": "failure",
         "event": "schedule",
-        "created_at": "2026-10-25T21:01:00Z"
+        "created_at": "2026-10-26T00:30:30Z"
       },
       "verdict": "RED"
     },
@@ -482,7 +482,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-25T23:16:30Z"
+        "created_at": "2026-10-26T01:17:37Z"
       },
       "verdict": "ALIVE"
     },
@@ -510,7 +510,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-25T18:33:41Z"
+        "created_at": "2026-10-25T23:35:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -532,7 +532,7 @@
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
     "at": "2026-10-24T19:29:17Z",
-    "ageMinutes": 1671,
+    "ageMinutes": 1791,
     "subject": "vault-sync [seal-host]: union-resolved — איחוד-ללא-מחיקות",
     "verdict": "STALE"
   },
