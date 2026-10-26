@@ -267,9 +267,17 @@ jobs:
           #     consequence red too is double-counting noise).
           # The fail-loud laws (5400/2400 heartbeat, verified>=14, probe OK) are
           # UNCHANGED — byte-locked by scripts/test-watchdog-reds.mjs.
-          wounded = hb_ok and hb.get("engine") == "ENGINE-SOURCE-MISSING"
+          # G77-g (2026-10-26 ~16:00Z, measured run 40346411998): a SECOND honest
+          # wound name joined the set — engine source present but the selftest gate
+          # itself failed (seal-host 4b1cd2ed8 had taken the cockpit ROOT scripts/+
+          # src/ that selftest.mjs imports; restore 96a84b5a2 covered only
+          # mini-services). The beat now publishes ENGINE-SELFTEST-UNRUNNABLE
+          # (sovereign-runtime.yml "Wounded-engine verdict" class 2) and the
+          # carried law classifies BOTH named wounds; still keyed ONLY off the
+          # heartbeat's own verdict — never off anything else.
+          wounded = hb_ok and hb.get("engine") in ("ENGINE-SOURCE-MISSING", "ENGINE-SELFTEST-UNRUNNABLE")
           if wounded:
-              print("heartbeat: engine=ENGINE-SOURCE-MISSING — beat voice alive, wound carried by engine.source")
+              print("heartbeat: engine=%s — beat voice alive, wound carried by engine.source" % (hb.get("engine"),))
 
           # ---- engine.source: the wound gets a name (G76-g) ----
           # Direct measurement, independent of the beat: the engine source must be

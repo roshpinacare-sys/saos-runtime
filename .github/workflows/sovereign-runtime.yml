@@ -98,6 +98,43 @@ jobs:
           git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
           git fetch origin main:refs/remotes/origin/main || echo "main fetch skipped (vault revival will report honestly)"
           echo "engine @ $(git rev-parse --short HEAD)"
+          # G77-g beat recovery (measured 2026-10-26, run 40346411998 step 6 +
+          # byte-identical local reproduction): engine-restore 96a84b5a2 brought
+          # back mini-services/saos-engine from 4b1cd2ed8^, but the seal-host wipe
+          # (4b1cd2ed8) had also taken the cockpit ROOT scripts/ + src/ — selftest
+          # imports three cross-tree modules and died ERR_MODULE_NOT_FOUND
+          # engine/scripts/saos-setup.mjs BEFORE any verdict. MEASURED: all three
+          # blobs survive byte-identical in the cockpit's OWN lineage
+          # (6723ccfc / 0c18b630 / b9f9687c @ 4b1cd2ed8^; selftest then measures
+          # 2018/2018 PASS on bun + node). HEAL = walk the clone's own history and
+          # restore ONLY the absent files (newest lineage version, blob OID printed
+          # as the receipt) — an existing cockpit file is never overwritten, nothing
+          # is fabricated; a file not recoverable from lineage degrades honestly
+          # (echo) and the 26-b wounded verdict then names the wound
+          # (ENGINE-SELFTEST-UNRUNNABLE). The gate always runs as-is.
+          HEALED=""
+          for F in "scripts/saos-setup.mjs" "scripts/worklog-analytics.mjs" "src/lib/llm-chain.ts"; do
+            if [ ! -s "$F" ]; then
+              RESTORED=""
+              for CAND in $(git rev-list -8 HEAD -- "$F" 2>/dev/null); do
+                if git cat-file -e "$CAND:$F" 2>/dev/null; then
+                  mkdir -p "$(dirname "$F")"
+                  if git cat-file blob "$CAND:$F" > "$F" 2>/dev/null; then
+                    echo "dependency-heal: $F restored from cockpit lineage $CAND (blob $(git rev-parse "$CAND:$F"))"
+                    RESTORED="1"; HEALED="$HEALED $F"; break
+                  fi
+                fi
+              done
+              if [ -z "$RESTORED" ]; then
+                echo "dependency-heal: $F NOT recoverable from the clone's lineage — heal limited, wound will be named honestly"
+              fi
+            fi
+          done
+          if [ -n "$HEALED" ]; then
+            echo "selftest dependency-heal complete (restore-only from the cockpit's own lineage):$HEALED"
+          else
+            echo "dependency-heal: nothing to restore (tree complete or lineage absent) — gate runs as-is"
+          fi
 
       - uses: actions/setup-node@v5
         with:
@@ -145,6 +182,15 @@ jobs:
             mkdir -p mini-services/saos-engine/state/beat
             printf '{"at": "%s", "engine": "ENGINE-SOURCE-MISSING", "selftest": "MODULE-ABSENT", "note": "engine source absent from the cockpit tree - the beat measures its own wound; engine.source carries the red; no lane verdicts fabricated"}\n' "$AT" > mini-services/saos-engine/state/beat/ci-last-heartbeat.json
             echo "wounded verdict written (engine source absent, at=$AT): the beat keeps its voice, the wound stays loud under engine.source"
+          elif [ "${{ steps.selftest_gate.outcome }}" != "success" ]; then
+            # G77-g wound class 2 (measured run 40346411998): source present, gate
+            # dead. The old law wrote NOTHING here — the canonical home starved at
+            # 2026-10-24T19:00:27Z while every run went red. Honest voice again:
+            # the wound gets its real name, nothing is fabricated, the run stays red.
+            AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            mkdir -p mini-services/saos-engine/state/beat
+            printf '{"at": "%s", "engine": "ENGINE-SELFTEST-UNRUNNABLE", "selftest": "GATE-FAILED", "note": "engine source present but the selftest gate failed - the beat measures its own wound; no lane verdicts fabricated; the run stays red and the pulse keeps knocking"}\n' "$AT" > mini-services/saos-engine/state/beat/ci-last-heartbeat.json
+            echo "wounded verdict written (selftest gate failed, at=$AT): the beat keeps its voice, the wound is named ENGINE-SELFTEST-UNRUNNABLE"
           else
             echo "engine source present — no wounded verdict (gate outcome: ${{ steps.selftest_gate.outcome }})"
           fi
@@ -947,11 +993,18 @@ jobs:
             V="PROBE-SCRIPT-ABSENT"; NOTE="probe script absent from the engine tree - the anchor cannot be measured; engine.source carries the tree wound; heartbeat still lands"
             echo "::warning::chain-anchor-probe.mjs absent — honest PROBE-SCRIPT-ABSENT verdict recorded; the beat continues (12:15 cascade law)"
           elif ! node scripts/chain-anchor-probe.mjs; then
-            echo "first probe failed — one retry (public nodes wobble)"
+            # G77-g measured backoff: public nodes wobble (the comment below is
+            # itself a measurement). Escalate 10s → 25s, 3 attempts total, then
+            # the honest FAILED verdict is recorded — never silenced.
+            echo "first probe failed — retry 1/2 after 10s (public nodes wobble)"
             sleep 10
             if ! node scripts/chain-anchor-probe.mjs; then
-              V="FAILED"; NOTE="anchor NOT in HEAD lineage after retry (probe verdict recorded; heartbeat still lands)"
-              echo "::warning::chain anchor probe FAILED after retry — verdict recorded to state/anchor-probe.json, watchdog mirrors it red; the beat continues"
+              echo "second probe failed — retry 2/2 after 25s (measured escalation)"
+              sleep 25
+              if ! node scripts/chain-anchor-probe.mjs; then
+                V="FAILED"; NOTE="anchor NOT in HEAD lineage after measured backoff (3 attempts, 10s+25s) (probe verdict recorded; heartbeat still lands)"
+                echo "::warning::chain anchor probe FAILED after backoff — verdict recorded to state/anchor-probe.json, watchdog mirrors it red; the beat continues"
+              fi
             fi
           fi
           printf '{"verdict": "%s", "at": "%s", "note": "%s"}\n' "$V" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$NOTE" > mini-services/saos-engine/state/anchor-probe.json
