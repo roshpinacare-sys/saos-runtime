@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-26T14:16:49.780Z",
+  "builtAt": "2026-10-26T19:59:48.801Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T11:39:36Z"
+        "created_at": "2026-10-26T17:43:58Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-26T13:52:49Z"
+        "created_at": "2026-10-26T19:37:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T06:43:26Z"
+        "created_at": "2026-10-26T14:25:34Z"
       },
       "verdict": "STALE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T07:03:27Z"
+        "created_at": "2026-10-26T14:35:20Z"
       },
       "verdict": "IDLE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-26T13:54:31Z"
+        "created_at": "2026-10-26T19:54:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -146,7 +146,7 @@
         "status": "completed",
         "conclusion": "failure",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-26T06:31:34Z"
+        "created_at": "2026-10-26T14:24:19Z"
       },
       "verdict": "RED"
     },
@@ -157,11 +157,11 @@
       "gapMinutes": null,
       "lastRun": {
         "status": "completed",
-        "conclusion": "success",
+        "conclusion": "failure",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-25T06:18:03Z"
+        "created_at": "2026-10-26T14:24:18Z"
       },
-      "verdict": "IDLE"
+      "verdict": "RED"
     },
     {
       "name": "fee-engine",
@@ -174,7 +174,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-26T13:21:55Z"
+        "created_at": "2026-10-26T19:21:37Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-26T06:31:29Z"
+        "created_at": "2026-10-26T14:24:13Z"
       },
       "verdict": "IDLE"
     },
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-26T13:32:48Z"
+        "created_at": "2026-10-26T19:33:10Z"
       },
       "verdict": "CANCELLED"
     },
@@ -310,7 +310,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-25T13:40:36Z"
+        "created_at": "2026-10-26T16:04:07Z"
       },
       "verdict": "ALIVE"
     },
@@ -325,7 +325,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T06:55:01Z"
+        "created_at": "2026-10-26T14:32:17Z"
       },
       "verdict": "STALE"
     },
@@ -340,7 +340,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T06:30:41Z"
+        "created_at": "2026-10-26T14:24:00Z"
       },
       "verdict": "STALE"
     },
@@ -396,7 +396,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T08:07:14Z"
+        "created_at": "2026-10-26T15:28:13Z"
       },
       "verdict": "STALE"
     },
@@ -411,7 +411,7 @@
         "event": "schedule",
         "created_at": "2026-10-26T13:09:28Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -436,8 +436,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "failure",
-        "event": "schedule",
-        "created_at": "2026-10-26T14:16:09Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-26T18:46:10Z"
       },
       "verdict": "RED"
     },
@@ -452,7 +452,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-26T13:51:58Z"
+        "created_at": "2026-10-26T19:47:16Z"
       },
       "verdict": "ALIVE"
     },
@@ -467,7 +467,7 @@
         "status": "completed",
         "conclusion": "failure",
         "event": "schedule",
-        "created_at": "2026-10-26T07:58:17Z"
+        "created_at": "2026-10-26T15:20:04Z"
       },
       "verdict": "RED"
     },
@@ -482,7 +482,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-26T14:16:38Z"
+        "created_at": "2026-10-26T19:59:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -510,7 +510,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-26T09:23:08Z"
+        "created_at": "2026-10-26T16:19:12Z"
       },
       "verdict": "ALIVE"
     },
@@ -531,20 +531,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-24T19:29:17Z",
-    "ageMinutes": 2568,
-    "subject": "vault-sync [seal-host]: union-resolved — איחוד-ללא-מחיקות",
-    "verdict": "STALE"
+    "at": "2026-10-26T19:44:57Z",
+    "ageMinutes": 15,
+    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
+    "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 15,
-    "red": 3,
+    "alive": 14,
+    "red": 4,
     "stale": 4,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
     "idle": 14,
-    "heartbeat": "STALE"
+    "heartbeat": "ALIVE"
   }
 }
