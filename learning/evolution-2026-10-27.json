@@ -1,0 +1,126 @@
+{
+ "at": "2026-10-27T10:47:45.121Z",
+ "window": {
+  "from": "2026-10-26",
+  "to": "2026-10-27"
+ },
+ "sections": {
+  "runs": {
+   "Domain": {
+    "count": 2205,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 3,
+     "success": 93,
+     "pending": 1,
+     "failure": 3
+    }
+   },
+   "Console": {
+    "count": 1677,
+    "sampled": 100,
+    "hist": {
+     "pending": 1,
+     "queued": 2,
+     "cancelled": 17,
+     "success": 79,
+     "in_progress": 1
+    }
+   },
+   "Sandbox": {
+    "count": 738,
+    "sampled": 100,
+    "hist": {
+     "success": 83,
+     "in_progress": 2,
+     "failure": 15
+    }
+   },
+   "saos-runtime": {
+    "count": 402,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 4,
+     "success": 84,
+     "cancelled": 8,
+     "failure": 4
+    }
+   }
+  },
+  "econ": {
+   "pnlBook": {
+    "realized": null,
+    "edge": null,
+    "verdict": null,
+    "fields": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11"
+    ]
+   },
+   "pulse": {
+    "realizedUsd": null
+   },
+   "honestEcon": {
+    "realChainMarkedUsd": 0.0331,
+    "saosExternalBid": false
+   }
+  },
+  "exposure": {
+   "regressions": [
+    "sovereign-lighthouse/state.json redaction missing"
+   ],
+   "probes": {
+    "Domain/agent/inspections/INS-R66-001.json": "clean",
+    "Domain/receipts/key-check.json": "clean",
+    "Domain/about/team.json": "clean",
+    "TruthRail/receipts/sovereign-bootstrap-20261008-190743.json": "clean",
+    "TruthRail/receipts/blurt-gen2-rotation-2026-10-08.json": "clean",
+    "FleetHQ/vault/ssh-keys.tar.enc": "clean",
+    "FleetHQ/vault/keys.env.enc": "clean",
+    "sovereign-lighthouse/state.json": "NOT-REDACTED",
+    "sovereign-beacon/state.json": "redacted-ok"
+   }
+  },
+  "content": {
+   "report": "found",
+   "highSimPairs": null
+  }
+ },
+ "slos": [
+  {
+   "id": "P0-1",
+   "name": "no exposure regressions",
+   "ok": false,
+   "detail": "[\"sovereign-lighthouse/state.json redaction missing\"]"
+  },
+  {
+   "id": "T1",
+   "name": "Domain daily runs >= 30",
+   "ok": true,
+   "detail": "runs=2205"
+  },
+  {
+   "id": "T1",
+   "name": "Console daily runs >= 10",
+   "ok": true,
+   "detail": "runs=1677"
+  },
+  {
+   "id": "T1",
+   "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
+   "ok": true,
+   "detail": "runs=402"
+  }
+ ],
+ "verdict": "SLO-BREACH"
+}
