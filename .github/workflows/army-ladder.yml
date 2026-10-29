@@ -37,6 +37,7 @@ jobs:
       GH_PAT: ${{ secrets.GH_PAT }}
       ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
       ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+      LIVE_FLEET_KEYS: ${{ secrets.LIVE_FLEET_KEYS }}
     steps:
       - uses: actions/checkout@v5
         with: { fetch-depth: 1 }
