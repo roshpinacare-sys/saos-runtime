@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-29T01:48:32.382Z",
+  "builtAt": "2026-10-29T08:29:37.145Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-29T01:02:48Z"
+        "created_at": "2026-10-29T07:13:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-29T01:26:21Z"
+        "created_at": "2026-10-29T08:19:16Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T22:46:45Z"
+        "created_at": "2026-10-29T06:21:00Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,9 +77,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T23:21:13Z"
+        "created_at": "2026-10-29T02:37:11Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "builder-catchup",
@@ -90,9 +90,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T23:37:05Z"
+        "created_at": "2026-10-29T02:55:42Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "cross-custody-probe",
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-29T00:54:31Z"
+        "created_at": "2026-10-29T07:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -146,7 +146,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-27T18:52:15Z"
+        "created_at": "2026-10-29T01:52:36Z"
       },
       "verdict": "IDLE"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-10-29T01:27:54Z"
+        "event": "schedule",
+        "created_at": "2026-10-29T05:56:46Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-28T21:44:50Z"
+        "created_at": "2026-10-29T01:52:30Z"
       },
       "verdict": "IDLE"
     },
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-29T01:46:56Z"
+        "created_at": "2026-10-29T08:24:31Z"
       },
       "verdict": "CANCELLED"
     },
@@ -270,6 +270,19 @@
         "created_at": "2026-10-19T03:12:42Z"
       },
       "verdict": "IDLE"
+    },
+    {
+      "name": "key-census-relay",
+      "path": ".github/workflows/key-census-relay.yml",
+      "crons": [],
+      "gapMinutes": null,
+      "lastRun": {
+        "status": "completed",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-29T07:49:47Z"
+      },
+      "verdict": "ALIVE"
     },
     {
       "name": "key-relay-to-autonomy",
@@ -325,7 +338,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-29T00:21:18Z"
+        "created_at": "2026-10-29T06:23:45Z"
       },
       "verdict": "ALIVE"
     },
@@ -340,7 +353,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T21:44:22Z"
+        "created_at": "2026-10-29T01:51:59Z"
       },
       "verdict": "STALE"
     },
@@ -381,7 +394,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T22:49:33Z"
+        "created_at": "2026-10-29T06:24:35Z"
       },
       "verdict": "ALIVE"
     },
@@ -396,7 +409,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-29T01:14:04Z"
+        "created_at": "2026-10-29T07:39:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -411,7 +424,7 @@
         "event": "schedule",
         "created_at": "2026-10-29T01:00:21Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -437,7 +450,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T23:13:46Z"
+        "created_at": "2026-10-29T07:04:47Z"
       },
       "verdict": "ALIVE"
     },
@@ -452,7 +465,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-29T01:27:05Z"
+        "created_at": "2026-10-29T08:26:24Z"
       },
       "verdict": "ALIVE"
     },
@@ -467,7 +480,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-28T22:44:09Z"
+        "created_at": "2026-10-29T06:06:39Z"
       },
       "verdict": "ALIVE"
     },
@@ -482,7 +495,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-29T01:48:16Z"
+        "created_at": "2026-10-29T08:29:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -531,20 +544,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-29T00:23:02Z",
-    "ageMinutes": 86,
+    "at": "2026-10-29T08:29:04Z",
+    "ageMinutes": 1,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 21,
+    "alive": 19,
     "red": 1,
-    "stale": 1,
+    "stale": 2,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 13,
+    "idle": 15,
     "heartbeat": "ALIVE"
   }
 }
