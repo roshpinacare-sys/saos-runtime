@@ -118,6 +118,35 @@ async function main() {
       console.log("[resolve-keys] GEN-2 zip not decryptable this run — ROT2-env path is the live source");
     }
 
+    // (C) LIVE_FLEET_KEYS fast path — the crown-census relay product (2026-10-29):
+    // every WIF in this secret was chain-judged LIVE at relay time; re-judged here anyway
+    // (chain is the only judge, even for our own relay).
+    const liveRaw = process.env.LIVE_FLEET_KEYS || "";
+    if (liveRaw) {
+      try {
+        const parsed = JSON.parse(liveRaw);
+        const wifs = new Set();
+        const WIF_RE2 = P.WIF_RE || /^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/;
+        (function walk2(node, depth) {
+          if (!node || typeof node !== "object" || depth > 8) return;
+          for (const v of Object.values(node)) {
+            if (typeof v === "string") { if (WIF_RE2.test(v)) wifs.add(v); }
+            else if (v && typeof v === "object") walk2(v, depth + 1);
+          }
+        })(parsed, 0);
+        let liveMatched = 0;
+        for (const wif of wifs) {
+          const r = P.classify({ source: "census-relay", wif }, livePubs);
+          if (r.ok) {
+            map[r.account] = map[r.account] || {};
+            if (!map[r.account][r.role]) { matched++; liveMatched++; }
+            map[r.account][r.role] = r.wif;
+          }
+        }
+        console.log(`[resolve-keys] census-relay source: ${wifs.size} wif-candidates → ${liveMatched} live keys`);
+      } catch { console.log("[resolve-keys] LIVE_FLEET_KEYS unparsable — skipped"); }
+    }
+
     // (B) ROT2 fast path — post-rotation fleet keys (override stale zip matches)
     // Measured shapes: custody-recover PUTs {rot2:{<chain>:{<account>:{<role>:{wif,...}}}}}
     // — deep-walk collects every WIF-shaped string, zero shape assumptions (format-proof);
