@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-10-30T22:58:48.150Z",
+  "builtAt": "2026-10-31T02:23:45.153Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T21:44:07Z"
+        "created_at": "2026-10-30T23:01:53Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-ladder",
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-30T22:57:41Z"
+        "created_at": "2026-10-31T02:16:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T20:54:35Z"
+        "created_at": "2026-10-31T00:53:30Z"
       },
       "verdict": "ALIVE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T21:08:11Z"
+        "created_at": "2026-10-31T01:05:14Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-30T22:54:31Z"
+        "created_at": "2026-10-31T01:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-10-30T20:51:56Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-10-31T01:10:02Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,9 +187,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-10-30T19:31:13Z"
+        "created_at": "2026-10-30T23:54:32Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "fleet-rotation-a",
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-10-30T22:56:42Z"
+        "created_at": "2026-10-31T02:18:36Z"
       },
       "verdict": "CANCELLED"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T21:41:02Z"
+        "created_at": "2026-10-31T01:46:13Z"
       },
       "verdict": "ALIVE"
     },
@@ -366,9 +366,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T19:30:48Z"
+        "created_at": "2026-10-30T23:53:54Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "owner-key-adopt",
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T18:51:44Z"
+        "created_at": "2026-10-30T23:13:17Z"
       },
       "verdict": "STALE"
     },
@@ -437,7 +437,7 @@
         "event": "schedule",
         "created_at": "2026-10-30T22:24:20Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -463,7 +463,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T22:58:18Z"
+        "created_at": "2026-10-31T01:50:13Z"
       },
       "verdict": "ALIVE"
     },
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-10-30T22:55:25Z"
+        "created_at": "2026-10-31T02:11:10Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T19:32:52Z"
+        "created_at": "2026-10-30T23:55:27Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-10-30T22:58:26Z"
+        "created_at": "2026-10-31T02:23:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-10-30T20:09:19Z"
+        "created_at": "2026-10-31T01:05:03Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,10 +557,10 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-10-30T22:57:44Z",
-    "ageMinutes": 1,
+    "at": "2026-10-31T00:01:23Z",
+    "ageMinutes": 143,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
-    "verdict": "ALIVE"
+    "verdict": "STALE"
   },
   "summary": {
     "alive": 20,
@@ -571,6 +571,6 @@
     "neverRun": 0,
     "review": 0,
     "idle": 15,
-    "heartbeat": "ALIVE"
+    "heartbeat": "STALE"
   }
 }
