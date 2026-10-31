@@ -1,0 +1,121 @@
+{
+ "at": "2026-10-31T11:02:34.439Z",
+ "window": {
+  "from": "2026-10-30",
+  "to": "2026-10-31"
+ },
+ "sections": {
+  "runs": {
+   "Domain": {
+    "count": 2005,
+    "sampled": 100,
+    "hist": {
+     "success": 95,
+     "in_progress": 3,
+     "failure": 2
+    }
+   },
+   "Console": {
+    "count": 1462,
+    "sampled": 100,
+    "hist": {
+     "success": 89,
+     "cancelled": 11
+    }
+   },
+   "Sandbox": {
+    "count": 770,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 2,
+     "failure": 11,
+     "success": 87
+    }
+   },
+   "saos-runtime": {
+    "count": 740,
+    "sampled": 100,
+    "hist": {
+     "in_progress": 4,
+     "success": 90,
+     "cancelled": 6
+    }
+   }
+  },
+  "econ": {
+   "pnlBook": {
+    "realized": null,
+    "edge": null,
+    "verdict": null,
+    "fields": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11"
+    ]
+   },
+   "pulse": {
+    "realizedUsd": null
+   },
+   "honestEcon": {
+    "realChainMarkedUsd": 0.4722,
+    "saosExternalBid": false
+   }
+  },
+  "exposure": {
+   "regressions": [
+    "sovereign-lighthouse/state.json redaction missing"
+   ],
+   "probes": {
+    "Domain/agent/inspections/INS-R66-001.json": "clean",
+    "Domain/receipts/key-check.json": "clean",
+    "Domain/about/team.json": "clean",
+    "TruthRail/receipts/sovereign-bootstrap-20261008-190743.json": "clean",
+    "TruthRail/receipts/blurt-gen2-rotation-2026-10-08.json": "clean",
+    "FleetHQ/vault/ssh-keys.tar.enc": "clean",
+    "FleetHQ/vault/keys.env.enc": "clean",
+    "sovereign-lighthouse/state.json": "NOT-REDACTED",
+    "sovereign-beacon/state.json": "redacted-ok"
+   }
+  },
+  "content": {
+   "report": "found",
+   "highSimPairs": null
+  }
+ },
+ "slos": [
+  {
+   "id": "P0-1",
+   "name": "no exposure regressions",
+   "ok": false,
+   "detail": "[\"sovereign-lighthouse/state.json redaction missing\"]"
+  },
+  {
+   "id": "T1",
+   "name": "Domain daily runs >= 30",
+   "ok": true,
+   "detail": "runs=2005"
+  },
+  {
+   "id": "T1",
+   "name": "Console daily runs >= 10",
+   "ok": true,
+   "detail": "runs=1462"
+  },
+  {
+   "id": "T1",
+   "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
+   "ok": true,
+   "detail": "runs=740"
+  }
+ ],
+ "verdict": "SLO-BREACH"
+}
