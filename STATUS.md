@@ -1,6 +1,6 @@
 # Grid status
 
-Generated 2026-10-31T18:43:31Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-10-31T18:43:52Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
@@ -14,10 +14,10 @@ Generated 2026-10-31T18:43:31Z by grid-watchdog (schedule 13,43 * * * * UTC). Cr
 | blurt.live | verdict=BLURT-BODIES-LIVE live=12/None | live>=1 measured · BLURT-RPC-UNREACHABLE = third-party infra outage (loud in measured, not machine-fault) | GREEN | 2026-10-31T18:40:33.506Z |
 | delegation.verdict | verdict=CUSTODY-GATE-REFUSED ops=0 | verdict in green set (WAIT = custody gate refusal is the brake working) | WAIT (designed) | 2026-10-31T18:40:33.506Z |
 | digest.verdict | verdict=COOLDOWN slot=None | verdict in green set (COOLDOWN is normal pacing) | GREEN | 2026-10-31T18:40:33.506Z |
-| pulse.fresh | age=3m conclusion=status=in_progress run=41230537778 | red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight | GREEN | 2026-10-31T18:40:15Z |
+| pulse.fresh | age=4m conclusion=status=in_progress run=41230537778 | red if failed OR age>5400s (90m fail-loud) OR age>2400s (40m) not in-flight | GREEN | 2026-10-31T18:40:15Z |
 | potential.fresh | age=35m path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-10-31T18:08:33Z |
 | fleetdigest.fresh | age=35m path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-10-31T18:08:33Z |
-| office.schedule | age=35m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-31T18:08:00Z |
+| office.schedule | age=36m conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-10-31T18:08:00Z |
 | billing.block | no billing-block annotation (0 failed run(s) of 0 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
 
 Legend:
