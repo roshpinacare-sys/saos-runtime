@@ -1034,10 +1034,15 @@ jobs:
           # is NOT run here (measured-empty 2026-10-12) — heartbeat stays lean.
           if [ -n "$STEEM_ACTIVE_WIF" ]; then
             if [ ! -d /tmp/steemjs/node_modules/steem ]; then npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error; fi
-            # acct-00 refs only (estate-pseudonym law) — R361 FLOW-IGNITION (owner word
-            # "open all economic barriers"): the arming probe now PULLS AT RUNTIME from
-            # the private vault-home archive (PUBLISH-POLICY §3 kept: the public tree
-            # stays clean; the runner fetches the operational tool only into /tmp).
+            # headcorner refs resolved to the REAL chain account at the arm boundary
+            # (measured 2026-11-01: the literal acct-00 ref reached probe-v2, whose
+            # chain-judge resolves REAL names only — acct-00 does not exist on-chain
+            # (condenser_api.get_accounts → NOT-FOUND) so the arm soft-failed forever
+            # while law-grid-exec-alive held the red). probe-v2 chain-judges the
+            # secret WIF against the LIVE headcorner active authority and writes
+            # 0600 ../../.secrets/headcorner.key — the exact KEY_FILE signer.mjs
+            # loadCredential() reads. Estate-pseudonym law kept everywhere else
+            # (FLEET_ROSTER_MAP refs); R361 FLOW-IGNITION runtime-pull unchanged.
             VPROBE=/tmp/probe-v2.cjs
             curl -fsS --max-time 30 -H "authorization: Bearer ${GH_PAT}" -o "$VPROBE" \
               "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe-v2.cjs" \
@@ -1050,7 +1055,7 @@ jobs:
               "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe.cjs" \
               || echo "probe.cjs sibling fetch failed (honest)"
             if [ -s "$VPROBE" ]; then
-              NODE_PATH=/tmp/steemjs/node_modules node "$VPROBE" --arm ../../.secrets/acct-00.key --arm-account acct-00 --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
+              NODE_PATH=/tmp/steemjs/node_modules node "$VPROBE" --arm ../../.secrets/headcorner.key --arm-account headcorner --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
             else
               echo "probe-v2 unavailable — grid ticks honestly UNARMED this round (fail-closed preserved)"
             fi
