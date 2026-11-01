@@ -1034,31 +1034,18 @@ jobs:
           # is NOT run here (measured-empty 2026-10-12) — heartbeat stays lean.
           if [ -n "$STEEM_ACTIVE_WIF" ]; then
             if [ ! -d /tmp/steemjs/node_modules/steem ]; then npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error; fi
-            # headcorner refs resolved to the REAL chain account at the arm boundary
-            # (measured 2026-11-01: the literal acct-00 ref reached probe-v2, whose
-            # chain-judge resolves REAL names only — acct-00 does not exist on-chain
-            # (condenser_api.get_accounts → NOT-FOUND) so the arm soft-failed forever
-            # while law-grid-exec-alive held the red). probe-v2 chain-judges the
-            # secret WIF against the LIVE headcorner active authority and writes
-            # 0600 ../../.secrets/headcorner.key — the exact KEY_FILE signer.mjs
-            # loadCredential() reads. Estate-pseudonym law kept everywhere else
-            # (FLEET_ROSTER_MAP refs); R361 FLOW-IGNITION runtime-pull unchanged.
-            VPROBE=/tmp/probe-v2.cjs
-            curl -fsS --max-time 30 -H "authorization: Bearer ${GH_PAT}" -o "$VPROBE" \
-              "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe-v2.cjs" \
-              || echo "probe fetch failed (honest) — arm soft-fails this round"
-            # R329-fix (measured 2026-10-16 14:06Z): probe-v2 requires its sibling
-            # ./probe.cjs — fetched alone it died with MODULE_NOT_FOUND and the
-            # grid ticked honestly UNARMED while phantom bid overflow grew.
-            # The sibling now rides along into the same /tmp dir. Fail-honest.
-            curl -fsS --max-time 30 -H "authorization: Bearer ${GH_PAT}" -o /tmp/probe.cjs \
-              "https://raw.githubusercontent.com/roshpinacare-sys/vault-home/main/archive/saos-runtime-exposure-cleanup-2026-10-12/ops/key-census-probe/probe.cjs" \
-              || echo "probe.cjs sibling fetch failed (honest)"
-            if [ -s "$VPROBE" ]; then
-              NODE_PATH=/tmp/steemjs/node_modules node "$VPROBE" --arm ../../.secrets/headcorner.key --arm-account headcorner --arm-role active --arm-chain steem --arm-secret || echo "arm soft-fail — burst continues honestly"
-            else
-              echo "probe-v2 unavailable — grid ticks honestly UNARMED this round (fail-closed preserved)"
-            fi
+            # T-65 secret-first arming — DIRECT chain-judged delivery (measured
+            # 2026-11-01 11:26Z: the probe-v2 path FATALed before arming — its
+            # census half reads agent/recovery-meta.json which no longer exists
+            # at steem@saos-cockpit HEAD after the crown-seal vault rotation;
+            # the arm never reached its own chain-judge). The arming law is
+            # unchanged and now runs inline: secret WIF -> wifToPublic ->
+            # fresh LIVE authority match (condenser get_accounts, fail-closed)
+            # -> 0600 ../../.secrets/headcorner.key — the exact KEY_FILE
+            # signer.mjs loadCredential() reads. The WIF NEVER prints; the
+            # receipt carries a fingerprint only. Estate-pseudonym law kept
+            # everywhere else (FLEET_ROSTER_MAP refs).
+            NODE_PATH=/tmp/steemjs/node_modules node -e "const steem=require('steem'),fs=require('fs'),path=require('path'),crypto=require('crypto');const WIF=(process.env.STEEM_ACTIVE_WIF||'').trim();const ACCOUNT='headcorner';const OUT=path.resolve('../../.secrets/headcorner.key');if(!/^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/.test(WIF)){console.log('GRID-ARM-SECRET absent-or-malformed - honest refusal');process.exit(0);}let pub;try{pub=steem.auth.wifToPublic(WIF);}catch(e){console.log('GRID-ARM-REFUSED wif-unparseable (fail-closed)');process.exit(0);}steem.api.getAccounts([ACCOUNT],(err,accs)=>{if(err||!accs||!accs[0]){console.log('GRID-ARM-REFUSED chain-unreadable (fail-closed)');process.exit(0);}const want=accs[0].active&&accs[0].active.key_auths&&accs[0].active.key_auths[0]?accs[0].active.key_auths[0][0]:null;if(want&&pub===want){fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,ACCOUNT+' '+WIF+'\n',{mode:0o600});console.log('GRID-ARMED chain-judged fp='+crypto.createHash('sha256').update(WIF,'utf8').digest('hex').slice(0,8)+' -> headcorner.key (0600)');}else{console.log('GRID-ARM-REFUSED chain-judge-failed (fresh authority mismatch - fail-closed)');}process.exit(0);});"
           else
             echo "STEEM_ACTIVE_WIF absent — grid ticks honestly UNARMED (owner one-action pending; law-grid-exec-alive holds the alarm)"
           fi
