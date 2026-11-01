@@ -38,16 +38,51 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/evolution-digest.mjs --strict || true
-      - name: File SLO-breach issue (deduped per day)
-        if: steps.digest.outcome == 'failure'
+
+      # ONE-VOICE LAW (2026-11-01): the filing step used to open a NEW issue per day
+      # (measured: 18 open "evolution: SLO breach" issues #5-#32, 2026-10-15→11-01, one
+      # unchanged P0-1 root) and never closed the recovered ones — an alarm that spawns
+      # a duplicate every day and never forgives is notification noise, not an alarm.
+      # Now: ONE rolling thread — comment on the oldest open issue on breach (newer
+      # duplicates closed), close ALL open breach issues on a green digest.
+      - name: One-voice SLO filing (comment-or-create on breach, close-all on green)
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue list --search "evolution: SLO breach $(date -u +%F) in:title" --json number --limit 3 > /tmp/issues.json
-          if [ "$(cat /tmp/issues.json)" = "[]" ]; then
-            gh issue create --title "evolution: SLO breach $(date -u +%F)" \
-              --body "Daily digest found SLO breaches. See learning/ ledger and run ${{ github.run_id }}."
+          set -e
+          PREFIX='evolution: SLO breach'
+          gh issue list --state open --limit 100 --json number,title,createdAt \
+            > /tmp/all-open.json 2>/dev/null || echo "[]" > /tmp/all-open.json
+          jq -c --arg p "$PREFIX" '[.[] | select(.title | startswith($p))] | sort_by(.createdAt)' \
+            /tmp/all-open.json > /tmp/breach-issues.json 2>/dev/null || echo "[]" > /tmp/breach-issues.json
+          COUNT=$(jq 'length' /tmp/breach-issues.json)
+
+          if [ "${{ steps.digest.outcome }}" = "failure" ]; then
+            echo "digest RED — one-voice filing ($COUNT open breach thread(s) found)"
+            if [ "$COUNT" -eq 0 ]; then
+              gh issue create --title "$PREFIX $(date -u +%F)" \
+                --body "Daily digest found SLO breaches (run ${{ github.run_id }}). See learning/ ledger. One-voice law: this thread updates instead of spawning duplicates; it closes when a digest is green."
+            else
+              OLDEST=$(jq -r '.[0].number' /tmp/breach-issues.json)
+              gh issue comment "$OLDEST" --body "Digest run ${{ github.run_id }} @ $(date -u +%FT%TZ): SLO breach persists (see learning/ ledger). One-voice: updating this thread instead of opening a new one."
+              # close NEWER duplicates — the oldest thread stays canonical
+              for N in $(jq -r '.[1:] | .[].number' /tmp/breach-issues.json); do
+                gh issue close "$N" --reason "not planned" \
+                  --comment "Duplicate breach thread — consolidated into #$OLDEST (one-voice law)."
+              done
+              echo "one-voice: updated #$OLDEST, closed $((COUNT-1)) duplicate(s)"
+            fi
+          else
+            echo "digest GREEN (ALL-SLO-OK) — recovery law: closing all open breach threads ($COUNT)"
+            if [ "$COUNT" -gt 0 ]; then
+              for N in $(jq -r '.[].number' /tmp/breach-issues.json); do
+                gh issue close "$N" --reason "completed" \
+                  --comment "Recovered: digest ${{ github.run_id }} verdict=ALL-SLO-OK (P0-1 exposure probes clean). Closing under the one-voice law — the alarm only stays open while the breach is real."
+              done
+            fi
           fi
+
       - name: Commit learning artifacts
         if: always()
         run: |
