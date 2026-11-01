@@ -1,5 +1,5 @@
 {
- "at": "2026-11-01T11:56:59.144Z",
+ "at": "2026-11-01T14:14:50.318Z",
  "window": {
   "from": "2026-10-31",
   "to": "2026-11-01"
@@ -7,39 +7,40 @@
  "sections": {
   "runs": {
    "Domain": {
-    "count": 2146,
+    "count": 2291,
     "sampled": 100,
     "hist": {
-     "success": 92,
-     "in_progress": 3,
+     "in_progress": 4,
+     "success": 91,
      "cancelled": 4,
      "skipped": 1
     }
    },
    "Console": {
-    "count": 1497,
+    "count": 1585,
     "sampled": 100,
     "hist": {
-     "success": 82,
-     "cancelled": 18
+     "success": 89,
+     "cancelled": 11
     }
    },
    "Sandbox": {
-    "count": 784,
+    "count": 831,
     "sampled": 100,
     "hist": {
+     "success": 91,
      "in_progress": 2,
-     "success": 89,
-     "failure": 9
+     "failure": 7
     }
    },
    "saos-runtime": {
-    "count": 762,
+    "count": 806,
     "sampled": 100,
     "hist": {
-     "in_progress": 4,
-     "success": 88,
-     "cancelled": 8
+     "queued": 1,
+     "in_progress": 3,
+     "success": 91,
+     "cancelled": 5
     }
    }
   },
@@ -67,14 +68,12 @@
     "realizedUsd": null
    },
    "honestEcon": {
-    "realChainMarkedUsd": 6.4538,
+    "realChainMarkedUsd": 6.4541,
     "saosExternalBid": false
    }
   },
   "exposure": {
-   "regressions": [
-    "sovereign-lighthouse/state.json redaction missing"
-   ],
+   "regressions": [],
    "probes": {
     "Domain/agent/inspections/INS-R66-001.json": "clean",
     "Domain/receipts/key-check.json": "clean",
@@ -83,7 +82,7 @@
     "TruthRail/receipts/blurt-gen2-rotation-2026-10-08.json": "clean",
     "FleetHQ/vault/ssh-keys.tar.enc": "clean",
     "FleetHQ/vault/keys.env.enc": "clean",
-    "sovereign-lighthouse/state.json": "NOT-REDACTED",
+    "sovereign-lighthouse/state.json": "redacted-ok",
     "sovereign-beacon/state.json": "redacted-ok"
    }
   },
@@ -96,27 +95,27 @@
   {
    "id": "P0-1",
    "name": "no exposure regressions",
-   "ok": false,
-   "detail": "[\"sovereign-lighthouse/state.json redaction missing\"]"
+   "ok": true,
+   "detail": "[]"
   },
   {
    "id": "T1",
    "name": "Domain daily runs >= 30",
    "ok": true,
-   "detail": "runs=2146"
+   "detail": "runs=2291"
   },
   {
    "id": "T1",
    "name": "Console daily runs >= 10",
    "ok": true,
-   "detail": "runs=1497"
+   "detail": "runs=1585"
   },
   {
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=762"
+   "detail": "runs=806"
   }
  ],
- "verdict": "SLO-BREACH"
+ "verdict": "ALL-SLO-OK"
 }
