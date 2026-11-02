@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-01T20:51:11.241Z",
+  "builtAt": "2026-11-02T00:45:12.530Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T19:00:08Z"
+        "created_at": "2026-11-01T22:54:24Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-01T20:24:12Z"
+        "created_at": "2026-11-02T00:44:18Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T18:03:37Z"
+        "created_at": "2026-11-01T22:16:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T16:51:57Z"
+        "created_at": "2026-11-01T21:16:28Z"
       },
       "verdict": "STALE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T19:54:19Z"
+        "created_at": "2026-11-01T23:55:23Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-01T19:54:31Z"
+        "created_at": "2026-11-01T23:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -148,7 +148,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-11-01T19:47:25Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "escrow-payroll",
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-01T19:47:20Z"
+        "created_at": "2026-11-01T23:41:56Z"
       },
       "verdict": "ALIVE"
     },
@@ -239,11 +239,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
+        "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T20:49:42Z"
+        "created_at": "2026-11-02T00:38:43Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -353,7 +353,7 @@
         "event": "schedule",
         "created_at": "2026-11-01T20:47:27Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "organ-pacemaker",
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T19:46:52Z"
+        "created_at": "2026-11-01T23:41:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -407,7 +407,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T18:04:26Z"
+        "created_at": "2026-11-01T22:22:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T19:12:09Z"
+        "created_at": "2026-11-01T23:05:18Z"
       },
       "verdict": "ALIVE"
     },
@@ -434,8 +434,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-11-01T19:43:09Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-01T23:55:28Z"
       },
       "verdict": "ALIVE"
     },
@@ -460,10 +460,10 @@
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
-        "status": "queued",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-01T20:50:34Z"
+        "created_at": "2026-11-01T22:49:49Z"
       },
       "verdict": "ALIVE"
     },
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-01T20:33:10Z"
+        "created_at": "2026-11-02T00:38:01Z"
       },
       "verdict": "ALIVE"
     },
@@ -505,10 +505,10 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "queued",
+        "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-01T20:50:20Z"
+        "created_at": "2026-11-02T00:45:05Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-01T20:41:51Z",
-    "ageMinutes": 10,
-    "subject": "exec-cycle (runtime-bridge W5): doctrine-capped broadcast receipts (txids, zero keys) [ski",
+    "at": "2026-11-02T00:04:52Z",
+    "ageMinutes": 41,
+    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 23,
+    "alive": 22,
     "red": 1,
-    "stale": 1,
+    "stale": 2,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 13,
+    "idle": 14,
     "heartbeat": "ALIVE"
   }
 }
