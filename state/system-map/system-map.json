@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-04T16:19:34.439Z",
+  "builtAt": "2026-11-04T22:19:57.828Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T13:21:35Z"
+        "created_at": "2026-11-04T16:24:27Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-ladder",
@@ -44,10 +44,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "queued",
+        "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-04T16:16:13Z"
+        "created_at": "2026-11-04T22:06:08Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T06:54:58Z"
+        "created_at": "2026-11-04T19:58:41Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T15:34:49Z"
+        "created_at": "2026-11-04T21:59:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -87,12 +87,12 @@
       "crons": [],
       "gapMinutes": null,
       "lastRun": {
-        "status": "completed",
-        "conclusion": "success",
+        "status": "queued",
+        "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-04T08:05:29Z"
+        "created_at": "2026-11-04T22:15:43Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "cross-custody-probe",
@@ -130,10 +130,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-04T15:54:32Z"
+        "created_at": "2026-11-04T21:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -174,7 +174,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T12:15:23Z"
+        "created_at": "2026-11-04T19:51:18Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-04T09:29:56Z"
+        "created_at": "2026-11-04T18:04:39Z"
       },
       "verdict": "IDLE"
     },
@@ -239,11 +239,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
+        "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T15:45:16Z"
+        "created_at": "2026-11-04T21:50:20Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -336,7 +336,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-03T16:58:06Z"
+        "created_at": "2026-11-04T17:05:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T11:29:46Z"
+        "created_at": "2026-11-04T18:50:22Z"
       },
       "verdict": "STALE"
     },
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T09:29:32Z"
+        "created_at": "2026-11-04T18:04:34Z"
       },
       "verdict": "STALE"
     },
@@ -407,7 +407,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T06:56:27Z"
+        "created_at": "2026-11-04T19:59:42Z"
       },
       "verdict": "ALIVE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T11:34:28Z"
+        "created_at": "2026-11-04T18:51:54Z"
       },
       "verdict": "STALE"
     },
@@ -435,7 +435,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T06:30:42Z"
+        "created_at": "2026-11-04T17:17:30Z"
       },
       "verdict": "IDLE"
     },
@@ -463,9 +463,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T12:34:10Z"
+        "created_at": "2026-11-04T22:14:46Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-runtime",
@@ -475,10 +475,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "queued",
+        "status": "in_progress",
         "conclusion": null,
-        "event": "workflow_dispatch",
-        "created_at": "2026-11-04T16:10:59Z"
+        "event": "schedule",
+        "created_at": "2026-11-04T22:00:12Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T09:33:58Z"
+        "created_at": "2026-11-04T18:07:13Z"
       },
       "verdict": "ALIVE"
     },
@@ -505,10 +505,10 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "queued",
+        "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-04T16:19:29Z"
+        "created_at": "2026-11-04T22:14:48Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T11:36:45Z"
+        "created_at": "2026-11-04T21:32:26Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-04T16:14:37Z",
-    "ageMinutes": 5,
+    "at": "2026-11-04T22:03:19Z",
+    "ageMinutes": 17,
     "subject": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 16,
+    "alive": 18,
     "red": 1,
-    "stale": 3,
+    "stale": 4,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 18,
+    "idle": 16,
     "heartbeat": "ALIVE"
   }
 }
