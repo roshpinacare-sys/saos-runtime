@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-05T09:51:12.950Z",
+  "builtAt": "2026-11-05T18:02:02.714Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T11:20:19Z"
+        "created_at": "2026-11-05T11:17:35Z"
       },
       "verdict": "ALIVE"
     },
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T03:53:26Z"
+        "created_at": "2026-11-05T13:35:04Z"
       },
       "verdict": "STALE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-05T09:27:17Z"
+        "created_at": "2026-11-05T17:42:53Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T02:36:51Z"
+        "created_at": "2026-11-05T11:14:41Z"
       },
       "verdict": "STALE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T02:51:15Z"
+        "created_at": "2026-11-05T11:36:47Z"
       },
       "verdict": "IDLE"
     },
@@ -118,7 +118,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T11:29:28Z"
+        "created_at": "2026-11-05T11:27:19Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-05T08:54:31Z"
+        "created_at": "2026-11-05T17:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -146,9 +146,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-04T09:30:00Z"
+        "created_at": "2026-11-05T15:37:27Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "escrow-payroll",
@@ -174,7 +174,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-05T09:48:54Z"
+        "created_at": "2026-11-05T16:36:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-05T07:00:44Z"
+        "created_at": "2026-11-05T15:37:21Z"
       },
       "verdict": "ALIVE"
     },
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-11-05T09:49:58Z"
+        "created_at": "2026-11-05T17:58:33Z"
       },
       "verdict": "CANCELLED"
     },
@@ -336,7 +336,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T17:05:40Z"
+        "created_at": "2026-11-05T17:18:57Z"
       },
       "verdict": "ALIVE"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T07:19:00Z"
+        "created_at": "2026-11-05T15:46:34Z"
       },
       "verdict": "ALIVE"
     },
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T07:00:39Z"
+        "created_at": "2026-11-05T15:37:16Z"
       },
       "verdict": "ALIVE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T07:24:31Z"
+        "created_at": "2026-11-05T15:48:10Z"
       },
       "verdict": "ALIVE"
     },
@@ -435,7 +435,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T06:53:15Z"
+        "created_at": "2026-11-05T17:26:11Z"
       },
       "verdict": "ALIVE"
     },
@@ -450,7 +450,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-04T13:10:55Z"
+        "created_at": "2026-11-05T13:25:13Z"
       },
       "verdict": "ALIVE"
     },
@@ -463,9 +463,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T07:54:29Z"
+        "created_at": "2026-11-05T12:45:18Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-05T09:45:44Z"
+        "created_at": "2026-11-05T17:40:41Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T07:06:59Z"
+        "created_at": "2026-11-05T16:37:06Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-05T09:51:08Z"
+        "created_at": "2026-11-05T18:01:49Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T01:49:48Z"
+        "created_at": "2026-11-05T11:35:27Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,9 +557,9 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-05T09:48:44Z",
-    "ageMinutes": 3,
-    "subject": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
+    "at": "2026-11-05T18:00:48Z",
+    "ageMinutes": 2,
+    "subject": "patrol receipts sync (R366, hourly) [skip ci]",
     "verdict": "ALIVE"
   },
   "summary": {
