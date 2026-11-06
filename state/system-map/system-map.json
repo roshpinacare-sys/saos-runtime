@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-06T11:31:27.118Z",
+  "builtAt": "2026-11-06T18:30:01.085Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T09:30:15Z"
+        "created_at": "2026-11-06T17:33:36Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-06T11:15:44Z"
+        "created_at": "2026-11-06T18:15:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,9 +77,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T08:01:56Z"
+        "created_at": "2026-11-06T16:02:14Z"
       },
-      "verdict": "STALE"
+      "verdict": "ALIVE"
     },
     {
       "name": "builder-catchup",
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T07:27:09Z"
+        "created_at": "2026-11-06T15:24:24Z"
       },
       "verdict": "IDLE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-06T10:54:31Z"
+        "created_at": "2026-11-06T17:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -159,7 +159,7 @@
         "status": "completed",
         "conclusion": "failure",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-06T11:10:33Z"
+        "created_at": "2026-11-06T12:45:19Z"
       },
       "verdict": "RED"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-11-06T11:13:51Z"
+        "event": "schedule",
+        "created_at": "2026-11-06T15:58:54Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-06T11:10:28Z"
+        "created_at": "2026-11-06T18:06:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-11-06T11:29:14Z"
+        "created_at": "2026-11-06T18:27:02Z"
       },
       "verdict": "CANCELLED"
     },
@@ -336,7 +336,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T17:18:57Z"
+        "created_at": "2026-11-06T16:42:51Z"
       },
       "verdict": "ALIVE"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T11:26:35Z"
+        "created_at": "2026-11-06T18:22:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T11:10:24Z"
+        "created_at": "2026-11-06T18:06:15Z"
       },
       "verdict": "ALIVE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T11:29:41Z"
+        "created_at": "2026-11-06T18:27:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -435,9 +435,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T06:53:22Z"
+        "created_at": "2026-11-06T16:47:41Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-evolution",
@@ -450,7 +450,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-05T13:25:13Z"
+        "created_at": "2026-11-06T13:07:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -463,7 +463,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T07:55:07Z"
+        "created_at": "2026-11-06T12:29:36Z"
       },
       "verdict": "IDLE"
     },
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-06T11:10:08Z"
+        "created_at": "2026-11-06T18:25:04Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T07:06:12Z"
+        "created_at": "2026-11-06T16:03:49Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-06T11:31:21Z"
+        "created_at": "2026-11-06T18:29:53Z"
       },
       "verdict": "ALIVE"
     },
@@ -535,8 +535,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-11-06T11:10:30Z"
+        "event": "schedule",
+        "created_at": "2026-11-06T11:33:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-06T11:13:41Z",
-    "ageMinutes": 18,
-    "subject": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
+    "at": "2026-11-06T18:27:40Z",
+    "ageMinutes": 3,
+    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 19,
+    "alive": 21,
     "red": 1,
-    "stale": 1,
+    "stale": 0,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 17,
+    "idle": 16,
     "heartbeat": "ALIVE"
   }
 }
