@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-07T10:15:42.836Z",
+  "builtAt": "2026-11-07T16:33:24.554Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T11:15:18Z"
+        "created_at": "2026-11-07T10:31:15Z"
       },
       "verdict": "ALIVE"
     },
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T03:25:32Z"
+        "created_at": "2026-11-07T11:58:24Z"
       },
       "verdict": "STALE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-07T09:48:04Z"
+        "created_at": "2026-11-07T16:09:17Z"
       },
       "verdict": "ALIVE"
     },
@@ -62,7 +62,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T06:29:24Z"
+        "created_at": "2026-11-07T13:27:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T08:57:51Z"
+        "created_at": "2026-11-07T15:46:45Z"
       },
       "verdict": "ALIVE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T07:49:19Z"
+        "created_at": "2026-11-07T14:24:00Z"
       },
       "verdict": "ALIVE"
     },
@@ -118,7 +118,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T11:25:21Z"
+        "created_at": "2026-11-07T10:38:10Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-07T09:54:31Z"
+        "created_at": "2026-11-07T15:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -174,7 +174,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T06:08:29Z"
+        "created_at": "2026-11-07T14:55:56Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-07T02:56:38Z"
+        "created_at": "2026-11-07T10:28:55Z"
       },
       "verdict": "IDLE"
     },
@@ -239,11 +239,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
+        "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T10:09:01Z"
+        "created_at": "2026-11-07T16:24:03Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -336,7 +336,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T16:42:51Z"
+        "created_at": "2026-11-07T15:36:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T03:09:42Z"
+        "created_at": "2026-11-07T10:38:59Z"
       },
       "verdict": "STALE"
     },
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T02:55:22Z"
+        "created_at": "2026-11-07T10:27:59Z"
       },
       "verdict": "STALE"
     },
@@ -407,7 +407,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T06:33:14Z"
+        "created_at": "2026-11-07T13:31:16Z"
       },
       "verdict": "ALIVE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T03:12:26Z"
+        "created_at": "2026-11-07T10:40:46Z"
       },
       "verdict": "STALE"
     },
@@ -435,7 +435,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T06:03:43Z"
+        "created_at": "2026-11-07T13:08:18Z"
       },
       "verdict": "IDLE"
     },
@@ -450,7 +450,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-06T13:07:52Z"
+        "created_at": "2026-11-07T11:51:18Z"
       },
       "verdict": "ALIVE"
     },
@@ -463,9 +463,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T07:09:46Z"
+        "created_at": "2026-11-07T14:01:23Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-runtime",
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-07T09:49:55Z"
+        "created_at": "2026-11-07T16:23:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-07T10:15:37Z"
+        "created_at": "2026-11-07T16:29:23Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-07T01:16:45Z"
+        "created_at": "2026-11-07T10:42:22Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-07T09:05:27Z",
-    "ageMinutes": 70,
-    "subject": "exec-cycle (runtime-bridge W5): doctrine-capped broadcast receipts (txids, zero keys) [ski",
+    "at": "2026-11-07T16:18:06Z",
+    "ageMinutes": 16,
+    "subject": "patrol receipts sync (R366, hourly) [skip ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 16,
+    "alive": 18,
     "red": 1,
     "stale": 4,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 17,
+    "idle": 16,
     "heartbeat": "ALIVE"
   }
 }
