@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-09T09:49:09.418Z",
+  "builtAt": "2026-11-09T20:46:01.706Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-08T10:38:23Z"
+        "created_at": "2026-11-09T11:54:51Z"
       },
       "verdict": "ALIVE"
     },
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T06:51:00Z"
+        "created_at": "2026-11-09T17:38:27Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-ladder",
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-09T09:36:55Z"
+        "created_at": "2026-11-09T20:25:23Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T02:46:08Z"
+        "created_at": "2026-11-09T11:52:17Z"
       },
       "verdict": "STALE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T07:15:38Z"
+        "created_at": "2026-11-09T17:49:46Z"
       },
       "verdict": "ALIVE"
     },
@@ -118,7 +118,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-08T10:42:56Z"
+        "created_at": "2026-11-09T12:01:56Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-09T08:54:31Z"
+        "created_at": "2026-11-09T19:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -146,7 +146,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-08T07:30:30Z"
+        "created_at": "2026-11-09T17:39:52Z"
       },
       "verdict": "IDLE"
     },
@@ -174,7 +174,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T06:47:40Z"
+        "created_at": "2026-11-09T18:53:41Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,9 +187,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-09T06:54:44Z"
+        "created_at": "2026-11-09T17:39:47Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "fleet-rotation-a",
@@ -239,11 +239,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-11-09T09:42:42Z"
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-09T20:30:08Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -321,7 +321,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-02T12:49:10Z"
+        "created_at": "2026-11-09T13:18:47Z"
       },
       "verdict": "ALIVE"
     },
@@ -336,7 +336,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-08T15:54:45Z"
+        "created_at": "2026-11-09T19:43:54Z"
       },
       "verdict": "ALIVE"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T02:56:05Z"
+        "created_at": "2026-11-09T12:02:29Z"
       },
       "verdict": "STALE"
     },
@@ -366,9 +366,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T06:53:04Z"
+        "created_at": "2026-11-09T17:39:39Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "owner-key-adopt",
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T02:58:16Z"
+        "created_at": "2026-11-09T12:08:17Z"
       },
       "verdict": "STALE"
     },
@@ -435,9 +435,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T06:41:25Z"
+        "created_at": "2026-11-09T19:51:11Z"
       },
-      "verdict": "IDLE"
+      "verdict": "ALIVE"
     },
     {
       "name": "sovereign-evolution",
@@ -450,7 +450,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-08T12:04:52Z"
+        "created_at": "2026-11-09T14:10:42Z"
       },
       "verdict": "ALIVE"
     },
@@ -463,9 +463,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T07:58:05Z"
+        "created_at": "2026-11-09T13:23:53Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-09T09:31:29Z"
+        "created_at": "2026-11-09T20:26:38Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T01:47:46Z"
+        "created_at": "2026-11-09T09:59:20Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-09T09:49:04Z"
+        "created_at": "2026-11-09T20:43:46Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-09T01:14:33Z"
+        "created_at": "2026-11-09T12:10:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-09T09:34:47Z",
-    "ageMinutes": 15,
-    "subject": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
+    "at": "2026-11-09T20:42:36Z",
+    "ageMinutes": 4,
+    "subject": "era-3: operator-pub rotation d003f0d5 (old 8b08730f lost in sandbox recycle) — sync era3-o",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 19,
+    "alive": 17,
     "red": 1,
-    "stale": 3,
+    "stale": 5,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 15,
+    "idle": 16,
     "heartbeat": "ALIVE"
   }
 }
