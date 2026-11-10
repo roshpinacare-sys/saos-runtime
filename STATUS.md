@@ -1,10 +1,10 @@
 # Grid status
 
-Generated 2026-11-10T10:14:35Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-11-10T10:14:56Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=3m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-11-10T10:11:01.610Z |
+| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=4m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-11-10T10:11:01.610Z |
 | engine.source | selftest.mjs http=200 src=steem@saos-cockpit:mini-services/saos-engine (engine source present) | engine source readable on the cockpit tree (selftest.mjs); absent = red (wiped 2026-10-24T19:16Z by seal-host 4b1cd2ed8 — restoring the engine tree is the cure) | GREEN | unavailable |
 | anchor.probe | verdict=PROBE-SCRIPT-ABSENT age=16.6h src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | RED | 2026-11-09T17:37:23Z |
 | custody.coverage | verified=0/total=14 | verified>=14 | RED | 2026-11-10T10:11:01.610Z |
@@ -18,7 +18,7 @@ Generated 2026-11-10T10:14:35Z by grid-watchdog (schedule 13,43 * * * * UTC). Cr
 | potential.fresh | age=6.5h path=office-pages:potential.json | age<=93600s (26h) | GREEN | 2026-11-10T03:45:09Z |
 | fleetdigest.fresh | age=6.5h path=office-pages:digest.json | age<=93600s (26h) | GREEN | 2026-11-10T03:45:09Z |
 | office.schedule | age=6.5h conclusion=success | newest schedule run age<=93600s (26h) | GREEN | 2026-11-10T03:44:25Z |
-| billing.block | no billing-block annotation (2 failed run(s) of 3 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
+| billing.block | no billing-block annotation (2 failed run(s) of 2 in last 15) | no 'payments have failed'/'spending limit' annotations on recent failed runs | GREEN | unavailable |
 
 Legend:
 - RED: the measured value crossed its threshold; RED rows are mirrored in the open GRID-ALERT issue.
