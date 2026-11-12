@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-12T08:20:25.275Z",
+  "builtAt": "2026-11-12T17:07:28.021Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -14,7 +14,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-11T11:17:51Z"
+        "created_at": "2026-11-12T11:36:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T04:31:34Z"
+        "created_at": "2026-11-12T14:04:28Z"
       },
       "verdict": "STALE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-12T08:00:14Z"
+        "created_at": "2026-11-12T16:48:14Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T07:27:13Z"
+        "created_at": "2026-11-12T16:54:49Z"
       },
       "verdict": "ALIVE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T01:03:06Z"
+        "created_at": "2026-11-12T08:51:49Z"
       },
       "verdict": "IDLE"
     },
@@ -118,7 +118,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-11T11:24:17Z"
+        "created_at": "2026-11-12T11:45:08Z"
       },
       "verdict": "ALIVE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-12T07:54:31Z"
+        "created_at": "2026-11-12T16:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -174,7 +174,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T07:21:36Z"
+        "created_at": "2026-11-12T16:51:27Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-12T03:54:59Z"
+        "created_at": "2026-11-12T12:57:24Z"
       },
       "verdict": "IDLE"
     },
@@ -239,11 +239,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "success",
+        "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-11-12T08:15:17Z"
+        "created_at": "2026-11-12T17:03:43Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "CANCELLED"
     },
     {
       "name": "hive-adopt-t21",
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T04:08:16Z"
+        "created_at": "2026-11-12T13:11:46Z"
       },
       "verdict": "STALE"
     },
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T03:54:54Z"
+        "created_at": "2026-11-12T12:57:16Z"
       },
       "verdict": "STALE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T04:14:40Z"
+        "created_at": "2026-11-12T13:15:59Z"
       },
       "verdict": "STALE"
     },
@@ -435,7 +435,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T02:17:19Z"
+        "created_at": "2026-11-12T11:21:21Z"
       },
       "verdict": "IDLE"
     },
@@ -450,7 +450,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-11T12:52:35Z"
+        "created_at": "2026-11-12T13:55:04Z"
       },
       "verdict": "ALIVE"
     },
@@ -463,9 +463,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T08:19:20Z"
+        "created_at": "2026-11-12T13:17:26Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-12T08:11:33Z"
+        "created_at": "2026-11-12T16:46:41Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-12T00:53:32Z"
+        "created_at": "2026-11-12T09:59:33Z"
       },
       "verdict": "ALIVE"
     },
@@ -505,10 +505,10 @@
       ],
       "gapMinutes": 30,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-12T08:20:18Z"
+        "created_at": "2026-11-12T17:05:43Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-11T22:18:13Z"
+        "created_at": "2026-11-12T11:53:21Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-12T08:15:04Z",
-    "ageMinutes": 6,
+    "at": "2026-11-12T16:51:01Z",
+    "ageMinutes": 17,
     "subject": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 17,
+    "alive": 15,
     "red": 1,
     "stale": 4,
     "gated": 0,
-    "cancelled": 0,
+    "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 17,
+    "idle": 18,
     "heartbeat": "ALIVE"
   }
 }
