@@ -1,41 +1,41 @@
 # מפת-המשרד החיה — הרשת רואה את עצמה
 
-נבנתה אוטונומית: **2026-11-12T22:43:49.094Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
+נבנתה אוטונומית: **2026-11-13T02:56:48.583Z** · מאגר: `roshpinacare-sys/saos-runtime` · העדה = קומיט זה.
 
 ## פסק-על
-- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 17 דק** — ALIVE
+- **דופק-הצאצא** (state push-back ל-roshpinacare-sys/steem@saos-cockpit): **לפני 23 דק** — ALIVE
   - «beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)»
-- **איברים**: 🟢 חיים 21 · 🔴 אדומים 1 · 🟡 נעדרי-דופק 1 · 🟠 בוטלים 1 · 🔵 צופים-לטריגר 15 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
-- **פסק המשרד**: 🟠/🔴 3 איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)
+- **איברים**: 🟢 חיים 22 · 🔴 אדומים 1 · 🟡 נעדרי-דופק 1 · 🟠 בוטלים 0 · 🔵 צופים-לטריגר 15 · ⚪ שער 0 · ⚫ לא-רצו-מעולם 0
+- **פסק המשרד**: 🟠/🔴 2 איברים דורשים-תשומת-לב (מפורט-מטה; operator-triage מנהל את-תיקונם)
 
 ## טבלת-החיים
 | פסק | איבר | קצב-מתוכנן | הרצה-אחרונה |
 |---|---|---|---|
 | 🔴 RED | escrow-payroll | dispatch-בלבד | 2026-11-12T21:30:30Z · workflow_dispatch · failure |
-| 🟠 CANCELLED | grid-watchdog | כל 30 דק | 2026-11-12T22:42:44Z · schedule · cancelled |
-| 🟡 STALE | blurt-revival | כל 1 שע | 2026-11-12T16:54:49Z · schedule · success |
+| 🟡 STALE | blurt-revival | כל 1 שע | 2026-11-12T22:47:02Z · schedule · success |
 | 🟢 ALIVE | agent-9-vault-sync | כל 1 יום | 2026-11-12T11:36:40Z · schedule · success |
-| 🟢 ALIVE | arb-grid | כל 1 שע | 2026-11-12T20:55:36Z · schedule · success |
-| 🟢 ALIVE | army-ladder | כל 1 שע | 2026-11-12T22:38:07Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | arb-grid | כל 1 שע | 2026-11-13T01:56:39Z · schedule · success |
+| 🟢 ALIVE | army-ladder | כל 1 שע | 2026-11-13T02:31:55Z · workflow_dispatch · in_progress |
 | 🟢 ALIVE | arsenal-sentinel | כל 1 יום | 2026-11-12T20:19:58Z · schedule · success |
 | 🟢 ALIVE | custody-recover | כל 1 יום | 2026-11-12T11:45:08Z · schedule · success |
-| 🟢 ALIVE | dex-beat | כל 1 שע | 2026-11-12T21:54:31Z · workflow_dispatch · in_progress |
-| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-11-12T21:01:22Z · workflow_dispatch · success |
-| 🟢 ALIVE | fleet-fuel | dispatch-בלבד | 2026-11-12T20:57:03Z · workflow_dispatch · success |
+| 🟢 ALIVE | dex-beat | כל 1 שע | 2026-11-13T02:54:31Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | fee-engine | כל 1 יום | 2026-11-13T01:10:19Z · schedule · success |
+| 🟢 ALIVE | fleet-fuel | dispatch-בלבד | 2026-11-13T01:57:14Z · workflow_dispatch · success |
+| 🟢 ALIVE | grid-watchdog | כל 30 דק | 2026-11-13T02:56:13Z · schedule · in_progress |
 | 🟢 ALIVE | main-key-refresh | כל 7 יום | 2026-11-09T13:18:47Z · schedule · success |
 | 🟢 ALIVE | operator-triage | כל 1 יום | 2026-11-12T17:30:35Z · schedule · success |
-| 🟢 ALIVE | organ-guardian | כל 1 שע | 2026-11-12T21:03:35Z · schedule · success |
-| 🟢 ALIVE | organ-pacemaker | כל 1 שע | 2026-11-12T20:56:33Z · schedule · success |
+| 🟢 ALIVE | organ-guardian | כל 1 שע | 2026-11-13T02:05:42Z · schedule · success |
+| 🟢 ALIVE | organ-pacemaker | כל 1 שע | 2026-11-13T01:57:00Z · schedule · success |
 | 🟢 ALIVE | self-memory | כל 1 יום | 2026-11-12T20:23:51Z · schedule · success |
-| 🟢 ALIVE | signing-health (runtime-host) | כל 1 שע | 2026-11-12T21:05:59Z · schedule · success |
-| 🟢 ALIVE | sovereign-builder | dispatch-בלבד | 2026-11-12T19:58:08Z · schedule · success |
+| 🟢 ALIVE | signing-health (runtime-host) | כל 1 שע | 2026-11-13T02:07:54Z · schedule · success |
+| 🟢 ALIVE | sovereign-builder | dispatch-בלבד | 2026-11-13T01:51:35Z · schedule · success |
 | 🟢 ALIVE | sovereign-evolution | כל 1 יום | 2026-11-12T13:55:04Z · schedule · success |
-| 🟢 ALIVE | sovereign-pulse | dispatch-בלבד | 2026-11-12T22:27:06Z · schedule · success |
-| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-11-12T22:23:40Z · workflow_dispatch · in_progress |
-| 🟢 ALIVE | steem-hand-revival | כל 1 יום | 2026-11-12T18:28:50Z · schedule · success |
-| 🟢 ALIVE | system-map | כל 30 דק | 2026-11-12T22:43:41Z · schedule · in_progress |
+| 🟢 ALIVE | sovereign-pulse | dispatch-בלבד | 2026-11-13T02:55:24Z · schedule · success |
+| 🟢 ALIVE | sovereign-runtime | כל 1 שע | 2026-11-13T02:31:40Z · workflow_dispatch · in_progress |
+| 🟢 ALIVE | steem-hand-revival | כל 1 יום | 2026-11-12T23:46:44Z · schedule · success |
+| 🟢 ALIVE | system-map | כל 30 דק | 2026-11-13T02:56:33Z · schedule · in_progress |
 | 🟢 ALIVE | treasury-ladder | כל 6 שע | 2026-11-12T21:55:23Z · schedule · success |
-| 🔵 IDLE | builder-catchup | dispatch-בלבד | 2026-11-12T17:45:22Z · schedule · success |
+| 🔵 IDLE | builder-catchup | dispatch-בלבד | 2026-11-12T22:53:14Z · schedule · success |
 | 🔵 IDLE | cross-custody-probe | dispatch-בלבד | 2026-10-18T13:28:18Z · workflow_dispatch · success |
 | 🔵 IDLE | directive-now | dispatch-בלבד | 2026-11-12T03:55:06Z · workflow_dispatch · success |
 | 🔵 IDLE | fleet-rotation-a | dispatch-בלבד | 2026-10-18T01:07:11Z · workflow_dispatch · success |
@@ -53,8 +53,7 @@
 
 ## למה — שורש-כל-אדום
 - **escrow-payroll** (RED): הרצה-אחרונה failure @ 2026-11-12T21:30:30Z (workflow_dispatch) — הלוגים ב-Actions; התיקון בתור operator-triage
-- **grid-watchdog** (CANCELLED): הרצה-אחרונה cancelled @ 2026-11-12T22:42:44Z (schedule) — הלוגים ב-Actions; התיקון בתור operator-triage
-- **blurt-revival** (STALE): הרצה-אחרונה success @ 2026-11-12T16:54:49Z (schedule) — הלוגים ב-Actions; התיקון בתור operator-triage
+- **blurt-revival** (STALE): הרצה-אחרונה success @ 2026-11-12T22:47:02Z (schedule) — הלוגים ב-Actions; התיקון בתור operator-triage
 
 ---
 *חוק-העדות (R324): מילים אינן הוכחה. כל-פסק כאן נמדד מול-ה-API בריצה-זו ונכתב-בגיט. המפעיל לא נדרש לגלות קריסות במייל — הרשת מדווחת על-עצמה כל-30 דק.*
