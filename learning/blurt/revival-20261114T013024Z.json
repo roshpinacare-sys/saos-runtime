@@ -1,0 +1,56 @@
+{
+  "mode": "health",
+  "at": "2026-11-14T01:30:20.462Z",
+  "nodes": [
+    {
+      "url": "https://blurt-rpc.saboin.com",
+      "live": true,
+      "ms": 324,
+      "head": 65324329
+    },
+    {
+      "url": "https://rpc.blurt.world",
+      "live": false,
+      "ms": 95,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt-rpc.salvadx.net",
+      "live": false,
+      "ms": 77,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://rpc.blurt.buzz",
+      "live": false,
+      "ms": 34,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt.lexai.host",
+      "live": false,
+      "ms": 21,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://blurt-rpc.sensei69.net",
+      "live": false,
+      "ms": 65,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://rpc.blurtbot.com",
+      "live": false,
+      "ms": 71,
+      "err": "TypeError: fetch failed"
+    },
+    {
+      "url": "https://api.blurt.world",
+      "live": false,
+      "ms": 93,
+      "err": "TypeError: fetch failed"
+    }
+  ],
+  "verdict": "HEALTH-OK live=1/8",
+  "primaryNode": "https://blurt-rpc.saboin.com"
+}
