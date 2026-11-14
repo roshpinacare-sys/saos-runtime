@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-13T23:53:09.401Z",
+  "builtAt": "2026-11-14T06:23:47.054Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,7 +30,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-13T23:41:12Z"
+        "created_at": "2026-11-14T03:44:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-13T23:41:26Z"
+        "created_at": "2026-11-14T05:59:52Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-13T20:32:55Z"
+        "created_at": "2026-11-14T01:30:14Z"
       },
       "verdict": "STALE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-13T18:48:03Z"
+        "created_at": "2026-11-13T23:56:17Z"
       },
       "verdict": "IDLE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-13T22:54:31Z"
+        "created_at": "2026-11-14T05:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-11-13T19:51:16Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-14T05:00:40Z"
       },
       "verdict": "ALIVE"
     },
@@ -189,7 +189,7 @@
         "event": "workflow_dispatch",
         "created_at": "2026-11-13T23:42:16Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "fleet-rotation-a",
@@ -239,11 +239,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-11-13T23:51:31Z"
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-14T06:12:05Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -353,7 +353,7 @@
         "event": "schedule",
         "created_at": "2026-11-13T23:49:40Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "organ-pacemaker",
@@ -368,7 +368,7 @@
         "event": "schedule",
         "created_at": "2026-11-13T23:41:53Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "owner-key-adopt",
@@ -424,7 +424,7 @@
         "event": "schedule",
         "created_at": "2026-11-13T23:52:52Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "sovereign-builder",
@@ -435,7 +435,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-13T19:45:49Z"
+        "created_at": "2026-11-14T01:27:38Z"
       },
       "verdict": "IDLE"
     },
@@ -463,9 +463,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-13T22:12:07Z"
+        "created_at": "2026-11-14T02:41:25Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-runtime",
@@ -477,8 +477,8 @@
       "lastRun": {
         "status": "in_progress",
         "conclusion": null,
-        "event": "schedule",
-        "created_at": "2026-11-13T23:44:32Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-14T06:23:35Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-13T23:53:03Z"
+        "created_at": "2026-11-14T06:23:41Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-13T21:39:52Z"
+        "created_at": "2026-11-14T01:50:51Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-13T23:46:59Z",
-    "ageMinutes": 6,
-    "subject": "exec-cycle (runtime-bridge W5): doctrine-capped broadcast receipts (txids, zero keys) [ski",
+    "at": "2026-11-14T06:21:15Z",
+    "ageMinutes": 3,
+    "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 20,
+    "alive": 16,
     "red": 1,
-    "stale": 1,
+    "stale": 4,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 16,
+    "idle": 18,
     "heartbeat": "ALIVE"
   }
 }
