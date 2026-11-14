@@ -1,16 +1,16 @@
 # הזיכרון-העצמי של הרשת — הרשת זוכרת מה היא יודעת ומה היא יכולה
 
-נבנה אוטונומית: **2026-11-14T18:27:49.651Z** · תבנית: Eliza LongTermMemory (EPISODIC/SEMANTIC/PROCEDURAL) על-גיט — העדה = קומיט זה.
+נבנה אוטונומית: **2026-11-14T22:43:02.135Z** · תבנית: Eliza LongTermMemory (EPISODIC/SEMANTIC/PROCEDURAL) על-גיט — העדה = קומיט זה.
 
 ## ספים (MemoryConfig)
 - סף-ביטחון 0.55 · סף-דמיון 0.72 · קצב-extraction כל 6 שע · קונסולידציה אחרי 30 יום-של-אי-גישה
 
 ## מדידת-המחזור
-- מועמדים 26 · נוספו 1 · חוזקו 25 · נדחו-ביטחון 0 · נשרפו-נשכחים 0
+- מועמדים 27 · נוספו 0 · חוזקו 27 · נדחו-ביטחון 0 · נשרפו-נשכחים 0
 
 ## אפיזודי — מה קרה — 84 רשומות
 - **[92%]** מפת-המשרד (2026-10-13T22:29:40.767Z): חיים=8 אדומים=0 נעדרי-דופק=0 · דופק-הצאצא ALIVE לפני 13 דק (roshpinacare-sys/steem@saos-cockpit)
-  · ניגש 71×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 72×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[92%]** מפת-המשרד (2026-10-25T00:32:46.537Z): חיים=22 אדומים=3 נעדרי-דופק=0 · דופק-הצאצא STALE לפני 304 דק (roshpinacare-sys/steem@saos-cockpit)
   · ניגש 1×, אחרון 2026-10-25T05:15 · מקור: state/system-map/system-map.json
 - **[92%]** מפת-המשרד (2026-10-25T10:10:03.903Z): חיים=13 אדומים=4 נעדרי-דופק=5 · דופק-הצאצא STALE לפני 881 דק (roshpinacare-sys/steem@saos-cockpit)
@@ -28,11 +28,11 @@
 - **[85%]** זרימה-לא-חיה: escrow-payroll · פסק IDLE · ריצה-אחרונה success @ 2026-10-12T03:22:33Z (workflow_dispatch)
   · ניגש 27×, אחרון 2026-10-26T13:30 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: fleet-rotation-a · פסק IDLE · ריצה-אחרונה success @ 2026-10-13T00:01:51Z (workflow_dispatch)
-  · ניגש 78×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 79×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: gen2-rotation · פסק IDLE · ריצה-אחרונה success @ 2026-10-12T15:41:03Z (workflow_dispatch)
-  · ניגש 78×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 79×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: owner-key-adopt · פסק IDLE · ריצה-אחרונה success @ 2026-10-12T16:48:45Z (workflow_dispatch)
-  · ניגש 78×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 79×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: sovereign-evolution · פסק IDLE · ריצה-אחרונה success @ 2026-10-13T14:34:14Z (schedule)
   · ניגש 9×, אחרון 2026-10-16T11:50 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-14T01:10:52Z (schedule)
@@ -56,39 +56,39 @@
 - **[85%]** זרימה-לא-חיה: dex-beat · פסק RED · ריצה-אחרונה failure @ 2026-10-18T05:54:31Z (workflow_dispatch)
   · ניגש 1×, אחרון 2026-10-19T01:27 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: directive-now · פסק IDLE · ריצה-אחרונה success @ 2026-10-17T04:32:50Z (workflow_dispatch)
-  · ניגש 53×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 54×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: escrow-payroll · פסק RED · ריצה-אחרונה failure @ 2026-10-18T05:16:04Z (workflow_dispatch)
-  · ניגש 50×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 51×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: fleet-fuel · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T03:16:16Z (workflow_dispatch)
-  · ניגש 33×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 34×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: ghidra-lab · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T02:05:48Z (workflow_dispatch)
-  · ניגש 67×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 68×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-18T07:39:35Z (workflow_dispatch)
   · ניגש 1×, אחרון 2026-10-19T01:27 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: hive-custody-revival · פסק IDLE · ריצה-אחרונה success @ 2026-10-17T06:16:39Z (workflow_dispatch)
-  · ניגש 67×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 68×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: self-memory · פסק IDLE · ריצה-אחרונה success @ 2026-10-16T11:50:09Z (schedule)
   · ניגש 1×, אחרון 2026-10-19T01:27 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: blurt-revival · פסק STALE · ריצה-אחרונה success @ 2026-10-20T01:56:20Z (schedule)
-  · ניגש 33×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 34×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: cross-custody-probe · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T13:28:18Z (workflow_dispatch)
-  · ניגש 66×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 67×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: hive-adopt-t21 · פסק IDLE · ריצה-אחרונה success @ 2026-10-19T01:01:47Z (workflow_dispatch)
-  · ניגש 66×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 67×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: organ-guardian · פסק STALE · ריצה-אחרונה success @ 2026-10-20T01:13:29Z (schedule)
-  · ניגש 26×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 27×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: organ-pacemaker · פסק STALE · ריצה-אחרונה success @ 2026-10-20T00:26:45Z (schedule)
-  · ניגש 30×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 31×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: owner-powerdown · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T05:16:06Z (workflow_dispatch)
-  · ניגש 66×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 67×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: self-memory · פסק IDLE · ריצה-אחרונה success @ 2026-10-19T01:27:39Z (workflow_dispatch)
   · ניגש 3×, אחרון 2026-10-22T12:21 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: signing-health (runtime-host) · פסק STALE · ריצה-אחרונה success @ 2026-10-20T01:16:25Z (schedule)
-  · ניגש 26×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 27×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: sovereign-pulse · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T01:17:06Z (schedule)
   · ניגש 21×, אחרון 2026-11-14T06:58 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: vault-owner-adopt · פסק IDLE · ריצה-אחרונה success @ 2026-10-19T17:51:21Z (workflow_dispatch)
-  · ניגש 66×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 67×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: fee-engine · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T13:49:24Z (workflow_dispatch)
   · ניגש 2×, אחרון 2026-10-22T12:21 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: sovereign-builder · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T14:20:23Z (schedule)
@@ -96,15 +96,15 @@
 - **[85%]** זרימה-לא-חיה: custody-recover · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T17:42:18Z (workflow_dispatch)
   · ניגש 1×, אחרון 2026-10-22T12:21 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: key-relay-to-autonomy · פסק IDLE · ריצה-אחרונה success @ 2026-10-21T02:48:01Z (workflow_dispatch)
-  · ניגש 64×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 65×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: operator-triage · פסק IDLE · ריצה-אחרונה success @ 2026-10-20T17:42:07Z (issues)
   · ניגש 1×, אחרון 2026-10-22T12:21 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: treasury-consolidation · פסק IDLE · ריצה-אחרונה success @ 2026-10-21T02:51:26Z (workflow_dispatch)
-  · ניגש 64×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 65×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-23T00:37:49Z (schedule)
   · ניגש 1×, אחרון 2026-10-23T05:18 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: builder-catchup · פסק IDLE · ריצה-אחרונה success @ 2026-10-23T06:32:52Z (schedule)
-  · ניגש 31×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 32×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-23T19:31:57Z (schedule)
   · ניגש 1×, אחרון 2026-10-23T21:38 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-24T01:03:35Z (schedule)
@@ -112,7 +112,7 @@
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-24T10:52:03Z (schedule)
   · ניגש 2×, אחרון 2026-11-06T07:20 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: arb-grid · פסק STALE · ריצה-אחרונה success @ 2026-10-24T11:15:13Z (schedule)
-  · ניגש 19×, אחרון 2026-11-12T20:23 · מקור: state/system-map/system-map.json
+  · ניגש 20×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-24T14:28:47Z (schedule)
   · ניגש 1×, אחרון 2026-10-24T16:14 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: directive-now · פסק RED · ריצה-אחרונה failure @ 2026-10-24T22:34:54Z (workflow_dispatch)
@@ -146,11 +146,11 @@
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-29T20:34:46Z (schedule)
   · ניגש 1×, אחרון 2026-10-29T22:57 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: key-census-relay-v2 · פסק IDLE · ריצה-אחרונה success @ 2026-10-29T10:40:57Z (workflow_dispatch)
-  · ניגש 76×, אחרון 2026-11-14T18:27 · מקור: state/system-map/system-map.json
+  · ניגש 78×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-30T00:20:34Z (schedule)
   · ניגש 2×, אחרון 2026-11-10T19:59 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-30T06:25:33Z (schedule)
-  · ניגש 2×, אחרון 2026-11-05T20:14 · מקור: state/system-map/system-map.json
+  · ניגש 3×, אחרון 2026-11-14T22:43 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-30T18:50:45Z (schedule)
   · ניגש 1×, אחרון 2026-10-30T22:38 · מקור: state/system-map/system-map.json
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-31T02:18:36Z (schedule)
@@ -174,7 +174,7 @@
 - **[85%]** זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-11-11T03:04:04Z (schedule)
   · ניגש 1×, אחרון 2026-11-11T07:02 · מקור: state/system-map/system-map.json
 - **[70%]** דופק-SLO אחרון (3 מדידות): 2026-10-13T14:34 ALL-SLO-OK [P0-1:1,T1:1,T1:1,T1:1]
-  · ניגש 37×, אחרון 2026-11-14T18:27 · מקור: learning/ledger.jsonl
+  · ניגש 38×, אחרון 2026-11-14T22:43 · מקור: learning/ledger.jsonl
 - **[70%]** דופק-SLO אחרון (5 מדידות): 2026-10-15T12:06 SLO-BREACH [P0-1:0,T1:1,T1:1,T1:1]
   · ניגש 41×, אחרון 2026-11-01T06:47 · מקור: learning/ledger.jsonl
 
@@ -222,13 +222,13 @@
 - **[75%]** ידע-על-הצי (חלון 2026-11-11→2026-11-12): Domain: 95 ירוק / 0 אדום / 1 בוטלים מתוך 1987 · Console: 88 ירוק / 1 אדום / 9 בוטלים מתוך 1529 · Sandbox: 96 ירוק / 1 אדום / 0 בוטלים מתוך 450 · saos-runtime: 71 ירוק / 19 אדום / 6 בוטלים מתוך 401
   · ניגש 2×, אחרון 2026-11-13T07:13 · מקור: learning/evolution-2026-11-12.json
 - **[75%]** ידע-על-הצי (חלון 2026-11-13→2026-11-14): Domain: 95 ירוק / 2 אדום / 0 בוטלים מתוך 2170 · Console: 88 ירוק / 0 אדום / 12 בוטלים מתוך 1816 · Sandbox: 14 ירוק / 0 אדום / 0 בוטלים מתוך 16 · saos-runtime: 78 ירוק / 12 אדום / 6 בוטלים מתוך 537
-  · ניגש 1×, אחרון 2026-11-14T18:27 · מקור: learning/evolution-2026-11-14.json
+  · ניגש 2×, אחרון 2026-11-14T22:43 · מקור: learning/evolution-2026-11-14.json
 
 ## פרוצדורלי — מה אנחנו יודעים לעשות — 2 רשומות
 - **[88%]** מפקד-יכולות (14 זרימות מתוזמנות, 5 תיקיות-ops): blurt-revival:ALIVE, custody-recover:ALIVE, escrow-payroll:IDLE, fee-engine:ALIVE, fleet-rotation-a:IDLE, gen2-rotation:IDLE, grid-watchdog:ALIVE, operator-triage:ALIVE, owner-key-adopt:IDLE, self-memory:ללא-מפה, sovereign-evolution:IDLE, sovereign-runtime:ALIVE, system-map:ALIVE, treasury-ladder:ALIVE · ops: fleet-rotation, key-census-probe, operator-triage, self-memory, system-map
   · ניגש 11×, אחרון 2026-10-16T11:50 · מקור: .github/workflows + ops/
 - **[88%]** מפקד-יכולות (34 זרימות מתוזמנות, 6 תיקיות-ops): agent-9-vault-sync:ללא-מפה, arb-grid:STALE, army-ladder:STALE, arsenal-sentinel:ללא-מפה, blurt-revival:IDLE, builder-catchup:ALIVE, cross-custody-probe:ללא-מפה, custody-recover:ALIVE, dex-beat:RED, directive-now:IDLE, escrow-payroll:RED, fee-engine:ALIVE, fleet-fuel:IDLE, fleet-rotation-a:IDLE, gen2-rotation:IDLE, ghidra-lab:IDLE, grid-watchdog:CANCELLED, hive-adopt-t21:ללא-מפה, hive-custody-revival:IDLE, main-key-refresh:ללא-מפה, operator-triage:ALIVE, organ-guardian:ללא-מפה, organ-pacemaker:ללא-מפה, owner-key-adopt:IDLE, owner-powerdown:ALIVE, self-memory:IDLE, signing-health:ללא-מפה, sovereign-builder:ALIVE, sovereign-evolution:ALIVE, sovereign-pulse:ALIVE, sovereign-runtime:ALIVE, steem-hand-revival:ללא-מפה, system-map:ALIVE, treasury-ladder:ALIVE · ops: fleet-rotation, ghidra-lab, key-census-probe, operator-triage, self-memory, system-map
-  · ניגש 67×, אחרון 2026-11-14T18:27 · מקור: .github/workflows + ops/
+  · ניגש 68×, אחרון 2026-11-14T22:43 · מקור: .github/workflows + ops/
 
 ---
 *חוק-הזיכרון (R324): הרשת שאינה זוכרת אינה ריבונית. כל-רשומה כאן נשאבת מראיות-בגיט בריצה-זו; ביטחון נמוך לא נהיה זיכרון; כפילות מתחזקת-במקום-להיצבר; נשכחים נשרפים. אפס-סודות.*
