@@ -179,6 +179,43 @@ async function main() {
       }
       console.log(`[resolve-keys] rot2-env source: ${rot2Wifs} wif-candidates → ${rot2Matched} live keys (chain-verified ROT2, overrides stale zip)`);
     }
+    // (C) LIVE_FLEET_KEYS fast path — R361 relay (crown-vault-recovery 2026-11-15,
+    // run 43713515988): {live:{<account>:{<role>:wif}}, _master:P5K…}. Measured
+    // 2026-11-15T11:39Z (escrow-payroll 43709944951): ROT2-env 46 wif-candidates →
+    // 0 live (the ROT2 era expired vs chain); the GEN-2 zip undecryptable — the
+    // run honest-aborted while custody stood 14/14 via the LIVE relay. Additive
+    // alive-wins: same deep-walk (format-proof), chain re-judges every WIF via
+    // classify; only LIVE-matching material enters the map. Derived roles from
+    // _master are NOT derived here (the relay already carries chain-verified
+    // per-role WIFs; derivation is the vault-materialize lane's job).
+    let liveMatched = 0, liveWifs = 0;
+    const liveRaw = process.env.LIVE_FLEET_KEYS || "";
+    if (liveRaw) {
+      try {
+        const parsed = JSON.parse(liveRaw);
+        const wifs = new Set();
+        const WIF_RE2 = P.WIF_RE || /^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/;
+        (function walk2(node, depth) {
+          if (!node || typeof node !== "object" || depth > 8) return;
+          for (const v of Object.values(node)) {
+            if (typeof v === "string") { if (WIF_RE2.test(v)) wifs.add(v); }
+            else if (v && typeof v === "object") walk2(v, depth + 1);
+          }
+        })(parsed, 0);
+        liveWifs = wifs.size;
+        for (const wif of wifs) {
+          const r = P.classify({ source: "live-relay", wif }, livePubs);
+          if (r.ok) {
+            map[r.account] = map[r.account] || {};
+            if (!map[r.account][r.role]) { matched++; liveMatched++; }
+            map[r.account][r.role] = r.wif;
+          }
+        }
+      } catch {
+        console.log("[resolve-keys] LIVE_FLEET_KEYS unparsable — earlier sources stand");
+      }
+      console.log(`[resolve-keys] live-relay source: ${liveWifs} wif-candidates → ${liveMatched} live keys (chain-verified R361 relay, overrides stale ROT2)`);
+    }
     fs.writeFileSync(outPath, JSON.stringify(map) + "\n");
     fs.chmodSync(outPath, 0o600);
     const accounts = Object.keys(map);
