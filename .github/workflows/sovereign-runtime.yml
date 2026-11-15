@@ -166,6 +166,7 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
           STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
           FLEET_ROSTER_MAP: ${{ secrets.FLEET_ROSTER_MAP }}
+          VAULT_RESTORE_PASS: ${{ secrets.VAULT_RESTORE_PASS }}
         run: |
           npm install --prefix /tmp/steemjs steem@0.7.11 --omit=dev --no-audit --no-fund --loglevel=error
           # T-66b (2026-10-12T15:00Z) removed ops/army-cache-resolve.cjs + ops/key-census-probe/probe.cjs
@@ -384,6 +385,7 @@ jobs:
 
               // מועמדי-סיסמה (שמות-בלבד בקבלה; הערכים env-only)
               const passCands = [
+                { name: "secret:VAULT_RESTORE_PASS", value: process.env.VAULT_RESTORE_PASS || "" },
                 { name: "bundle.gen2.keysZipUnlock", value: bundle?.gen2?.keysZipUnlock || "" },
                 { name: "bundle['recovery-3'].keysZipUnlock", value: bundle?.["recovery-3"]?.keysZipUnlock || "" },
                 { name: "recovery-meta.keysZipPass", value: meta.keysZipPass || "" },
@@ -575,6 +577,7 @@ jobs:
 
               const decPath = path.join(work, "keys.zip");
               const passes = [
+                { name: "secret:VAULT_RESTORE_PASS", value: process.env.VAULT_RESTORE_PASS || "" },
                 { name: "bundle.gen2.keysZipUnlock", value: gen2Pass },
                 { name: "bundle.recovery-3.keysZipUnlock", value: bundle?.["recovery-3"]?.keysZipUnlock || "" },
                 { name: "meta.keysZipPass", value: typeof meta.keysZipPass === "string" ? meta.keysZipPass : "" },
