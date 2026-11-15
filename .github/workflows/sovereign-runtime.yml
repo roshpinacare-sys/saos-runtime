@@ -1128,6 +1128,34 @@ jobs:
         env:
           CI_SOCIAL_ARMED: ${{ secrets.CI_SOCIAL_ARMED }}
 
+      # exec34 fuel (2026-11-15): the portfolio snapshot reads
+      # mini-services/saos-dex/state/{grids,ledger}.json inside the engine
+      # tree — the R328 layout that vanished in the wipe. portfolio-feed.mjs
+      # (engine tree, commit 40889db) converts the REAL git-published saos-dex
+      # state (db/grid-ledger.json open orders + db/dex-credits.json claims)
+      # into those shapes. Fail-soft: a fetch failure leaves the honest
+      # SNAPSHOT-FAIL in place (the snapshot stays fail-closed).
+      - name: Dex paper-economy feed (portfolio snapshot fuel — real saos-dex state)
+        working-directory: engine/mini-services/saos-engine
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          mkdir -p /tmp/dex-feed/db
+          for f in grid-ledger.json dex-credits.json; do
+            code=$(curl -s -o "/tmp/dex-feed/db/$f" -w "%{http_code}" \
+              -H "Authorization: Bearer ${GH_PAT}" \
+              -H "Accept: application/vnd.github.raw+json" \
+              "https://api.github.com/repos/roshpinacare-sys/saos-dex/contents/db/$f?ref=main")
+            echo "fetch db/$f → HTTP $code"
+            if [ "$code" != "200" ]; then
+              echo "feed fetch failed — the snapshot will report its honest SNAPSHOT-FAIL (fail-closed)"
+              exit 0
+            fi
+          done
+          node portfolio-feed.mjs --from /tmp/dex-feed --repo-root ../.. \
+            && echo "portfolio fuel staged" \
+            || echo "feed conversion refused — snapshot stays fail-closed"
+
       - name: Beat env + posting arming (standing order travels as a repo secret)
         working-directory: engine/mini-services/saos-engine
         run: |
