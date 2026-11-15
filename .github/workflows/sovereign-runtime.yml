@@ -1412,9 +1412,16 @@ jobs:
             /* chain-judge FRESH via the engine's own role-exact adoption (fail-closed) */
             const adopted = await adoptVerifiedWifIdentity(ACCOUNT, wif, { role: "active" });
             if (!adopted?.ok) { say("active material refused by the chain judge — honest no-op (" + String(adopted?.reason ?? "?").slice(0, 90) + ")"); return; }
-            /* the tip this beat anchors: the engine tree's current HEAD (the state
-             * commit that follows will descend from it — lineage holds for the probe) */
-            const tip = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+            /* R364 · THE TIP THIS BEAT ANCHORS: origin/saos-cockpit — NEVER the
+             * runner's local HEAD. Measured 2026-11-15 (probe FAILED at 19:37):
+             * the witness anchored local HEAD b7023977, then the push-retry
+             * rebase ladder REWROTE that commit before it ever reached origin —
+             * the anchored tip went GC-gone (API: "No commit found") and the
+             * probe honestly failed forever. origin's tip is in lineage BY
+             * DEFINITION and immutable under the FF-only law; every commit that
+             * follows (state commits, API last-mile) descends from it. */
+            execFileSync("git", ["fetch", "-q", "origin", "saos-cockpit"], { stdio: "pipe" });
+            const tip = execFileSync("git", ["rev-parse", "origin/saos-cockpit"], { encoding: "utf8" }).trim();
             const ops = [["custom_json", { required_auths: [ACCOUNT], required_posting_auths: [], id: "saos-git-custody-v1", json: JSON.stringify({ branch: "saos-cockpit", tip, at: new Date().toISOString(), src: "beat-witness", auth: "active", fp: fp(wif) }) }]];
             /* the same think-gate purpose ci-act registered (ci-custody-witness) */
             const gate = thinkGate(ACCOUNT, ops, { source: "ci-custody-witness" });
