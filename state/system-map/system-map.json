@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-14T22:58:28.616Z",
+  "builtAt": "2026-11-15T02:39:42.442Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T21:44:16Z"
+        "created_at": "2026-11-14T23:04:04Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-ladder",
@@ -47,7 +47,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-14T22:57:03Z"
+        "created_at": "2026-11-15T02:18:23Z"
       },
       "verdict": "ALIVE"
     },
@@ -77,7 +77,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T20:48:52Z"
+        "created_at": "2026-11-15T01:07:59Z"
       },
       "verdict": "ALIVE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T19:30:07Z"
+        "created_at": "2026-11-14T23:25:16Z"
       },
       "verdict": "IDLE"
     },
@@ -133,7 +133,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-14T22:54:31Z"
+        "created_at": "2026-11-15T01:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -173,8 +173,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "workflow_dispatch",
-        "created_at": "2026-11-14T22:34:13Z"
+        "event": "schedule",
+        "created_at": "2026-11-14T23:57:42Z"
       },
       "verdict": "ALIVE"
     },
@@ -187,7 +187,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-14T19:17:09Z"
+        "created_at": "2026-11-14T23:07:12Z"
       },
       "verdict": "IDLE"
     },
@@ -241,7 +241,7 @@
         "status": "completed",
         "conclusion": "cancelled",
         "event": "schedule",
-        "created_at": "2026-11-14T22:57:05Z"
+        "created_at": "2026-11-15T02:37:23Z"
       },
       "verdict": "CANCELLED"
     },
@@ -351,7 +351,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T19:27:07Z"
+        "created_at": "2026-11-14T23:20:09Z"
       },
       "verdict": "STALE"
     },
@@ -366,7 +366,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T19:16:22Z"
+        "created_at": "2026-11-14T23:07:08Z"
       },
       "verdict": "STALE"
     },
@@ -422,7 +422,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T19:28:28Z"
+        "created_at": "2026-11-14T23:23:11Z"
       },
       "verdict": "STALE"
     },
@@ -437,7 +437,7 @@
         "event": "schedule",
         "created_at": "2026-11-14T22:28:46Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -463,7 +463,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T22:58:15Z"
+        "created_at": "2026-11-15T02:08:05Z"
       },
       "verdict": "ALIVE"
     },
@@ -478,7 +478,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-14T22:31:09Z"
+        "created_at": "2026-11-15T02:26:48Z"
       },
       "verdict": "ALIVE"
     },
@@ -493,7 +493,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T20:49:47Z"
+        "created_at": "2026-11-15T02:00:08Z"
       },
       "verdict": "ALIVE"
     },
@@ -508,7 +508,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-14T22:58:23Z"
+        "created_at": "2026-11-15T02:39:36Z"
       },
       "verdict": "ALIVE"
     },
@@ -536,7 +536,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-14T20:07:10Z"
+        "created_at": "2026-11-15T01:20:09Z"
       },
       "verdict": "ALIVE"
     },
@@ -557,20 +557,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-14T22:34:03Z",
-    "ageMinutes": 25,
+    "at": "2026-11-15T02:30:02Z",
+    "ageMinutes": 10,
     "subject": "beat: hyper-grid state via API last-mile (t25 · T-62 tick survival)",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 18,
+    "alive": 16,
     "red": 1,
-    "stale": 3,
+    "stale": 4,
     "gated": 0,
     "cancelled": 1,
     "neverRun": 0,
     "review": 0,
-    "idle": 16,
+    "idle": 17,
     "heartbeat": "ALIVE"
   }
 }
