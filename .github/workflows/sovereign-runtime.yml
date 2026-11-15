@@ -1328,6 +1328,80 @@ jobs:
         working-directory: engine
         run: node scripts/presence-matrix.mjs
 
+      # R362 · ANCHOR WITNESS (2026-11-15, owner order "recover-all · prove everything"):
+      # the ci-act custody-witness lane died with the sandbox — no invoker ran it since,
+      # measured: last anchor 2026-10-13T17:42Z (txid c09dd9a2, tip 60abfe8f unreachable
+      # after the history rewrite) → the probe honestly FAILED/ABSENT and the watchdog
+      # carried anchor.probe red. The beat IS the sole custodian (26-b canonical-home
+      # law) — so the beat now anchors its OWN tip, every run, rate-limited (ci-act law:
+      # min 1h between anchors; 55min here to ride the hourly cadence):
+      #   custom_json id=saos-git-custody-v1, required_auths=[headcorner] (ACTIVE
+      #   authority — headcorner's posting material is dead-vs-chain since the ROT
+      #   waves; active is the same authority the DEX takeover already lawfully holds
+      #   and the chain-judged vault carries; the rebuilt probe accepts both auth forms).
+      # Fail-closed at every layer: no vault material / authority mismatch / chain
+      # unreachable / broadcast error = honest no-op, nothing written, never a fake
+      # anchor. Verdict-only stdout (fingerprints, never key material).
+      - name: Anchor witness (custody anchor refresh · saos-git-custody-v1 · rate-limited)
+        continue-on-error: true
+        working-directory: engine
+        run: |
+          mkdir -p /tmp/ignite
+          cat > /tmp/ignite/anchor-witness.cjs <<'WITNESS_EOF'
+          /* ANCHOR-WITNESS — R362: the beat (sole custodian, 26-b) anchors its own tip.
+           * EXACT ci-act custodyAnchor() law-path, moved into the beat (ci-act's runner
+           * died with the sandbox): min-1h rate limit · thinkGate with the SAME purpose
+           * source (ci-custody-witness) · engine's own executeAs (the full law stack:
+           * standing-order conf, era-3 fuel gate, command hierarchy — all standing
+           * code, zero new law) · adoptVerifiedWifIdentity chain-judges the material
+           * (chain is the only judge) · memory-only WIF, fingerprint-only stdout ·
+           * state write 0600. ONE documented deviation: required_auths (active) instead
+           * of required_posting_auths — headcorner posting material is dead-vs-chain
+           * since the ROT waves; active is the same authority the DEX takeover already
+           * lawfully holds. custom_json is not a fuel op (era-3 gate passes through),
+           * not T3 (no authority reshape) — the standing classification lanes apply. */
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const { execFileSync } = require("node:child_process");
+          const crypto = require("node:crypto");
+          const say = (m) => console.log("ANCHOR-WITNESS: " + m);
+          const fp = (s) => crypto.createHash("sha256").update(String(s)).digest("hex").slice(0, 8);
+          const VAULT_MAP = path.join(".secrets", "custody-vault", "crown-map.json");
+          const STATE = path.join("mini-services", "saos-engine", "state", "custody-anchor.json");
+          const ACCOUNT = "headcorner";
+          (async () => {
+            /* rate limit (ci-act law: min 1h between anchors; 55min rides the hourly beat) */
+            let last = 0;
+            try { last = Number(JSON.parse(fs.readFileSync(STATE, "utf8")).at) || 0; } catch { /* first run */ }
+            if (Date.now() - last < 55 * 60 * 1000) { say("RATE-LIMITED-DURABLE (last anchor " + Math.round((Date.now() - last) / 60000) + "min ago — the standing anchor holds)"); return; }
+            /* material: THIS run's own vault-of-record (chain-judged at materialization) */
+            let wif = null;
+            try { wif = JSON.parse(fs.readFileSync(VAULT_MAP, "utf8")).accounts?.[ACCOUNT]?.active || null; } catch { /* absent below */ }
+            if (!wif) { say("no headcorner active material in the vault-of-record — honest no-op (the anchor lane waits for custody)"); return; }
+            /* the engine's own lawful path (dynamic import — the engine is ESM) */
+            const signerPath = path.resolve("mini-services", "saos-engine", "signer.mjs");
+            const { adoptVerifiedWifIdentity, thinkGate, executeAs } = await import(signerPath);
+            /* chain-judge FRESH via the engine's own role-exact adoption (fail-closed) */
+            const adopted = await adoptVerifiedWifIdentity(ACCOUNT, wif, { role: "active" });
+            if (!adopted?.ok) { say("active material refused by the chain judge — honest no-op (" + String(adopted?.reason ?? "?").slice(0, 90) + ")"); return; }
+            /* the tip this beat anchors: the engine tree's current HEAD (the state
+             * commit that follows will descend from it — lineage holds for the probe) */
+            const tip = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+            const ops = [["custom_json", { required_auths: [ACCOUNT], required_posting_auths: [], id: "saos-git-custody-v1", json: JSON.stringify({ branch: "saos-cockpit", tip, at: new Date().toISOString(), src: "beat-witness", auth: "active", fp: fp(wif) }) }]];
+            /* the same think-gate purpose ci-act registered (ci-custody-witness) */
+            const gate = thinkGate(ACCOUNT, ops, { source: "ci-custody-witness" });
+            if (gate?.verdict !== "ALLOW") { say("think-gate refused — honest no-op (" + String((gate?.reasons ?? [gate?.verdict]).join(";")).slice(0, 110) + ")"); return; }
+            /* broadcast through the engine's own law stack */
+            const r = await executeAs(ACCOUNT, ops, { tag: "ci-custody-witness", role: "active" });
+            if (!r?.ok) { say("executeAs refused — honest no-op (" + String(r?.verdict ?? r?.reason ?? "?").slice(0, 110) + ")"); return; }
+            /* land the state 0600 — the "Commit state back" step carries it to saos-cockpit */
+            fs.mkdirSync(path.dirname(STATE), { recursive: true });
+            fs.writeFileSync(STATE, JSON.stringify({ at: Date.now(), txid: r?.txid ?? null, tip, auth: "active", src: "beat-witness" }), { mode: 0o600 });
+            say("ANCHORED txid=" + String(r?.txid ?? "?") + " tip=" + tip.slice(0, 10) + " (active authority, chain-judged fp=" + fp(wif) + ", full engine law stack)");
+          })().catch((e) => { console.log("::warning::ANCHOR-WITNESS: fail-soft no-op — " + String(e && e.message || e).slice(0, 140)); });
+          WITNESS_EOF
+          node /tmp/ignite/anchor-witness.cjs
+
       - name: Commit state back (FF-only, no force, ever · honest yield to the alive custodian — T-58 fix)
         working-directory: engine
         env:
