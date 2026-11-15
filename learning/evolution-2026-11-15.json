@@ -1,5 +1,5 @@
 {
- "at": "2026-11-15T12:53:39.051Z",
+ "at": "2026-11-15T18:39:05.175Z",
  "window": {
   "from": "2026-11-14",
   "to": "2026-11-15"
@@ -7,40 +7,41 @@
  "sections": {
   "runs": {
    "Domain": {
-    "count": 2202,
+    "count": 2500,
     "sampled": 100,
     "hist": {
-     "success": 93,
-     "in_progress": 3,
-     "failure": 3,
-     "cancelled": 1
+     "success": 82,
+     "in_progress": 4,
+     "cancelled": 13,
+     "failure": 1
     }
    },
    "Console": {
-    "count": 1785,
+    "count": 2086,
     "sampled": 100,
     "hist": {
-     "success": 88,
-     "cancelled": 11,
+     "success": 78,
+     "cancelled": 21,
      "failure": 1
     }
    },
    "Sandbox": {
-    "count": 16,
-    "sampled": 16,
+    "count": 17,
+    "sampled": 17,
     "hist": {
-     "success": 14,
+     "success": 15,
      "skipped": 2
     }
    },
    "saos-runtime": {
-    "count": 571,
+    "count": 644,
     "sampled": 100,
     "hist": {
-     "in_progress": 4,
-     "success": 89,
-     "cancelled": 5,
-     "failure": 2
+     "failure": 7,
+     "in_progress": 5,
+     "success": 79,
+     "cancelled": 8,
+     "pending": 1
     }
    }
   },
@@ -68,7 +69,7 @@
     "realizedUsd": null
    },
    "honestEcon": {
-    "realChainMarkedUsd": 18.4872,
+    "realChainMarkedUsd": 18.4249,
     "saosExternalBid": false
    }
   },
@@ -102,19 +103,19 @@
    "id": "T1",
    "name": "Domain daily runs >= 30",
    "ok": true,
-   "detail": "runs=2202"
+   "detail": "runs=2500"
   },
   {
    "id": "T1",
    "name": "Console daily runs >= 10",
    "ok": true,
-   "detail": "runs=1785"
+   "detail": "runs=2086"
   },
   {
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=571"
+   "detail": "runs=644"
   }
  ],
  "verdict": "ALL-SLO-OK"
