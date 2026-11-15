@@ -1,0 +1,10 @@
+name: live-fleet-diag
+on: workflow_dispatch
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: count only (zero values)
+        env:
+          LIVE_FLEET_KEYS: ${{ secrets.LIVE_FLEET_KEYS }}
+        run: node -e "const v = process.env.LIVE_FLEET_KEYS || '';\ntry {\n  const j = JSON.parse(v);\n  const w = new Set();\n  (function w2(n, d) {\n    if (!n || typeof n !== 'object' || d > 8) return;\n    if (Array.isArray(n)) { n.forEach(x => w2(x, d + 1)); return; }\n    for (const x of Object.values(n)) {\n      if (typeof x === 'string' && /^[5JK][1-9A-HJ-NP-Za-km-z]{50}$/.test(x)) w.add(x);\n      else if (typeof x === 'object') w2(x, d + 1);\n    }\n  })(j, 0);\n  console.log('diag: wif-count=' + w.size + ' has-rekey4=' + ('rekey4_harvest' in j) + ' top-keys=' + Object.keys(j).join(','));\n} catch (e) { console.log('diag: unparsable len=' + v.length); }"
