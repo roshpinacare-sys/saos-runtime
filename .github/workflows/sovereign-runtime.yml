@@ -930,6 +930,156 @@ jobs:
           RAIL_EOF
           NODE_PATH=/tmp/steemjs/node_modules node /tmp/ignite/rot2-rail.cjs
 
+      # R361-FUEL (2026-11-15, owner order "recover-all · prove everything · don't
+      # stop until 100%"): the crown-vault-recovery run (steem, 43713515988,
+      # 2026-11-15T12:32Z) chain-judged the whole crown — 13 accounts LIVE + the
+      # family master (headcorner owner proven; hcsoldier4/5/6 owners derive from
+      # it) — and relayed it as LIVE_FLEET_KEYS. But the beat's only consumers
+      # (army-cache-resolve → adoptFromCache) are posting-first: active/owner-only
+      # accounts can never verify through that rail, so custody sat 0/14 while 14/14
+      # accounts had LIVE material in the relay (measured 13:53Z/14:29Z heartbeats:
+      # PARTIAL IGNITE 1/14 → custody 0/14, delegation CUSTODY-GATE-REFUSED,
+      # socialRefused 13). The engine's OWN vault-of-record path already exists and
+      # is role-exact (crown-vault-adopt.mjs: posting→active→owner→memo, chain is
+      # the only judge) — it just had no vault in the ephemeral CI clone. This step
+      # materializes it from the relay: every relay WIF + family-master-derived
+      # roles, chain-judged HERE first (fail-closed: only LIVE-matching material is
+      # written; zero matches = nothing written, adopt refuses loud), then re-judged
+      # by the engine at adopt time. Local pre-proof 2026-11-15T15:0xZ: 90
+      # candidates → 28 live role-materials on 14/14 accounts (all fps in the PR).
+      - name: Vault-of-record materialization (LIVE_FLEET_KEYS relay → crown-vault-adopt fuel)
+        working-directory: engine
+        env:
+          LIVE_FLEET_KEYS: ${{ secrets.LIVE_FLEET_KEYS }}
+        run: |
+          npm i --prefix /tmp/noble --silent @noble/secp256k1@2.2.3 --omit=dev --no-audit --no-fund --loglevel=error
+          mkdir -p /tmp/ignite
+          cat > /tmp/ignite/vault-materialize.cjs <<'VAULT_EOF'
+          /* VAULT-MATERIALIZE — R361 fuel: LIVE_FLEET_KEYS relay + family-master
+           * derivation → engine/.secrets/custody-vault/crown-map.json +
+           * .secrets/census-verified.json. Own crypto (recover.mjs convention):
+           * wifSeed handles BOTH 38/37-char WIF forms (steem-js wifToPublic
+           * measured refusing the 33-byte-body class); @noble/secp256k1 pinned.
+           * Laws: verdict-only stdout (fingerprints, never WIFs); fail-closed at
+           * every layer (absent secret / unreachable chain / zero matches =
+           * honest no-op — never a fake green); the ENGINE re-judges every WIF at
+           * adopt time (crown-vault-adopt — the chain is the only judge; these
+           * files are material, not truth). */
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const crypto = require("node:crypto");
+          const secp = require("@noble/secp256k1");
+          const say = (m) => console.log("VAULT-MAT: " + m);
+          const fp = (s) => crypto.createHash("sha256").update(String(s)).digest("hex").slice(0, 8);
+          const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+          function b58d(s) { let n = 0n; for (const c of s) { const i = B58.indexOf(c); if (i < 0) throw new Error("b58char"); n = n * 58n + BigInt(i); } let h = n.toString(16); if (h.length % 2) h = "0" + h; return Buffer.from(h, "hex"); }
+          function b58e(buf) { let n = BigInt("0x" + buf.toString("hex") || "0"), out = ""; while (n > 0n) { out = B58[Number(n % 58n)] + out; n /= 58n; } for (const b of buf) { if (b === 0) out = "1" + out; else break; } return out; }
+          function wifSeed(wif) {
+            const d = b58d(wif);
+            let body, chk;
+            if (d.length === 38) { body = d.subarray(0, 34); chk = d.subarray(34); if (body[0] !== 0x80 || body[33] !== 0x01) throw new Error("wif-format"); }
+            else if (d.length === 37) { body = d.subarray(0, 33); chk = d.subarray(33); if (body[0] !== 0x80) throw new Error("wif-format"); }
+            else throw new Error("wif-length");
+            const c = crypto.createHash("sha256").update(crypto.createHash("sha256").update(body).digest()).digest().subarray(0, 4);
+            if (!c.equals(chk)) throw new Error("wif-checksum");
+            return Buffer.from(body.subarray(1, 33));
+          }
+          function steemPub(seed) {
+            const pub = Buffer.from(secp.getPublicKey(seed, true));
+            const chk = crypto.createHash("ripemd160").update(pub).digest().subarray(0, 4);
+            return "STM" + b58e(Buffer.concat([pub, chk]));
+          }
+          function normSeed(s2) { return s2.trim().split(/[\t\n\v\f\r ]+/).join(" "); }
+          function deriveRoleWif(master, account, role) {
+            const secret = crypto.createHash("sha256").update(Buffer.from(normSeed(account + role + master), "utf8")).digest();
+            const body = Buffer.concat([Buffer.from([0x80]), Buffer.from(secret), Buffer.from([0x01])]);
+            const chk = crypto.createHash("sha256").update(crypto.createHash("sha256").update(body).digest()).digest().subarray(0, 4);
+            return b58e(Buffer.concat([body, chk]));
+          }
+
+          const ENV = process.env.LIVE_FLEET_KEYS || "";
+          (async () => {
+            if (!ENV.trim()) { say("LIVE_FLEET_KEYS absent — honest no-op (crown-vault-adopt stays refused-no-vault, loud)"); return; }
+            let relay = null;
+            try { relay = JSON.parse(ENV); } catch (e) { say("relay unparseable — honest no-op"); return; }
+            const live = (relay && relay.live) || null;
+            if (!live || typeof live !== "object") { say("relay carries no live map — honest no-op"); return; }
+            const master = typeof live._master === "string" ? live._master : null;
+            if (master) say("relay carries _master (fp " + fp(master) + ") — deriving the roster's 4 roles, chain judges each");
+
+            /* engine roster (ci-cycle R245): master + 13 army — the custody heartbeat counts exactly these */
+            const ROSTER = ["cashmachine","haran","israelnews","lsa","macrame","siq","tov","wic","wog","woq","hcsoldier4","hcsoldier5","hcsoldier6"];
+            const MASTER = "headcorner";
+            const ALL = [MASTER, ...ROSTER];
+            const census = {}; for (const n of ALL) census[n] = 1;
+
+            const WIF_RE = /^[5KL][1-9A-HJ-NP-Za-km-z]{50,51}$/;
+
+            /* candidates: every relay WIF + family-master-derived 4 roles per roster
+             * account (crown recovery proved this master vs headcorner owner +
+             * hcsoldier4/5/6 owners; every other derivation is judged by the chain
+             * right here — dead ones are dropped) */
+            const cands = [];
+            for (const [acc, roles] of Object.entries(live)) {
+              if (acc === "_master" || typeof roles !== "object" || !roles) continue;
+              for (const [role, wif] of Object.entries(roles)) if (typeof wif === "string" && WIF_RE.test(wif)) cands.push({ wif, source: "relay:" + acc + ":" + role });
+            }
+            if (master && /^P[1-9A-HJ-NP-Za-km-z]{51}$/.test(master)) {
+              for (const n of ALL) for (const role of ["posting","active","owner","memo"]) cands.push({ wif: deriveRoleWif(master, n, role), source: "derived:" + n + ":" + role });
+            }
+            if (!cands.length) { say("zero candidates — honest no-op"); return; }
+
+            /* live authorities (fresh read — the chain is the only judge) */
+            let accs = null;
+            try {
+              const r = await fetch("https://api.steemit.com", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", method: "condenser_api.get_accounts", params: [ALL], id: 1 }), signal: AbortSignal.timeout(20000) });
+              const j = await r.json(); if (j.error) throw new Error(j.error.message); accs = j.result;
+            } catch (e) { say("chain unreachable — honest no-op (" + String(e && e.message || e).slice(0, 90) + ")"); return; }
+            if (!accs || !accs.length) { say("chain returned no accounts — honest no-op"); return; }
+            const auth = {};
+            for (const a of accs) auth[a.name] = { owner: (a.owner && a.owner.key_auths && a.owner.key_auths[0] && a.owner.key_auths[0][0]) || null, active: (a.active && a.active.key_auths && a.active.key_auths[0] && a.active.key_auths[0][0]) || null, posting: (a.posting && a.posting.key_auths && a.posting.key_auths[0] && a.posting.key_auths[0][0]) || null, memo: a.memo_key || null };
+
+            /* chain-judge every candidate (role-exact, steem chain) */
+            const matched = {}; const seen = new Set(); let judged = 0;
+            for (const c of cands) {
+              if (seen.has(c.wif)) continue; seen.add(c.wif);
+              let pub = null; try { pub = steemPub(wifSeed(c.wif)); } catch { continue; }
+              judged++;
+              for (const [name, roles] of Object.entries(auth)) {
+                for (const [role, chainPub] of Object.entries(roles)) {
+                  if (chainPub && pub === chainPub) {
+                    matched[name] = matched[name] || {};
+                    if (!matched[name][role]) { matched[name][role] = c.wif; say("LIVE " + name + ":" + role + " fp=" + fp(c.wif) + " via " + c.source); }
+                  }
+                }
+              }
+            }
+            const nAcct = Object.keys(matched).length;
+            const roleCount = Object.values(matched).reduce((n, r) => n + Object.keys(r).length, 0);
+            say("chain-judged " + judged + " candidates → " + roleCount + " live role-materials on " + nAcct + "/" + ALL.length + " accounts");
+
+            if (!nAcct) { say("zero chain matches — honest empty vault NOT written (adopt refuses loud, no fake green)"); return; }
+
+            /* write the vault-of-record (0600, atomic) — the engine's crown-vault-adopt re-judges it all */
+            const SECRETS = ".secrets";
+            const VAULT = path.join(SECRETS, "custody-vault");
+            fs.mkdirSync(VAULT, { recursive: true });
+            try { fs.chmodSync(VAULT, 0o700); } catch { /* umask may refuse on some hosts — files below still 0600 */ }
+            const doc = { format: "crown-map/1", at: new Date().toISOString(), source: "LIVE_FLEET_KEYS relay (crown-vault-recovery 2026-11-15T12:32Z, run 43713515988) + family-master derivation; chain-judged at materialization, re-judged by crown-vault-adopt at every beat", chainJudgedAtMaterialize: true, accounts: matched };
+            const tmp = path.join(VAULT, ".crown-map.json.tmp." + process.pid);
+            fs.writeFileSync(tmp, JSON.stringify(doc, null, 2), { mode: 0o600 });
+            fs.chmodSync(tmp, 0o600);
+            fs.renameSync(tmp, path.join(VAULT, "crown-map.json"));
+            const tmpC = path.join(SECRETS, ".census-verified.json.tmp." + process.pid);
+            fs.writeFileSync(tmpC, JSON.stringify(census, null, 2), { mode: 0o600 });
+            fs.chmodSync(tmpC, 0o600);
+            fs.renameSync(tmpC, path.join(SECRETS, "census-verified.json"));
+            const missing = ALL.filter((n) => !matched[n]);
+            say("vault-of-record materialized 0600: custody-vault/crown-map.json (" + nAcct + " accounts) + census-verified.json (" + ALL.length + " roster)" + (missing.length ? " — still keyless: " + missing.join(",") + " (loud)" : " — FULL ROSTER"));
+          })().catch((e) => { console.log("::warning::VAULT-MAT: fail-soft no-op — " + String(e && e.message || e).slice(0, 140)); });
+          VAULT_EOF
+          NODE_PATH=/tmp/noble/node_modules node /tmp/ignite/vault-materialize.cjs
+
       - name: Chain anchor probe (on-chain custody anchor must sit in HEAD lineage)
         working-directory: engine
         run: |
