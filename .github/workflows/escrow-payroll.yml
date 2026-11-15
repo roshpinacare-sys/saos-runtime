@@ -41,6 +41,9 @@ jobs:
       # fresh source for resolve-keys. Without it the GEN-2 zip (pre-ROT2 payload) matched
       # 0 across 0 → KEYLESS-STASIS green-sleep. One line, additive, alive-wins.
       ROT2_FLEET_KEYS: ${{ secrets.ROT2_FLEET_KEYS }}
+      # R365: the LIVE relay (crown-vault-recovery R361) — ROT2 measured 0-live at
+      # 2026-11-15T11:39Z; resolve-keys (C) path consumes it, alive-wins, chain judges
+      LIVE_FLEET_KEYS: ${{ secrets.LIVE_FLEET_KEYS }}
       # W12c lane self-funding: the refill leg signs a dust transfer FROM the
       # treasury (headcorner) — loadKeys maps STEEM_ACTIVE_WIF → headcorner as
       # the env fallback when the roster file lacks the head account. Key-gated
