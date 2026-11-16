@@ -143,7 +143,15 @@ async function broadcastOp(op, opsName, signingWif) {
     operations: [[opsName, op]],
     extensions: [],
   }]);
-  if (nodeHex !== tx.serializedHex) throw new Error("byte-law FAIL nodeLen=" + (nodeHex.length / 2) + " myLen=" + (tx.serializedHex.length / 2));
+  /* R256 PHANTOM-BYTE LAW (steemtx.mjs account_update case, broadcast-proven
+   * 2026-10-29T13:4xZ): get_transaction_hex — the oracle that lies — appends
+   * ONE trailing byte (0x00) to the op-10 family that the CONSENSUS digest
+   * does NOT carry. Bytes-minus-trailing-0x00 were ACCEPTED on api.steemit.com;
+   * hex-matching (signing over the phantom byte) was rejected on 3 nodes
+   * ("missing required owner/active authority" — why R245-ROT2 keys never went
+   * live). We sign over OUR consensus bytes and accept nodeHex == ours + "00". */
+  const byteMatch = nodeHex === tx.serializedHex || nodeHex === tx.serializedHex + "00";
+  if (!byteMatch) throw new Error("byte-law FAIL nodeLen=" + (nodeHex.length / 2) + " myLen=" + (tx.serializedHex.length / 2));
   const bin = Buffer.from(tx.serializedHex, "hex");
   const digest = sha256(Buffer.concat([chainId, bin.slice(0, bin.length - 1)]));
   const sig = TX.signDigest(Buffer.from(digest), signingWif);
