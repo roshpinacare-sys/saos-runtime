@@ -1,0 +1,37 @@
+{
+ "schema": "SAOS-ARMY-ACTIVE-REVIVE/1",
+ "at": "2026-11-16T06:19:13.501Z",
+ "results": [
+  {
+   "account": "cashmachine",
+   "at": "2026-11-16T06:19:14.652Z",
+   "verdict": "FAIL",
+   "error": "byte-law FAIL nodeLen=203 myLen=202"
+  },
+  {
+   "account": "israelnews",
+   "at": "2026-11-16T06:19:14.910Z",
+   "verdict": "FAIL",
+   "error": "byte-law FAIL nodeLen=202 myLen=201"
+  },
+  {
+   "account": "hcsoldier4",
+   "at": "2026-11-16T06:19:15.332Z",
+   "verdict": "FAIL",
+   "error": "byte-law FAIL nodeLen=144 myLen=143"
+  },
+  {
+   "account": "hcsoldier5",
+   "at": "2026-11-16T06:19:15.559Z",
+   "verdict": "FAIL",
+   "error": "byte-law FAIL nodeLen=144 myLen=143"
+  },
+  {
+   "account": "hcsoldier6",
+   "at": "2026-11-16T06:19:15.783Z",
+   "verdict": "FAIL",
+   "error": "byte-law FAIL nodeLen=144 myLen=143"
+  }
+ ],
+ "verdict": "NOTHING-REVIVED (honest red)"
+}
