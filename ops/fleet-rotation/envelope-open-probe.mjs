@@ -24,7 +24,7 @@ async function main() {
   try {
     execFileSync("git", ["clone", "--quiet", "--depth", "1", "https://x-access-token:" + pat + "@github.com/roshpinacare-sys/vault-home.git", join(work, "vh")], { stdio: "pipe" });
     const dir = join(work, "vh", "custody-intake");
-    const files = readdirSync(dir).filter(f => /^ARMY-ACTIVE-REVIVE-.*\\.enc$/.test(f)).sort();
+    XX\\.enc$/.test(f)).sort();
     console.log("[probe] מעטפות: " + files.length);
     const opened = [];
     for (const f of files) {
