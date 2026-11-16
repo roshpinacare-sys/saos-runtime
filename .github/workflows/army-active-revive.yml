@@ -1,0 +1,97 @@
+# army-active-revive — R369 · surgical KEY-STASIS cure (owner = recovery authority).
+#
+# MEASURED PROBLEM (2026-11-16): army-ladder receipts show 5 accounts in KEY-STASIS
+# (cashmachine, israelnews, hcsoldier4, hcsoldier5, hcsoldier6 — "no live active WIF").
+# Root cause: the 2026-10-28T21:35Z exposure-seal removed the key vault from the public
+# steem repo; the 10-21-era ACTIVE WIFs for these accounts live on a branch that no longer
+# exists (verified unreachable from every current ref, 2026-11-16 full-history scan).
+# Their ACTIVE authorities are UNCHANGED ON CHAIN — the WIFs are lost, the accounts are not.
+#
+# THE CURE (keys registry law: "owner = recovery authority"; rotate.mjs phase-A precedent):
+# owner-signed account_update rotating ONLY the active role to a fresh key, for roster
+# accounts that hold a LIVE owner key in the material pool but no active WIF.
+# posting/memo/json_metadata preserved byte-as-is. Owner authority untouched.
+#
+# MATERIAL POOL: LIVE_FLEET_KEYS (crown census-relay product) + every sealed vault
+# archive × every pass we hold (incl. VAULT_RESTORE_PASS for the custody-restore-v2
+# bundle that carries the mother-line owner keys hcsoldier4/5/6). Every WIF is
+# chain-judged before anything. Fingerprints only. Fail-closed. Surgical cap: 8 targets.
+#
+# CUSTODY: incremental PUT of the merged LIVE_FLEET_KEYS (steem/saos-runtime/Domain/saos-dex)
+# after EVERY account, BEFORE the next broadcast + vault-home ciphertext seal (wipe-immune).
+name: army-active-revive
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: army-active-revive
+  cancel-in-progress: false
+
+jobs:
+  revive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      LIVE_FLEET_KEYS: ${{ secrets.LIVE_FLEET_KEYS }}
+      VAULT_RESTORE_PASS: ${{ secrets.VAULT_RESTORE_PASS }}
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+      REVIVE_STEEM_DIR: ${{ github.workspace }}/steem-engine
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Checkout steem main (custody branch — vault of record) + engine overlay (saos-cockpit)
+        run: |
+          set -Eeuo pipefail
+          if [ -z "${GH_PAT:-}" ]; then echo "ABORT: GH_PAT absent"; exit 1; fi
+          git clone --depth 1 --branch main "https://x-access-token:${GH_PAT}@github.com/roshpinacare-sys/steem.git" steem-engine
+          cd steem-engine
+          echo "steem main @ $(git rev-parse --short HEAD)"
+          git fetch --depth 1 origin saos-cockpit
+          git checkout FETCH_HEAD -- mini-services/saos-engine/steemtx.mjs
+          node --check mini-services/saos-engine/steemtx.mjs
+          echo "engine overlay ok: steemtx.mjs from saos-cockpit @ $(git rev-parse --short FETCH_HEAD)"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install deps (pinned)
+        run: npm i --no-save --silent @noble/hashes@1.8.0 @noble/secp256k1@2.2.3 libsodium-wrappers steem
+
+      - name: Preflight + selftest (zero network)
+        run: |
+          set -Eeuo pipefail
+          node --check ops/fleet-rotation/revive-actives.mjs
+          node ops/fleet-rotation/revive-actives.mjs --selftest
+          if [ -z "${ROT_ROSTER:-}" ]; then echo "ABORT: ROT_ROSTER absent — roster is intel-by-law (fail-closed)"; exit 1; fi
+          node -e "const r=JSON.parse(process.env.ROT_ROSTER); if(!Array.isArray(r.steemQuads)||!r.steemQuads.length||!Array.isArray(r.steemAct)){console.error('ABORT: ROT_ROSTER malformed');process.exit(1)}; console.log('roster OK')"
+          if [ -z "${LIVE_FLEET_KEYS:-}" ] && [ -z "${VAULT_RESTORE_PASS:-}" ]; then echo "ABORT: no material source (LIVE_FLEET_KEYS and VAULT_RESTORE_PASS both absent)"; exit 1; fi
+
+      - name: Revive (surgical owner-signed active rotations, chain-verified, incremental custody)
+        run: node ops/fleet-rotation/revive-actives.mjs --run /tmp/revive-receipt.json || echo "revive ended honestly (exit $?)"
+
+      - name: Commit receipt (fingerprints only — evidence = commit)
+        if: always()
+        run: |
+          set -Eeuo pipefail
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
+          if [ -s /tmp/revive-receipt.json ]; then
+            TS=$(date -u +%Y%m%dT%H%M%SZ)
+            cp /tmp/revive-receipt.json "ops/fleet-rotation/receipt-revive-${TS}.json"
+            git add "ops/fleet-rotation/receipt-revive-${TS}.json"
+            git commit -m "army-active-revive receipt ${TS} [skip ci]" || true
+            git push || (git pull --rebase -q && git push)
+          else
+            echo "no receipt — honest"
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: rm -f /tmp/revive-receipt.json
