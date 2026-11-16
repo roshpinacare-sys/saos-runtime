@@ -52,8 +52,8 @@ import { createRequire } from "module";
 
 const require_ = createRequire(import.meta.url);
 const P = require_("./../key-census-probe/probe.cjs");
+const steem = require_("steem"); // the official client lib — the mover.mjs/ladder PROVEN signing path (daily on-chain txids)
 const { sha256 } = await import("@noble/hashes/sha256");
-const secp = await import("@noble/secp256k1");
 
 const STEEM_DIR = process.env.REVIVE_STEEM_DIR || path.resolve("steem-engine");
 const TX = await import(path.resolve(STEEM_DIR, "mini-services/saos-engine/steemtx.mjs"));
@@ -140,34 +140,39 @@ async function broadcastOp(op, opsName, signingWif) {
   const headNum = dgpo0.head_block_number;
   const idBytes = Buffer.from(String(dgpo0.head_block_id), "hex");
   const exp = Math.floor(Date.now() / 1000) + 60;
-  const chainId = Buffer.alloc(32); // steem chain id = 32 zero bytes
-  const tx = TX.buildTx({ ops: [[opsName, op]], dgpo: dgpo0, wifs: [], ttlSec: 60, chainId });
-  const nodeHex = await rpcSteem("condenser_api.get_transaction_hex", [{
+  const txBody = {
     ref_block_num: headNum & 0xffff,
     ref_block_prefix: idBytes.readUInt32LE(4),
     expiration: new Date(exp * 1000).toISOString().slice(0, 19),
     operations: [[opsName, op]],
     extensions: [],
-  }]);
-  /* R256 PHANTOM-BYTE LAW (steemtx.mjs account_update case, broadcast-proven
-   * 2026-10-29T13:4xZ): get_transaction_hex — the oracle that lies — appends
-   * ONE trailing byte (0x00) to the op-10 family that the CONSENSUS digest
-   * does NOT carry. Bytes-minus-trailing-0x00 were ACCEPTED on api.steemit.com;
-   * hex-matching (signing over the phantom byte) was rejected on 3 nodes
-   * ("missing required owner/active authority" — why R245-ROT2 keys never went
-   * live). We sign over OUR consensus bytes and accept nodeHex == ours + "00". */
-  const byteMatch = nodeHex === tx.serializedHex || nodeHex === tx.serializedHex + "00";
-  if (!byteMatch) throw new Error("byte-law FAIL nodeLen=" + (nodeHex.length / 2) + " myLen=" + (tx.serializedHex.length / 2));
-  const bin = Buffer.from(tx.serializedHex, "hex");
-  const digest = sha256(Buffer.concat([chainId, bin.slice(0, bin.length - 1)]));
-  const sig = TX.signDigest(Buffer.from(digest), signingWif);
-  const secret = TX.wifDecode(signingWif);
-  const selfOk = secp.verify(sig.slice(1), digest, Buffer.from(secp.getPublicKey(Buffer.from(secret), true)));
-  if (!selfOk) throw new Error("signature self-verify FAIL");
-  const b = await rpcSteem("condenser_api.broadcast_transaction_synchronous", [{ ...tx.json, signatures: [sig.toString("hex")] }]);
+  };
+  /* op-form oracle: the node must serialize this exact tx (non-empty hex) —
+   * catches malformed ops BEFORE signing. R256 phantom-byte measured on op-10:
+   * the node may append one byte the lib's consensus serialization does not —
+   * we do NOT byte-compare against the node (the lying oracle); we TRUST the
+   * official client lib's serialization, which the ladder proves on chain daily. */
+  const nodeHex = await rpcSteem("condenser_api.get_transaction_hex", [txBody]);
+  if (!nodeHex || nodeHex.length < 20) throw new Error("op-form oracle FAIL: node refused to serialize the tx");
+  /* THE PROVEN PATH (mover.mjs signAndBroadcast — daily on-chain txids):
+   * steem.auth.signTransaction with chain_id set. Measured 2026-11-16 (local
+   * A/B test): steemtx.signDigest and steem-lib signTransaction produce
+   * DIFFERENT signatures for the same account_update — the steemtx form was
+   * rejected by all 5 nodes with empty bodies (runs 43816207355, 43816546954);
+   * the lib form is the one the chain accepts. */
+  const prev = steem.config.get("chain_id");
+  steem.config.set("chain_id", "0".repeat(64));
+  let signed;
+  try {
+    signed = steem.auth.signTransaction(txBody, [signingWif]);
+  } finally {
+    try { steem.config.set("chain_id", prev ?? "0".repeat(64)); } catch { /* keep */ }
+  }
+  if (!signed || !Array.isArray(signed.signatures) || !signed.signatures.length) throw new Error("signTransaction produced no signature (honest)");
+  const b = await rpcSteem("condenser_api.broadcast_transaction_synchronous", [signed]);
   const txid = String((b && (b.id || (b.result && b.result.id))) || "");
   if (!txid) throw new Error("broadcast answered without id (honest)");
-  return { txid, digestHex: Buffer.from(digest).toString("hex").slice(0, 16) };
+  return { txid, digestHex: Buffer.from(sha256(Buffer.from(nodeHex, "hex"))).toString("hex").slice(0, 16) };
 }
 async function verifyActivePub(name, wantPub, tries = 10) {
   for (let i = 0; i < tries; i++) {
