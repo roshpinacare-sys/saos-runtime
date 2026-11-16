@@ -1,0 +1,52 @@
+{
+ "schema": "SAOS-ARMY-ACTIVE-REVIVE/1",
+ "at": "2026-11-16T06:28:18.962Z",
+ "results": [
+  {
+   "account": "cashmachine",
+   "at": "2026-11-16T06:28:19.836Z",
+   "txid": "2aa1b64b83b62c17d084",
+   "oldActiveFp": "STM6tRJ21Ebv",
+   "newActivePubFp": "STM6M3DWeY63",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  },
+  {
+   "account": "israelnews",
+   "at": "2026-11-16T06:28:22.037Z",
+   "txid": "919e9a158d3efc201b31",
+   "oldActiveFp": "STM58P1UXccx",
+   "newActivePubFp": "STM6MbMmiKkX",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  },
+  {
+   "account": "hcsoldier4",
+   "at": "2026-11-16T06:28:24.938Z",
+   "txid": "d3b4d94e72b8933a5c7e",
+   "oldActiveFp": "STM52UNKYmHL",
+   "newActivePubFp": "STM6knQc4aH6",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  },
+  {
+   "account": "hcsoldier5",
+   "at": "2026-11-16T06:28:28.288Z",
+   "txid": "edfd6076ac57b44f5019",
+   "oldActiveFp": "STM7NJqyCR62",
+   "newActivePubFp": "STM5pqAYzkPC",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  },
+  {
+   "account": "hcsoldier6",
+   "at": "2026-11-16T06:28:30.923Z",
+   "txid": "93c2bad1afc91e4fe771",
+   "oldActiveFp": "STM57AX4ZeTp",
+   "newActivePubFp": "STM7WJaGUPtW",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  }
+ ],
+ "verdict": "REVIVED 5/5"
+}
