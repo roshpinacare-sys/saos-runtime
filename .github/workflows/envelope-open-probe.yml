@@ -1,0 +1,28 @@
+name: envelope-open-probe
+# §㊾ · סגירת-לולאה: פתיחת-מעטפות-הקustody-של-ההחייה-עם-סיסמאות-המחסן-המקומיות
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      VAULT_RESTORE_PASS: ${{ secrets.VAULT_RESTORE_PASS }}
+      STEEM_VAULT_PASSES: ${{ secrets.STEEM_VAULT_PASSES }}
+      ROT_ROSTER: ${{ secrets.ROT_ROSTER }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: probe
+        run: node ops/fleet-rotation/envelope-open-probe.mjs
+      - name: receipt
+        if: always()
+        run: |
+          git config user.name "roshpinacare-sys"
+          git config user.email "326012154+roshpinacare-sys@users.noreply.github.com"
+          git add receipts/envelope-open-probe-latest.json 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "envelope-open-probe receipt [skip ci]" && git push)
