@@ -58,7 +58,13 @@ const secp = await import("@noble/secp256k1");
 const STEEM_DIR = process.env.REVIVE_STEEM_DIR || path.resolve("steem-engine");
 const TX = await import(path.resolve(STEEM_DIR, "mini-services/saos-engine/steemtx.mjs"));
 
-const RPCS_STEEM = ["https://api.steemit.com", "https://api.justyy.com", "https://steem-rpc.publicnode.com"];
+const RPCS_STEEM = [
+  "https://api.steemit.com",
+  "https://api.steemitdev.com",
+  "https://api.justyy.com",
+  "https://steemapi.boylikegirl.club",
+  "https://steem-rpc.publicnode.com",
+]; // the mover.mjs proven-5 (the ladder broadcasts through this list daily; the sovereign-wave txids landed on boylikegirl)
 const CUSTODY_REPOS = ["steem", "saos-runtime", "Domain", "saos-dex"];
 
 const fp = (s) => crypto.createHash("sha256").update(String(s), "utf-8").digest("hex").slice(0, 8);
