@@ -1,46 +1,37 @@
 #!/usr/bin/env node
-// envelope-open-probe.mjs — §㊾ · פתיחת-מעטפות-ARMY-ACTIVE-REVIVE עם-סיסמאות-המחסן-של-saos-runtime
-// (VAULT_RESTORE_PASS + STEEM_VAULT_PASSES + ROT_ROSTER) — אפס-WIF-בלוג · טביעות-בלבד
+// envelope-open-probe v3 — מינימלי-וממוקד: VAULT_RESTORE_PASS-בלבד · אימות-הלוך-ושוב-פנימי
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 const fp = (s) => createHash("sha256").update(String(s)).digest("hex").slice(0, 8);
-function collectStrings(node, out = new Set(), depth = 0) { if (!node || typeof node !== "object" || depth > 6) return out; if (Array.isArray(node)) { for (const v of node) collectStrings(v, out, depth + 1); return out; } for (const [k, v] of Object.entries(node)) { if (typeof v === "string" && v.length >= 16) out.add(v); else if (typeof v === "object") collectStrings(v, out, depth + 1); } return out; }
 async function main() {
   const pat = process.env.GH_PAT || "";
-  const pools = [];
-  for (const envName of ["VAULT_RESTORE_PASS", "STEEM_VAULT_PASSES", "ROT_ROSTER"]) {
-    const v = process.env[envName] || "";
-    if (!v) continue;
-    pools.push({ name: envName + ":direct", val: v });
-    try { for (const s of collectStrings(JSON.parse(v))) pools.push({ name: envName + ":walk", val: s }); } catch {}
-    for (const line of v.split(/[\n;]/)) { const t = line.trim(); if (t.length >= 16 && !pools.some(p => p.val === t)) pools.push({ name: envName + ":line", val: t }); }
-  }
-  console.log("[probe] סיסמאות-מועמדות: " + pools.length);
-  if (!pat || pools.length === 0) { console.log("[probe] חסר-חומר — כנה"); process.exit(0); }
-  const work = mkdtempSync(join(tmpdir(), "eprobe-"));
+  const pass = process.env.VAULT_RESTORE_PASS || "";
+  console.log("pass-קיים:", pass.length > 0, "· len:", pass.length, "· fp:", pass ? fp(pass) : "—");
+  if (!pat || !pass) process.exit(0);
+  const work = mkdtempSync(join(tmpdir(), "ep3-"));
   try {
-    execFileSync("git", ["clone", "--quiet", "--depth", "1", "https://x-access-token:" + pat + "@github.com/roshpinacare-sys/vault-home.git", join(work, "vh")], { stdio: "pipe" });
-    const dir = join(work, "vh", "custody-intake");
-    const files = readdirSync(dir).filter(f => f.startsWith("ARMY-ACTIVE-REVIVE-") && f.endsWith(".enc")).sort();
-    console.log("[probe] מעטפות: " + files.length);
-    const opened = [];
+    // אימות-הלוך-ושוב-פנימי: אטום+פתח-טקסט-מבחן
+    writeFileSync(join(work, "t.txt"), "roundtrip-test-payload");
+    execFileSync("openssl", ["enc", "-aes-256-cbc", "-pbkdf2", "-iter", "300000", "-pass", "pass:" + pass, "-in", join(work, "t.txt"), "-out", join(work, "t.enc")], { stdio: "pipe" });
+    execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "300000", "-pass", "pass:" + pass, "-in", join(work, "t.enc"), "-out", join(work, "t2.txt")], { stdio: "pipe" });
+    const ok = readFileSync(join(work, "t2.txt"), "utf8") === "roundtrip-test-payload";
+    console.log("אימות-פנימי-הלוך-ושוב:", ok ? "PASS" : "FAIL");
+    // המעטפות
+    execFileSync("git", ["clone", "-q", "--depth", "1", "https://x-access-token:" + pat + "@github.com/roshpinacare-sys/vault-home.git", join(work, "vh")], { stdio: "pipe" });
+    const files = ["ARMY-ACTIVE-REVIVE-20261116T061649Z.enc", "ARMY-ACTIVE-REVIVE-20261116T062818Z.enc", "ARMY-ACTIVE-REVIVE-20261116T065935Z.enc"];
     for (const f of files) {
-      writeFileSync(join(work, "e.enc"), readFileSync(join(dir, f)));
-      let hit = "";
-      for (const p of pools) {
-        for (const iter of [200000, 300000, 100000]) {
-          try { execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", String(iter), "-in", join(work, "e.enc"), "-out", join(work, "p.txt"), "-pass", "pass:" + p.val], { stdio: "pipe" }); const t = readFileSync(join(work, "p.txt"), "utf8"); if (/^[\\x20-\\x7E\\n\\r\\t]+$/.test(t)) { hit = p.name + "(iter-" + iter + ")"; break; } } catch {}
-        }
-        if (hit) break;
-      }
-      if (hit) { const t = readFileSync(join(work, "p.txt"), "utf8"); const wifs = t.match(/[5KL][1-9A-HJ-NP-Za-km-z]{50,51}/g) || []; let parsed = null; try { parsed = JSON.parse(t); } catch {} const accounts = parsed ? (parsed.account ? [parsed.account] : Array.isArray(parsed) ? parsed.map(x => x?.account).filter(Boolean) : Object.keys(parsed)) : []; console.log("✔ " + f + " ← " + hit + " · WIFs=" + wifs.length + " · חשבונות=" + JSON.stringify([...new Set(accounts)]).slice(0, 120)); opened.push({ file: f, via: hit, accounts: [...new Set(accounts)], wifFps: wifs.map(w => fp(w)) }); }
-      else console.log("✘ " + f);
+      writeFileSync(join(work, "e.enc"), readFileSync(join(work, "vh", "custody-intake", f)));
+      try {
+        execFileSync("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "300000", "-pass", "pass:" + pass, "-in", join(work, "e.enc"), "-out", join(work, "p.txt")], { stdio: "pipe" });
+        const t = readFileSync(join(work, "p.txt"), "utf8");
+        const readable = /^[\\x20-\\x7E\\n\\r\\t]+$/.test(t);
+        const wifs = readable ? (t.match(/[5KL][1-9A-HJ-NP-Za-km-z]{50,51}/g) || []).length : -1;
+        console.log(f + ": " + (readable ? "נפתחה ✔ · WIFs=" + wifs + " · len=" + t.length : "נפתחה-אך-לא-קריאה (פתיחה-כוזבת?) len=" + t.length));
+      } catch { console.log(f + ": ✘ נכשלה"); }
     }
-    console.log("[probe] נפתחו " + opened.length + "/" + files.length);
-    try { mkdirSync("receipts", { recursive: true }); writeFileSync("receipts/envelope-open-probe-latest.json", JSON.stringify({ at: new Date().toISOString(), opened }, null, 1)); } catch (e) { console.log("קבלה-נכשלה: " + String(e).slice(0, 60)); }
   } finally { rmSync(work, { recursive: true, force: true }); }
 }
-main().catch(e => { console.error("THROW " + String(e).slice(0, 120)); process.exit(1); });
+main().catch(e => { console.error("THROW " + String(e).slice(0, 100)); process.exit(1); });
