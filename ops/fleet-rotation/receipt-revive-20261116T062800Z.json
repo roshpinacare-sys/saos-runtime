@@ -1,0 +1,37 @@
+{
+ "schema": "SAOS-ARMY-ACTIVE-REVIVE/1",
+ "at": "2026-11-16T06:27:41.228Z",
+ "results": [
+  {
+   "account": "cashmachine",
+   "at": "2026-11-16T06:27:42.404Z",
+   "verdict": "FAIL",
+   "error": "all-steem-nodes-failed · Unexpected end of JSON input"
+  },
+  {
+   "account": "israelnews",
+   "at": "2026-11-16T06:27:44.074Z",
+   "verdict": "FAIL",
+   "error": "all-steem-nodes-failed · Unexpected end of JSON input"
+  },
+  {
+   "account": "hcsoldier4",
+   "at": "2026-11-16T06:27:45.049Z",
+   "verdict": "FAIL",
+   "error": "all-steem-nodes-failed · Unexpected end of JSON input"
+  },
+  {
+   "account": "hcsoldier5",
+   "at": "2026-11-16T06:27:46.095Z",
+   "verdict": "FAIL",
+   "error": "all-steem-nodes-failed · Unexpected end of JSON input"
+  },
+  {
+   "account": "hcsoldier6",
+   "at": "2026-11-16T06:27:47.094Z",
+   "verdict": "FAIL",
+   "error": "all-steem-nodes-failed · Unexpected end of JSON input"
+  }
+ ],
+ "verdict": "NOTHING-REVIVED (honest red)"
+}
