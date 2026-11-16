@@ -1,0 +1,25 @@
+{
+ "schema": "SAOS-ARMY-ACTIVE-REVIVE/1",
+ "at": "2026-11-16T06:59:35.537Z",
+ "results": [
+  {
+   "account": "siq",
+   "at": "2026-11-16T06:59:36.466Z",
+   "txid": "915f27db2342f5523c11",
+   "oldActiveFp": "STM7K34Fcrfq",
+   "newActivePubFp": "STM5EW8upEwW",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  },
+  {
+   "account": "woq",
+   "at": "2026-11-16T06:59:39.791Z",
+   "txid": "14401727dabccd8551d0",
+   "oldActiveFp": "STM8PQfqQAtt",
+   "newActivePubFp": "STM6W7BoWTBt",
+   "chainVerified": true,
+   "verdict": "REVIVED-VERIFIED"
+  }
+ ],
+ "verdict": "REVIVED 2/2"
+}
