@@ -1,0 +1,37 @@
+{
+ "schema": "SAOS-ARMY-ACTIVE-REVIVE/1",
+ "at": "2026-11-16T06:19:55.463Z",
+ "results": [
+  {
+   "account": "cashmachine",
+   "at": "2026-11-16T06:19:56.449Z",
+   "verdict": "FAIL",
+   "error": "secp.signSync is not a function or its return value is not iterable"
+  },
+  {
+   "account": "israelnews",
+   "at": "2026-11-16T06:19:56.539Z",
+   "verdict": "FAIL",
+   "error": "secp.signSync is not a function or its return value is not iterable"
+  },
+  {
+   "account": "hcsoldier4",
+   "at": "2026-11-16T06:19:56.597Z",
+   "verdict": "FAIL",
+   "error": "secp.signSync is not a function or its return value is not iterable"
+  },
+  {
+   "account": "hcsoldier5",
+   "at": "2026-11-16T06:19:56.643Z",
+   "verdict": "FAIL",
+   "error": "secp.signSync is not a function or its return value is not iterable"
+  },
+  {
+   "account": "hcsoldier6",
+   "at": "2026-11-16T06:19:56.688Z",
+   "verdict": "FAIL",
+   "error": "secp.signSync is not a function or its return value is not iterable"
+  }
+ ],
+ "verdict": "NOTHING-REVIVED (honest red)"
+}
