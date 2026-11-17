@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-17T02:57:08.563Z",
+  "builtAt": "2026-11-17T11:52:28.416Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T01:10:31Z"
+        "created_at": "2026-11-17T04:35:55Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-active-revive",
@@ -60,7 +60,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-17T02:44:38Z"
+        "created_at": "2026-11-17T11:45:14Z"
       },
       "verdict": "ALIVE"
     },
@@ -75,7 +75,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T22:27:33Z"
+        "created_at": "2026-11-17T08:23:30Z"
       },
       "verdict": "ALIVE"
     },
@@ -92,7 +92,7 @@
         "event": "schedule",
         "created_at": "2026-11-17T02:31:42Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "builder-catchup",
@@ -103,7 +103,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T22:33:11Z"
+        "created_at": "2026-11-17T04:48:37Z"
       },
       "verdict": "IDLE"
     },
@@ -146,7 +146,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-17T02:54:31Z"
+        "created_at": "2026-11-17T10:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -185,7 +185,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-15T20:06:18Z"
+        "created_at": "2026-11-17T04:38:24Z"
       },
       "verdict": "IDLE"
     },
@@ -200,7 +200,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-16T22:50:05Z"
+        "created_at": "2026-11-17T10:57:46Z"
       },
       "verdict": "ALIVE"
     },
@@ -213,7 +213,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-16T22:20:21Z"
+        "created_at": "2026-11-17T04:38:20Z"
       },
       "verdict": "IDLE"
     },
@@ -265,11 +265,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
+        "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T02:53:55Z"
+        "created_at": "2026-11-17T11:44:01Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -377,7 +377,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T22:28:40Z"
+        "created_at": "2026-11-17T04:44:42Z"
       },
       "verdict": "STALE"
     },
@@ -392,7 +392,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T22:19:56Z"
+        "created_at": "2026-11-17T04:38:15Z"
       },
       "verdict": "STALE"
     },
@@ -433,7 +433,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T22:28:54Z"
+        "created_at": "2026-11-17T08:26:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -448,7 +448,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T22:30:36Z"
+        "created_at": "2026-11-17T04:46:40Z"
       },
       "verdict": "STALE"
     },
@@ -461,7 +461,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T19:39:03Z"
+        "created_at": "2026-11-17T03:56:01Z"
       },
       "verdict": "IDLE"
     },
@@ -475,8 +475,8 @@
       "lastRun": {
         "status": "completed",
         "conclusion": "success",
-        "event": "schedule",
-        "created_at": "2026-11-16T13:53:41Z"
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-17T10:57:47Z"
       },
       "verdict": "ALIVE"
     },
@@ -489,7 +489,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T00:30:01Z"
+        "created_at": "2026-11-17T09:12:29Z"
       },
       "verdict": "ALIVE"
     },
@@ -501,10 +501,10 @@
       ],
       "gapMinutes": 60,
       "lastRun": {
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-17T02:53:52Z"
+        "created_at": "2026-11-17T11:49:38Z"
       },
       "verdict": "ALIVE"
     },
@@ -519,7 +519,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-16T18:43:58Z"
+        "created_at": "2026-11-17T03:00:37Z"
       },
       "verdict": "ALIVE"
     },
@@ -534,7 +534,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-17T02:56:03Z"
+        "created_at": "2026-11-17T11:52:06Z"
       },
       "verdict": "ALIVE"
     },
@@ -583,17 +583,17 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-17T02:51:29Z",
-    "ageMinutes": 6,
+    "at": "2026-11-17T11:52:06Z",
+    "ageMinutes": 1,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 17,
+    "alive": 16,
     "red": 0,
-    "stale": 3,
+    "stale": 5,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
     "idle": 20,
