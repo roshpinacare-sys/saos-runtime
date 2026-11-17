@@ -1,5 +1,5 @@
 {
- "at": "2026-11-17T21:43:23.545Z",
+ "at": "2026-11-17T21:48:11.399Z",
  "window": {
   "from": "2026-11-16",
   "to": "2026-11-17"
@@ -10,11 +10,10 @@
     "count": 2500,
     "sampled": 100,
     "hist": {
+     "failure": 7,
      "in_progress": 4,
-     "pending": 1,
-     "success": 75,
+     "success": 74,
      "cancelled": 14,
-     "failure": 5,
      "skipped": 1
     }
    },
@@ -38,12 +37,12 @@
     }
    },
    "saos-runtime": {
-    "count": 759,
+    "count": 764,
     "sampled": 100,
     "hist": {
      "in_progress": 5,
-     "success": 92,
-     "cancelled": 3
+     "success": 91,
+     "cancelled": 4
     }
    }
   },
@@ -117,7 +116,7 @@
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=759"
+   "detail": "runs=764"
   }
  ],
  "verdict": "ALL-SLO-OK"
