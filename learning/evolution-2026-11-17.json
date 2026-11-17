@@ -1,5 +1,5 @@
 {
- "at": "2026-11-17T09:42:51.080Z",
+ "at": "2026-11-17T09:47:58.404Z",
  "window": {
   "from": "2026-11-16",
   "to": "2026-11-17"
@@ -7,12 +7,12 @@
  "sections": {
   "runs": {
    "Domain": {
-    "count": 2195,
+    "count": 2197,
     "sampled": 100,
     "hist": {
-     "failure": 10,
-     "success": 68,
      "in_progress": 3,
+     "success": 69,
+     "failure": 9,
      "cancelled": 19
     }
    },
@@ -35,11 +35,11 @@
     }
    },
    "saos-runtime": {
-    "count": 523,
+    "count": 527,
     "sampled": 100,
     "hist": {
-     "in_progress": 5,
-     "success": 90,
+     "in_progress": 4,
+     "success": 91,
      "failure": 2,
      "cancelled": 3
     }
@@ -103,7 +103,7 @@
    "id": "T1",
    "name": "Domain daily runs >= 30",
    "ok": true,
-   "detail": "runs=2195"
+   "detail": "runs=2197"
   },
   {
    "id": "T1",
@@ -115,7 +115,7 @@
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=523"
+   "detail": "runs=527"
   }
  ],
  "verdict": "ALL-SLO-OK"
