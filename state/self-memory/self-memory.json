@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-11-17T08:26:40.902Z",
+  "builtAt": "2026-11-17T21:18:10.543Z",
   "config": {
     "longTermExtractionEnabled": true,
     "longTermConfidenceThreshold": 0.55,
@@ -8,9 +8,9 @@
     "consolidationMaxAgeDays": 30
   },
   "stats": {
-    "candidates": 28,
-    "added": 1,
-    "reinforced": 27,
+    "candidates": 30,
+    "added": 0,
+    "reinforced": 30,
     "rejected": 0,
     "burned": 0
   },
@@ -37,8 +37,8 @@
         "heartbeat": "ALIVE"
       },
       "createdAt": "2026-10-14T00:24:49.632Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.895Z",
-      "accessCount": 77,
+      "lastAccessedAt": "2026-11-17T21:18:10.537Z",
+      "accessCount": 78,
       "_tok": {}
     },
     {
@@ -52,8 +52,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.897Z",
-      "accessCount": 30,
+      "lastAccessedAt": "2026-11-17T21:18:10.539Z",
+      "accessCount": 31,
       "_tok": {}
     },
     {
@@ -67,8 +67,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.898Z",
-      "accessCount": 84,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 85,
       "_tok": {}
     },
     {
@@ -82,8 +82,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.898Z",
-      "accessCount": 84,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 85,
       "_tok": {}
     },
     {
@@ -97,8 +97,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.900Z",
-      "accessCount": 84,
+      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
+      "accessCount": 85,
       "_tok": {}
     },
     {
@@ -130,8 +130,8 @@
         ]
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.901Z",
-      "accessCount": 43,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 44,
       "_tok": {}
     },
     {
@@ -351,8 +351,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.896Z",
-      "accessCount": 59,
+      "lastAccessedAt": "2026-11-17T21:18:10.539Z",
+      "accessCount": 60,
       "_tok": {}
     },
     {
@@ -381,8 +381,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.898Z",
-      "accessCount": 39,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 40,
       "_tok": {}
     },
     {
@@ -396,8 +396,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.898Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -426,8 +426,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.899Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -498,8 +498,8 @@
         ]
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.901Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -513,8 +513,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.055Z",
-      "lastAccessedAt": "2026-11-14T22:43:02.129Z",
-      "accessCount": 34,
+      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
+      "accessCount": 35,
       "_tok": {}
     },
     {
@@ -528,8 +528,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.055Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.895Z",
-      "accessCount": 72,
+      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
+      "accessCount": 73,
       "_tok": {}
     },
     {
@@ -543,8 +543,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.056Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.899Z",
-      "accessCount": 72,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 73,
       "_tok": {}
     },
     {
@@ -558,8 +558,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.057Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.900Z",
-      "accessCount": 32,
+      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
+      "accessCount": 33,
       "_tok": {}
     },
     {
@@ -573,8 +573,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.057Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.900Z",
-      "accessCount": 36,
+      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
+      "accessCount": 37,
       "_tok": {}
     },
     {
@@ -588,8 +588,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.900Z",
-      "accessCount": 72,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 73,
       "_tok": {}
     },
     {
@@ -618,8 +618,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.900Z",
-      "accessCount": 31,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 32,
       "_tok": {}
     },
     {
@@ -648,8 +648,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.901Z",
-      "accessCount": 72,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 73,
       "_tok": {}
     },
     {
@@ -678,8 +678,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-21T10:19:01.693Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.901Z",
-      "accessCount": 39,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 40,
       "_tok": {}
     },
     {
@@ -723,8 +723,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-22T12:21:08.025Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.899Z",
-      "accessCount": 70,
+      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
+      "accessCount": 71,
       "_tok": {}
     },
     {
@@ -753,8 +753,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-22T12:21:08.026Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.901Z",
-      "accessCount": 70,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 71,
       "_tok": {}
     },
     {
@@ -798,8 +798,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-23T12:03:34.400Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.895Z",
-      "accessCount": 36,
+      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
+      "accessCount": 37,
       "_tok": {}
     },
     {
@@ -873,8 +873,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-24T16:14:36.341Z",
-      "lastAccessedAt": "2026-11-16T22:29:04.571Z",
-      "accessCount": 24,
+      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
+      "accessCount": 25,
       "_tok": {}
     },
     {
@@ -1359,8 +1359,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-29T22:57:13.274Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.899Z",
-      "accessCount": 88,
+      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
+      "accessCount": 90,
       "_tok": {}
     },
     {
@@ -1490,8 +1490,8 @@
         "verdict": "CANCELLED"
       },
       "createdAt": "2026-11-01T18:04:36.743Z",
-      "lastAccessedAt": "2026-11-07T13:31:21.878Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -1505,8 +1505,8 @@
         "at": "2026-11-01T14:18:53.478Z"
       },
       "createdAt": "2026-11-01T18:04:36.745Z",
-      "lastAccessedAt": "2026-11-03T07:12:34.025Z",
-      "accessCount": 5,
+      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
+      "accessCount": 6,
       "_tok": {}
     },
     {
@@ -1820,8 +1820,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-11-16T22:29:04.572Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.895Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
@@ -1835,8 +1835,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-11-16T22:29:04.573Z",
-      "lastAccessedAt": "2026-11-17T08:26:40.896Z",
-      "accessCount": 2,
+      "lastAccessedAt": "2026-11-17T21:18:10.539Z",
+      "accessCount": 3,
       "_tok": {}
     },
     {
