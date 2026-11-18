@@ -1,6 +1,6 @@
 {
   "protocol": "SAOS-SYSTEM-MAP/1",
-  "builtAt": "2026-11-18T02:53:59.623Z",
+  "builtAt": "2026-11-18T11:42:51.853Z",
   "repo": "roshpinacare-sys/saos-runtime",
   "flows": [
     {
@@ -30,9 +30,9 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-18T00:05:19Z"
+        "created_at": "2026-11-18T04:32:03Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "STALE"
     },
     {
       "name": "army-active-revive",
@@ -60,7 +60,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-18T02:33:48Z"
+        "created_at": "2026-11-18T11:25:55Z"
       },
       "verdict": "ALIVE"
     },
@@ -75,7 +75,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T21:15:33Z"
+        "created_at": "2026-11-18T07:52:22Z"
       },
       "verdict": "ALIVE"
     },
@@ -90,7 +90,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T21:07:30Z"
+        "created_at": "2026-11-18T02:58:09Z"
       },
       "verdict": "STALE"
     },
@@ -103,7 +103,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T22:40:47Z"
+        "created_at": "2026-11-18T03:53:43Z"
       },
       "verdict": "IDLE"
     },
@@ -146,7 +146,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-18T01:54:30Z"
+        "created_at": "2026-11-18T10:54:31Z"
       },
       "verdict": "ALIVE"
     },
@@ -159,7 +159,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-16T22:20:28Z"
+        "created_at": "2026-11-18T04:34:05Z"
       },
       "verdict": "IDLE"
     },
@@ -200,7 +200,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T23:33:01Z"
+        "created_at": "2026-11-18T07:39:06Z"
       },
       "verdict": "ALIVE"
     },
@@ -213,7 +213,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "workflow_dispatch",
-        "created_at": "2026-11-17T23:00:08Z"
+        "created_at": "2026-11-18T04:34:00Z"
       },
       "verdict": "IDLE"
     },
@@ -265,11 +265,11 @@
       "gapMinutes": 30,
       "lastRun": {
         "status": "completed",
-        "conclusion": "cancelled",
-        "event": "schedule",
-        "created_at": "2026-11-18T02:52:02Z"
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "created_at": "2026-11-18T11:33:09Z"
       },
-      "verdict": "CANCELLED"
+      "verdict": "ALIVE"
     },
     {
       "name": "hive-adopt-t21",
@@ -377,7 +377,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T23:07:18Z"
+        "created_at": "2026-11-18T04:40:47Z"
       },
       "verdict": "STALE"
     },
@@ -392,7 +392,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T22:59:23Z"
+        "created_at": "2026-11-18T04:33:20Z"
       },
       "verdict": "STALE"
     },
@@ -433,7 +433,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T21:18:05Z"
+        "created_at": "2026-11-18T07:54:32Z"
       },
       "verdict": "ALIVE"
     },
@@ -448,7 +448,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T23:09:29Z"
+        "created_at": "2026-11-18T04:42:42Z"
       },
       "verdict": "STALE"
     },
@@ -463,7 +463,7 @@
         "event": "schedule",
         "created_at": "2026-11-18T00:58:51Z"
       },
-      "verdict": "ALIVE"
+      "verdict": "IDLE"
     },
     {
       "name": "sovereign-evolution",
@@ -489,7 +489,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T23:39:09Z"
+        "created_at": "2026-11-18T08:32:02Z"
       },
       "verdict": "IDLE"
     },
@@ -504,7 +504,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "workflow_dispatch",
-        "created_at": "2026-11-18T02:50:30Z"
+        "created_at": "2026-11-18T11:40:07Z"
       },
       "verdict": "ALIVE"
     },
@@ -519,7 +519,7 @@
         "status": "completed",
         "conclusion": "success",
         "event": "schedule",
-        "created_at": "2026-11-17T22:30:56Z"
+        "created_at": "2026-11-18T07:47:05Z"
       },
       "verdict": "ALIVE"
     },
@@ -534,7 +534,7 @@
         "status": "in_progress",
         "conclusion": null,
         "event": "schedule",
-        "created_at": "2026-11-18T02:53:53Z"
+        "created_at": "2026-11-18T11:42:44Z"
       },
       "verdict": "ALIVE"
     },
@@ -583,20 +583,20 @@
   "heartbeat": {
     "repo": "roshpinacare-sys/steem",
     "branch": "saos-cockpit",
-    "at": "2026-11-18T02:53:09Z",
+    "at": "2026-11-18T11:42:34Z",
     "ageMinutes": 1,
     "subject": "SAOS-runtime-ci: heartbeat state (offline conversation + content) [ci]",
     "verdict": "ALIVE"
   },
   "summary": {
-    "alive": 16,
+    "alive": 15,
     "red": 0,
-    "stale": 4,
+    "stale": 5,
     "gated": 0,
-    "cancelled": 1,
+    "cancelled": 0,
     "neverRun": 0,
     "review": 0,
-    "idle": 20,
+    "idle": 21,
     "heartbeat": "ALIVE"
   }
 }
