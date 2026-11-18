@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-11-17T21:18:10.543Z",
+  "builtAt": "2026-11-18T07:54:42.052Z",
   "config": {
     "longTermExtractionEnabled": true,
     "longTermConfidenceThreshold": 0.55,
@@ -8,11 +8,11 @@
     "consolidationMaxAgeDays": 30
   },
   "stats": {
-    "candidates": 30,
+    "candidates": 29,
     "added": 0,
-    "reinforced": 30,
+    "reinforced": 29,
     "rejected": 0,
-    "burned": 0
+    "burned": 6
   },
   "records": [
     {
@@ -37,8 +37,8 @@
         "heartbeat": "ALIVE"
       },
       "createdAt": "2026-10-14T00:24:49.632Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.537Z",
-      "accessCount": 78,
+      "lastAccessedAt": "2026-11-18T07:54:42.046Z",
+      "accessCount": 79,
       "_tok": {}
     },
     {
@@ -52,8 +52,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.539Z",
-      "accessCount": 31,
+      "lastAccessedAt": "2026-11-18T07:54:42.048Z",
+      "accessCount": 32,
       "_tok": {}
     },
     {
@@ -67,8 +67,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
-      "accessCount": 85,
+      "lastAccessedAt": "2026-11-18T07:54:42.049Z",
+      "accessCount": 86,
       "_tok": {}
     },
     {
@@ -82,8 +82,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
-      "accessCount": 85,
+      "lastAccessedAt": "2026-11-18T07:54:42.049Z",
+      "accessCount": 86,
       "_tok": {}
     },
     {
@@ -97,8 +97,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
-      "accessCount": 85,
+      "lastAccessedAt": "2026-11-18T07:54:42.051Z",
+      "accessCount": 86,
       "_tok": {}
     },
     {
@@ -130,8 +130,8 @@
         ]
       },
       "createdAt": "2026-10-14T00:24:49.633Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
-      "accessCount": 44,
+      "lastAccessedAt": "2026-11-18T07:54:42.052Z",
+      "accessCount": 45,
       "_tok": {}
     },
     {
@@ -281,66 +281,6 @@
       "_tok": {}
     },
     {
-      "id": "a76105443e84549b",
-      "category": "EPISODIC",
-      "content": "זרימה-לא-חיה: arb-grid · פסק STALE · ריצה-אחרונה success @ 2026-10-18T01:37:13Z (workflow_dispatch)",
-      "confidence": 0.85,
-      "source": "state/system-map/system-map.json",
-      "metadata": {
-        "flow": "arb-grid",
-        "verdict": "STALE"
-      },
-      "createdAt": "2026-10-19T01:27:45.361Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.361Z",
-      "accessCount": 1,
-      "_tok": {}
-    },
-    {
-      "id": "54ac39b582372f71",
-      "category": "EPISODIC",
-      "content": "זרימה-לא-חיה: army-ladder · פסק STALE · ריצה-אחרונה success @ 2026-10-18T03:18:06Z (workflow_dispatch)",
-      "confidence": 0.85,
-      "source": "state/system-map/system-map.json",
-      "metadata": {
-        "flow": "army-ladder",
-        "verdict": "STALE"
-      },
-      "createdAt": "2026-10-19T01:27:45.361Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.361Z",
-      "accessCount": 1,
-      "_tok": {}
-    },
-    {
-      "id": "b311eaf6d3dbe74c",
-      "category": "EPISODIC",
-      "content": "זרימה-לא-חיה: blurt-revival · פסק IDLE · ריצה-אחרונה success @ 2026-10-18T00:38:07Z (workflow_dispatch)",
-      "confidence": 0.85,
-      "source": "state/system-map/system-map.json",
-      "metadata": {
-        "flow": "blurt-revival",
-        "verdict": "IDLE"
-      },
-      "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
-      "_tok": {}
-    },
-    {
-      "id": "12dc55c5ee4040f6",
-      "category": "EPISODIC",
-      "content": "זרימה-לא-חיה: dex-beat · פסק RED · ריצה-אחרונה failure @ 2026-10-18T05:54:31Z (workflow_dispatch)",
-      "confidence": 0.85,
-      "source": "state/system-map/system-map.json",
-      "metadata": {
-        "flow": "dex-beat",
-        "verdict": "RED"
-      },
-      "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
-      "_tok": {}
-    },
-    {
       "id": "5e01a44920071dc0",
       "category": "EPISODIC",
       "content": "זרימה-לא-חיה: directive-now · פסק IDLE · ריצה-אחרונה success @ 2026-10-17T04:32:50Z (workflow_dispatch)",
@@ -351,8 +291,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.539Z",
-      "accessCount": 60,
+      "lastAccessedAt": "2026-11-18T07:54:42.047Z",
+      "accessCount": 61,
       "_tok": {}
     },
     {
@@ -381,8 +321,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
-      "accessCount": 40,
+      "lastAccessedAt": "2026-11-18T07:54:42.048Z",
+      "accessCount": 41,
       "_tok": {}
     },
     {
@@ -396,23 +336,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
-      "accessCount": 74,
-      "_tok": {}
-    },
-    {
-      "id": "1157711c2aedd9e9",
-      "category": "EPISODIC",
-      "content": "זרימה-לא-חיה: grid-watchdog · פסק CANCELLED · ריצה-אחרונה cancelled @ 2026-10-18T07:39:35Z (workflow_dispatch)",
-      "confidence": 0.85,
-      "source": "state/system-map/system-map.json",
-      "metadata": {
-        "flow": "grid-watchdog",
-        "verdict": "CANCELLED"
-      },
-      "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-11-18T07:54:42.049Z",
+      "accessCount": 75,
       "_tok": {}
     },
     {
@@ -426,23 +351,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
-      "accessCount": 74,
-      "_tok": {}
-    },
-    {
-      "id": "20e543be06f88c13",
-      "category": "EPISODIC",
-      "content": "זרימה-לא-חיה: self-memory · פסק IDLE · ריצה-אחרונה success @ 2026-10-16T11:50:09Z (schedule)",
-      "confidence": 0.85,
-      "source": "state/system-map/system-map.json",
-      "metadata": {
-        "flow": "self-memory",
-        "verdict": "IDLE"
-      },
-      "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-10-19T01:27:45.362Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-11-18T07:54:42.049Z",
+      "accessCount": 75,
       "_tok": {}
     },
     {
@@ -498,8 +408,8 @@
         ]
       },
       "createdAt": "2026-10-19T01:27:45.362Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
-      "accessCount": 74,
+      "lastAccessedAt": "2026-11-18T07:54:42.052Z",
+      "accessCount": 75,
       "_tok": {}
     },
     {
@@ -513,8 +423,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.055Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
-      "accessCount": 35,
+      "lastAccessedAt": "2026-11-18T07:54:42.046Z",
+      "accessCount": 36,
       "_tok": {}
     },
     {
@@ -528,8 +438,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.055Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-18T07:54:42.047Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -543,8 +453,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.056Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.540Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-18T07:54:42.049Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -558,8 +468,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.057Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
-      "accessCount": 33,
+      "lastAccessedAt": "2026-11-18T07:54:42.050Z",
+      "accessCount": 34,
       "_tok": {}
     },
     {
@@ -573,8 +483,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.057Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
-      "accessCount": 37,
+      "lastAccessedAt": "2026-11-18T07:54:42.050Z",
+      "accessCount": 38,
       "_tok": {}
     },
     {
@@ -588,8 +498,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-18T07:54:42.051Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -618,8 +528,8 @@
         "verdict": "STALE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
-      "accessCount": 32,
+      "lastAccessedAt": "2026-11-18T07:54:42.051Z",
+      "accessCount": 33,
       "_tok": {}
     },
     {
@@ -633,8 +543,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-16T22:29:04.579Z",
-      "accessCount": 23,
+      "lastAccessedAt": "2026-11-18T07:54:42.051Z",
+      "accessCount": 24,
       "_tok": {}
     },
     {
@@ -648,8 +558,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-20T06:08:15.058Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
-      "accessCount": 73,
+      "lastAccessedAt": "2026-11-18T07:54:42.051Z",
+      "accessCount": 74,
       "_tok": {}
     },
     {
@@ -693,8 +603,8 @@
         "at": "2026-10-20T10:17:25.141Z"
       },
       "createdAt": "2026-10-21T10:19:01.694Z",
-      "lastAccessedAt": "2026-11-16T07:13:14.219Z",
-      "accessCount": 5,
+      "lastAccessedAt": "2026-11-18T07:54:42.052Z",
+      "accessCount": 6,
       "_tok": {}
     },
     {
@@ -723,8 +633,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-22T12:21:08.025Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
-      "accessCount": 71,
+      "lastAccessedAt": "2026-11-18T07:54:42.050Z",
+      "accessCount": 72,
       "_tok": {}
     },
     {
@@ -753,8 +663,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-22T12:21:08.026Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.542Z",
-      "accessCount": 71,
+      "lastAccessedAt": "2026-11-18T07:54:42.051Z",
+      "accessCount": 72,
       "_tok": {}
     },
     {
@@ -798,8 +708,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-23T12:03:34.400Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
-      "accessCount": 37,
+      "lastAccessedAt": "2026-11-18T07:54:42.047Z",
+      "accessCount": 38,
       "_tok": {}
     },
     {
@@ -1359,8 +1269,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-10-29T22:57:13.274Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.541Z",
-      "accessCount": 90,
+      "lastAccessedAt": "2026-11-18T07:54:42.050Z",
+      "accessCount": 92,
       "_tok": {}
     },
     {
@@ -1610,8 +1520,8 @@
         "verdict": "CANCELLED"
       },
       "createdAt": "2026-11-06T19:39:56.393Z",
-      "lastAccessedAt": "2026-11-06T19:39:56.393Z",
-      "accessCount": 1,
+      "lastAccessedAt": "2026-11-18T07:54:42.049Z",
+      "accessCount": 2,
       "_tok": {}
     },
     {
@@ -1820,8 +1730,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-11-16T22:29:04.572Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.538Z",
-      "accessCount": 3,
+      "lastAccessedAt": "2026-11-18T07:54:42.046Z",
+      "accessCount": 4,
       "_tok": {}
     },
     {
@@ -1835,8 +1745,8 @@
         "verdict": "IDLE"
       },
       "createdAt": "2026-11-16T22:29:04.573Z",
-      "lastAccessedAt": "2026-11-17T21:18:10.539Z",
-      "accessCount": 3,
+      "lastAccessedAt": "2026-11-18T07:54:42.047Z",
+      "accessCount": 4,
       "_tok": {}
     },
     {
