@@ -1,12 +1,12 @@
 # Grid status
 
-Generated 2026-11-20T13:23:33Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
+Generated 2026-11-20T13:24:10Z by grid-watchdog (schedule 13,43 * * * * UTC). Cross-repo visibility: yes.
 
 | Signal | Measured | Threshold | Status | Since |
 |---|---|---|---|---|
-| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=3m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-11-20T13:20:05.937Z |
+| heartbeat.fresh | src=saos-runtime@main:state/beat/ci-last-heartbeat.json age=4m http=200 | red if missing/unparseable OR age>5400s (90m fail-loud) OR age>2400s (40m) with no runtime run in-flight | GREEN | 2026-11-20T13:20:05.937Z |
 | engine.source | selftest.mjs http=200 src=steem@saos-cockpit:mini-services/saos-engine (engine source present) | engine source readable on the cockpit tree (selftest.mjs); absent = red (wiped 2026-10-24T19:16Z by seal-host 4b1cd2ed8 — restoring the engine tree is the cure) | GREEN | unavailable |
-| anchor.probe | verdict=OK age=3m src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-11-20T13:20:05Z |
+| anchor.probe | verdict=OK age=4m src=steem@saos-cockpit:state/anchor-probe.json | verdict=OK and age<=24h (probe verdict recorded by the beat, mirrored here) | GREEN | 2026-11-20T13:20:05Z |
 | custody.coverage | verified=0/total=14 | verified>=14 | RED | 2026-11-20T13:20:05.937Z |
 | social.verdict | verdict=PART-GATED executed=0 refused=13 | verdict in green set (WAIT = designed gate state) | WAIT (designed) | 2026-11-20T13:20:05.937Z |
 | content.verdict | verdict=BRIDGE-DOWN draftsQueued=None | verdict in green set (anything else red) | RED | 2026-11-20T13:20:05.937Z |
