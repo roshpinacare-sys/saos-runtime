@@ -1,5 +1,5 @@
 {
- "at": "2026-11-20T14:16:04.295Z",
+ "at": "2026-11-20T22:25:25.814Z",
  "window": {
   "from": "2026-11-19",
   "to": "2026-11-20"
@@ -10,24 +10,19 @@
     "count": 2500,
     "sampled": 100,
     "hist": {
-     "queued": 1,
      "in_progress": 3,
-     "success": 90,
-     "pending": 1,
-     "failure": 4,
-     "cancelled": 1
+     "success": 84,
+     "failure": 5,
+     "cancelled": 8
     }
    },
    "Console": {
     "count": 2500,
     "sampled": 100,
     "hist": {
-     "pending": 2,
-     "cancelled": 15,
-     "success": 65,
-     "queued": 2,
-     "in_progress": 1,
-     "failure": 15
+     "success": 72,
+     "failure": 16,
+     "cancelled": 12
     }
    },
    "Sandbox": {
@@ -40,13 +35,12 @@
     }
    },
    "saos-runtime": {
-    "count": 725,
+    "count": 889,
     "sampled": 100,
     "hist": {
-     "pending": 1,
-     "in_progress": 3,
-     "success": 93,
-     "cancelled": 3
+     "in_progress": 6,
+     "success": 90,
+     "cancelled": 4
     }
    }
   },
@@ -120,7 +114,7 @@
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=725"
+   "detail": "runs=889"
   }
  ],
  "verdict": "ALL-SLO-OK"
