@@ -1,6 +1,6 @@
 {
  "crossRepo": true,
- "generatedAt": "2026-11-21T08:56:47Z",
+ "generatedAt": "2026-11-21T09:28:38Z",
  "redCount": 2,
  "reds": [
   "content.verdict",
@@ -11,17 +11,17 @@
   "blurtLive": 12,
   "blurtTotal": null,
   "custodyTotal": 14,
-  "custodyVerified": 0,
+  "custodyVerified": 4,
   "dexAnchorAgeMs": null,
   "engineSourceHttp": "200",
-  "fleetDigestAgeS": 22459,
+  "fleetDigestAgeS": 24371,
   "fleetDigestCommitAt": "2026-11-21T02:42:25Z",
-  "heartbeatAgeS": 145,
-  "heartbeatAt": "2026-11-21T08:54:17.397Z",
+  "heartbeatAgeS": 285,
+  "heartbeatAt": "2026-11-21T09:23:49.265Z",
   "heartbeatSource": "saos-runtime@main:state/beat/ci-last-heartbeat.json",
   "hierarchyCounts": {
-   "T0": 61,
-   "T1": 269
+   "T0": 62,
+   "T1": 270
   },
   "hierarchyDay": "2026-11-21",
   "hierarchyDenialsTail": null,
@@ -32,14 +32,14 @@
    "T3": true
   },
   "hierarchyGuardLastAt": null,
-  "officeScheduleAgeS": 22502,
+  "officeScheduleAgeS": 24413,
   "officeScheduleAt": "2026-11-21T02:41:43Z",
-  "potentialAgeS": 22459,
+  "potentialAgeS": 24371,
   "potentialCommitAt": "2026-11-21T02:42:25Z",
-  "pulseAgeS": 170,
-  "pulseRunAt": "2026-11-21T08:53:53Z",
-  "pulseRunId": 44887009567,
+  "pulseAgeS": 339,
+  "pulseRunAt": "2026-11-21T09:22:56Z",
+  "pulseRunId": 44889315076,
   "socialExecuted": 0,
-  "socialRefused": 13
+  "socialRefused": 9
  }
 }
