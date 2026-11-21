@@ -1,5 +1,5 @@
 {
- "at": "2026-11-21T13:38:50.919Z",
+ "at": "2026-11-21T15:25:39.679Z",
  "window": {
   "from": "2026-11-20",
   "to": "2026-11-21"
@@ -10,40 +10,38 @@
     "count": 2500,
     "sampled": 100,
     "hist": {
-     "success": 92,
-     "pending": 1,
-     "cancelled": 1,
-     "in_progress": 2,
-     "failure": 4
+     "in_progress": 4,
+     "success": 57,
+     "cancelled": 38,
+     "failure": 1
     }
    },
    "Console": {
     "count": 2500,
     "sampled": 100,
     "hist": {
-     "success": 48,
-     "cancelled": 40,
-     "failure": 12
+     "success": 51,
+     "cancelled": 38,
+     "failure": 11
     }
    },
    "Sandbox": {
-    "count": 58,
-    "sampled": 58,
+    "count": 96,
+    "sampled": 96,
     "hist": {
+     "success": 81,
      "in_progress": 2,
-     "failure": 7,
-     "success": 47,
+     "failure": 11,
      "skipped": 2
     }
    },
    "saos-runtime": {
-    "count": 750,
+    "count": 780,
     "sampled": 100,
     "hist": {
-     "in_progress": 4,
-     "success": 91,
-     "cancelled": 4,
-     "failure": 1
+     "in_progress": 5,
+     "success": 92,
+     "cancelled": 3
     }
    }
   },
@@ -117,7 +115,7 @@
    "id": "T1",
    "name": "saos-runtime daily runs >= 40 (self-pulse ~20min)",
    "ok": true,
-   "detail": "runs=750"
+   "detail": "runs=780"
   }
  ],
  "verdict": "ALL-SLO-OK"
